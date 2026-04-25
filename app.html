@@ -306,20 +306,39 @@ window.sb.auth.onAuthStateChange(function(event, session) {
 });
 
 // ─── Auth helpers (used by SignIn, SignUp, ForgotPassword) ───────────────
+// In DEMO_MODE (Supabase keys not configured), all auth calls simulate
+// success and navigate the user through the flow without touching Supabase.
+
 async function authSignUp(email, password, meta) {
-  var res = await window.sb.auth.signUp({
+  if (window.DEMO_MODE) {
+    // Simulate a successful signup in demo mode
+    window.currentUser = { id: 'demo-' + Date.now(), email: email };
+    window.__profile   = { id: window.currentUser.id, email: email, business_name: meta.business_name, business_type: meta.business_type, plan: meta.plan || 'free', onboarding_done: false };
+    return { data: { user: window.currentUser }, error: null };
+  }
+  return await window.sb.auth.signUp({
     email: email,
     password: password,
-    options: { data: meta }  // business_name, business_type, plan → picked up by DB trigger
+    options: { data: meta }
   });
-  return res;
 }
 
 async function authSignIn(email, password) {
+  if (window.DEMO_MODE) {
+    window.currentUser = { id: 'demo-user', email: email };
+    window.__profile   = { id: 'demo-user', email: email, business_name: 'My Business', plan: 'free', onboarding_done: false };
+    return { data: { user: window.currentUser, session: { user: window.currentUser } }, error: null };
+  }
   return await window.sb.auth.signInWithPassword({ email: email, password: password });
 }
 
 async function authSignInGoogle() {
+  if (window.DEMO_MODE) {
+    window.currentUser = { id: 'demo-google', email: 'demo@gmail.com' };
+    window.__profile   = { id: 'demo-google', email: 'demo@gmail.com', business_name: 'My Business', plan: 'free', onboarding_done: false };
+    window.navigate('/onboard');
+    return { data: {}, error: null };
+  }
   return await window.sb.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo: window.location.origin + window.location.pathname }
@@ -327,14 +346,20 @@ async function authSignInGoogle() {
 }
 
 async function authResetPassword(email) {
+  if (window.DEMO_MODE) {
+    return { data: {}, error: null };  // simulate success
+  }
   return await window.sb.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.origin + window.location.pathname + '#/reset-password'
   });
 }
 
 async function authSignOut() {
-  window.__profile = null;
-  await window.sb.auth.signOut();
+  window.__profile   = null;
+  window.currentUser = null;
+  if (!window.DEMO_MODE) {
+    await window.sb.auth.signOut();
+  }
   window.navigate('/signin');
 }
 
@@ -4648,6 +4673,10 @@ function SignIn() {
     setLoading(false);
     if (err) { setError(err.message); return; }
     // Check if user finished onboarding
+    if (window.DEMO_MODE) {
+      window.navigate('/onboard');
+      return;
+    }
     const { data: profile } = await window.sb.from('profiles')
       .select('onboarding_done').eq('id', data.user.id).single();
     window.navigate(profile?.onboarding_done ? '/app/dashboard' : '/onboard');
