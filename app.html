@@ -5023,8 +5023,8 @@ function OnboardingUpload() {
     setFileSize((file.size / (1024*1024)).toFixed(1) + ' MB');
     setPhase('uploading'); setProgress(0);
 
-    // If not signed in, simulate (demo mode)
-    if (!window.currentUser) {
+    // Simulate upload when Supabase is not configured (demo mode)
+    if (!window.currentUser || window.DEMO_MODE) {
       let p = 0;
       const t = setInterval(() => {
         p += 9; setProgress(Math.min(100, p));
