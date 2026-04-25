@@ -8964,32 +8964,42 @@ function Landing() {
       </div>}
 
       {/* LOGOS */}
-      <div style={{ padding: '12px 48px 56px', maxWidth: 1320, margin: '0 auto' }}>
-        <div className="eyebrow" style={{ textAlign: 'center', marginBottom: 20 }}>
-          Used by 2,400+ small businesses · endorsed by independent brokers
+      <div style={{ padding: isMobile ? '8px 0 32px' : '12px 48px 56px', maxWidth: 1320, margin: '0 auto' }}>
+        <div className="eyebrow" style={{ textAlign: 'center', marginBottom: 16 }}>
+          Used by 2,400+ small businesses
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-around', gap: 32, opacity: 0.55, fontFamily: 'var(--f-serif)', fontSize: 20, color: 'var(--ink-3)' }}>
+        <div style={{
+          display: 'flex', gap: isMobile ? 24 : 32, opacity: 0.5,
+          fontFamily: 'var(--f-serif)', fontSize: isMobile ? 15 : 20, color: 'var(--ink-3)',
+          overflowX: isMobile ? 'auto' : 'visible',
+          justifyContent: isMobile ? 'flex-start' : 'space-around',
+          padding: isMobile ? '0 20px' : 0,
+          whiteSpace: 'nowrap',
+          WebkitOverflowScrolling: 'touch',
+        }}>
           <span>Wilkinson & Greer</span>
-          <span style={{ fontFamily: 'var(--f-mono)', fontSize: 16 }}>NOMAD COFFEE CO.</span>
+          <span style={{ fontFamily: 'var(--f-mono)', fontSize: isMobile ? 13 : 16 }}>NOMAD COFFEE CO.</span>
           <span>Silver Lake Bakery</span>
-          <span style={{ fontFamily: 'var(--f-mono)', fontSize: 16, letterSpacing: '0.1em' }}>ROAN+OAK</span>
+          <span style={{ fontFamily: 'var(--f-mono)', fontSize: isMobile ? 13 : 16, letterSpacing: '0.1em' }}>ROAN+OAK</span>
           <span>The Sorting Yard</span>
-          <span style={{ fontFamily: 'var(--f-mono)', fontSize: 16 }}>STUDIO 14 SALON</span>
+          <span style={{ fontFamily: 'var(--f-mono)', fontSize: isMobile ? 13 : 16 }}>STUDIO 14 SALON</span>
         </div>
       </div>
 
       {/* HOW IT WORKS */}
-      <div style={{ padding: '72px 48px', maxWidth: 1320, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+      <div style={{ padding: isMobile ? '36px 16px' : '72px 48px', maxWidth: 1320, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? 24 : 48 }}>
           <div className="eyebrow">How it works</div>
-          <h2 className="serif" style={{ margin: '8px 0 10px', fontSize: 42, letterSpacing: '-0.02em' }}>
+          <h2 className="serif" style={{ margin: '8px 0 10px', fontSize: isMobile ? 28 : 42, letterSpacing: '-0.02em' }}>
             Four steps from policy to payout.
           </h2>
-          <div style={{ fontSize: 14, color: 'var(--ink-3)', maxWidth: 540, margin: '0 auto' }}>
-            No lawyers, no public adjuster fees. Just the evidence — and the right words — to recover what's covered.
-          </div>
+          {!isMobile && (
+            <div style={{ fontSize: 14, color: 'var(--ink-3)', maxWidth: 540, margin: '0 auto' }}>
+              No lawyers, no public adjuster fees. Just the evidence — and the right words — to recover what's covered.
+            </div>
+          )}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? 10 : 16 }}>
           {[
             { n: '01', t: 'Upload your policy', d: 'We read the 60+ pages of legalese and translate it into plain English. Flag gaps before you need them.', i: 'Upload' },
             { n: '02', t: 'File a claim with us', d: 'Step-by-step documentation checklist, photo coach, and forms tailored to your peril and policy.', i: 'FileText' },
