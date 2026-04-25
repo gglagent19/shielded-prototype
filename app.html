@@ -257,6 +257,19 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
+<script>
+// Global mobile hook — defined before Babel scripts so all components can access it
+function useMobile() {
+  var [mobile, setMobile] = React.useState(window.innerWidth < 768);
+  React.useEffect(function() {
+    var handler = function() { setMobile(window.innerWidth < 768); };
+    window.addEventListener('resize', handler);
+    return function() { window.removeEventListener('resize', handler); };
+  }, []);
+  return mobile;
+}
+</script>
+
 <script type="text/babel">
 
 // DesignCanvas.jsx — Figma-ish design canvas wrapper
@@ -3119,6 +3132,7 @@ Object.assign(window, { Benchmark });
 function Negotiate() {
   const [tone, setTone] = React.useState('firm');
   const [typing, setTyping] = React.useState(false);
+  const isMobile = useMobile();
   const tones = [
     { id: 'diplomatic', label: 'Diplomatic', sub: 'Soft open, firm close' },
     { id: 'firm',       label: 'Firm',       sub: 'Professional, evidence-led' },
@@ -3158,24 +3172,26 @@ GreatWest Mutual's April 4 offer of $28,400 for claim CLM-2041 is materially bel
   const draft = drafts[tone] || drafts.firm;
 
   return (
-    <div style={{ padding: '22px 28px 32px', display: 'flex', flexDirection: 'column', gap: 20, overflow: 'auto', flex: 1 }}>
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 20 }}>
+    <div style={{ padding: isMobile ? '14px 14px 20px' : '22px 28px 32px', display: 'flex', flexDirection: 'column', gap: isMobile ? 14 : 20, overflow: 'auto', flex: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <div className="eyebrow">Claim {DEMO.activeClaim.id}</div>
-          <h2 className="serif" style={{ margin: 0, fontSize: 30, letterSpacing: '-0.015em' }}>
+          {!isMobile && <div className="eyebrow">Claim {DEMO.activeClaim.id}</div>}
+          <h2 className="serif" style={{ margin: 0, fontSize: isMobile ? 20 : 30, letterSpacing: '-0.015em' }}>
             Negotiation generator
           </h2>
-          <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 4, maxWidth: 600 }}>
-            A rebuttal email anchored in your policy clauses and comparable claim data. Edit anything before you send.
-          </div>
+          {!isMobile && (
+            <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 4, maxWidth: 600 }}>
+              A rebuttal email anchored in your policy clauses and comparable claim data. Edit anything before you send.
+            </div>
+          )}
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn-ghost"><Icons.Copy size={13}/> Copy</button>
-          <button className="btn btn-primary"><Icons.Mail size={13}/> Send via Shielded</button>
+          <button className="btn btn-ghost btn-sm"><Icons.Copy size={13}/> Copy</button>
+          <button className="btn btn-primary btn-sm"><Icons.Mail size={13}/> Send</button>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.8fr', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.8fr', gap: isMobile ? 14 : 20 }}>
         {/* Controls */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className="card" style={{ padding: 16 }}>
@@ -4110,6 +4126,7 @@ function PolicyCard({ p, selected, onClick }) {
 
 function PoliciesList() {
   const [selected, setSelected] = React.useState(0);
+  const isMobile = useMobile();
 
   const totalClaims = POLICIES_DATA.reduce((a, p) => a + p.claims, 0);
   const avgScore = Math.round(POLICIES_DATA.reduce((a, p) => a + p.score, 0) / POLICIES_DATA.length);
@@ -4133,16 +4150,16 @@ function PoliciesList() {
       </div>
 
       {/* Portfolio health strip */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? 8 : 12 }}>
         {[
-          { l: 'Policies',          v: POLICIES_DATA.length, sub: 'All active', icon: 'Shield' },
-          { l: 'Avg. coverage score',v: avgScore + '/100',   sub: 'Weighted',   icon: 'Target' },
-          { l: 'High-risk flags',   v: highRisks,            sub: 'Need review', icon: 'Alert', red: highRisks > 0 },
-          { l: 'Total claims',      v: totalClaims,          sub: 'All time',    icon: 'Claim' },
+          { l: 'Policies',      v: POLICIES_DATA.length, sub: 'All active', icon: 'Shield' },
+          { l: 'Avg. score',    v: avgScore + '/100',    sub: 'Weighted',   icon: 'Target' },
+          { l: 'Risk flags',    v: highRisks,            sub: 'Need review', icon: 'Alert', red: highRisks > 0 },
+          { l: 'Total claims',  v: totalClaims,          sub: 'All time',    icon: 'Claim' },
         ].map(s => {
           const I = Icons[s.icon];
           return (
-            <div key={s.l} className="card" style={{ padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'center' }}>
+            <div key={s.l} className="card" style={{ padding: isMobile ? '10px 12px' : '12px 16px', display: 'flex', gap: 10, alignItems: 'center' }}>
               <div style={{
                 width: 34, height: 34, borderRadius: 8, flex: 'none',
                 background: s.red ? 'var(--red-soft)' : 'var(--bg-subtle)',
@@ -4377,6 +4394,7 @@ Object.assign(window, { Settings });
 // Auth.jsx — sign in, sign up, and forgot password screens
 
 function AuthShell({ children, wide }) {
+  const isMobile = useMobile();
   return (
     <div style={{
       width: '100%', height: '100%', display: 'flex',
@@ -4384,10 +4402,10 @@ function AuthShell({ children, wide }) {
     }}>
       {/* Left panel — form */}
       <div style={{
-        flex: wide ? '0 0 560px' : '0 0 480px',
+        flex: isMobile ? '1' : (wide ? '0 0 560px' : '0 0 480px'),
         display: 'flex', flexDirection: 'column',
-        padding: '48px 56px',
-        borderRight: '1px solid var(--line)',
+        padding: isMobile ? '32px 24px' : '48px 56px',
+        borderRight: isMobile ? 'none' : '1px solid var(--line)',
         overflow: 'auto',
       }}>
         <ShieldedLogo size={20} color="var(--ink)" />
@@ -4401,7 +4419,7 @@ function AuthShell({ children, wide }) {
       </div>
 
       {/* Right panel — proof */}
-      <div style={{
+      {!isMobile && <div style={{
         flex: 1, background: 'var(--bg-subtle)',
         display: 'flex', flexDirection: 'column',
         justifyContent: 'center', padding: '64px 56px',
@@ -4446,7 +4464,7 @@ function AuthShell({ children, wide }) {
           <span style={{ display: 'flex', gap: 6, alignItems: 'center' }}><Icons.Shield size={13}/> Never shared with insurers</span>
           <span style={{ display: 'flex', gap: 6, alignItems: 'center' }}><Icons.CheckCircle size={13}/> AES-256 encrypted</span>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
@@ -8783,63 +8801,72 @@ Object.assign(window, { MobileDashboard, MobileClaimDocs, MobilePolicies, Mobile
 // Landing.jsx — marketing landing page
 
 function LandingNav() {
+  const isMobile = useMobile();
   return (
     <div style={{
-      padding: '20px 48px', display: 'flex', alignItems: 'center', gap: 28,
+      padding: isMobile ? '14px 16px' : '20px 48px',
+      display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 28,
       borderBottom: '1px solid var(--line)', background: 'var(--bg)',
     }}>
-      <ShieldedLogo size={20} color="var(--ink)" />
-      <div style={{ display: 'flex', gap: 22, fontSize: 13, color: 'var(--ink-2)', marginLeft: 20 }}>
-        <span style={{ cursor: 'pointer' }}>How it works</span>
-        <span onClick={() => window.navigate?.('/broker')} style={{ cursor: 'pointer' }}>For brokers</span>
-        <span onClick={() => window.navigate?.('/app/upgrade')} style={{ cursor: 'pointer' }}>Pricing</span>
-        <span onClick={() => window.navigate?.('/app/claim-stories')} style={{ cursor: 'pointer' }}>Claim stories</span>
-        <span style={{ cursor: 'pointer' }}>Resources</span>
-      </div>
+      <ShieldedLogo size={18} color="var(--ink)" />
+      {!isMobile && (
+        <div style={{ display: 'flex', gap: 22, fontSize: 13, color: 'var(--ink-2)', marginLeft: 20 }}>
+          <span style={{ cursor: 'pointer' }}>How it works</span>
+          <span onClick={() => window.navigate?.('/broker')} style={{ cursor: 'pointer' }}>For brokers</span>
+          <span onClick={() => window.navigate?.('/app/upgrade')} style={{ cursor: 'pointer' }}>Pricing</span>
+          <span onClick={() => window.navigate?.('/app/claim-stories')} style={{ cursor: 'pointer' }}>Claim stories</span>
+          <span style={{ cursor: 'pointer' }}>Resources</span>
+        </div>
+      )}
       <div style={{ flex: 1 }}/>
       <button className="btn btn-quiet btn-sm" onClick={() => window.navigate?.('/signin')}>Sign in</button>
-      <button className="btn btn-primary btn-sm" onClick={() => window.navigate?.('/signup')}>Start free analysis <Icons.Arrow size={12}/></button>
+      <button className="btn btn-primary btn-sm" onClick={() => window.navigate?.('/signup')}>
+        {isMobile ? 'Start free' : 'Start free analysis'} <Icons.Arrow size={12}/>
+      </button>
     </div>
   );
 }
 
 function Landing() {
+  const isMobile = useMobile();
   return (
     <div style={{ background: 'var(--bg)', overflow: 'auto', height: '100%' }}>
       <LandingNav />
 
-      {/* HERO — centered editorial, with a single anchored product proof below */}
-      <div style={{ padding: '72px 48px 40px', maxWidth: 1120, margin: '0 auto', textAlign: 'center' }}>
-        <div className="pill pill-navy" style={{ marginBottom: 24, padding: '5px 12px' }}>
+      {/* HERO */}
+      <div style={{ padding: isMobile ? '40px 20px 28px' : '72px 48px 40px', maxWidth: 1120, margin: '0 auto', textAlign: 'center' }}>
+        <div className="pill pill-navy" style={{ marginBottom: isMobile ? 16 : 24, padding: '5px 12px' }}>
           <span className="dot" style={{ background: 'var(--navy)' }}/> Policyholder advocacy · built for US small business
         </div>
         <h1 className="serif" style={{
-          margin: '0 auto', fontSize: 84, lineHeight: 0.98, letterSpacing: '-0.03em', color: 'var(--ink)',
-          maxWidth: 980,
+          margin: '0 auto', fontSize: isMobile ? 48 : 84, lineHeight: isMobile ? 1.05 : 0.98,
+          letterSpacing: '-0.03em', color: 'var(--ink)', maxWidth: 980,
         }}>
-          Recover what your <br/>
+          Recover what your{isMobile ? ' ' : <br/>}
           insurance <em style={{ color: 'var(--navy)', fontStyle: 'italic' }}>actually owes</em> you.
         </h1>
-        <div style={{ fontSize: 18, color: 'var(--ink-2)', lineHeight: 1.5, marginTop: 24, maxWidth: 620, margin: '24px auto 0' }}>
-          Shielded reads your commercial policy, guides every step of your claim, and builds the negotiation case that recovers the gap. The average underpaid claim we see closes <strong style={{ color: 'var(--ink)' }}>$14,200</strong> short.
+        <div style={{ fontSize: isMobile ? 15 : 18, color: 'var(--ink-2)', lineHeight: 1.55, marginTop: isMobile ? 16 : 24, maxWidth: 620, margin: isMobile ? '16px auto 0' : '24px auto 0' }}>
+          Shielded reads your commercial policy, guides every step of your claim, and builds the negotiation case that recovers the gap. The average underpaid claim closes <strong style={{ color: 'var(--ink)' }}>$14,200</strong> short.
         </div>
-        <div style={{ display: 'flex', gap: 10, marginTop: 30, justifyContent: 'center' }}>
-          <button className="btn btn-primary" style={{ padding: '13px 20px', fontSize: 14 }} onClick={() => window.navigate?.('/signup')}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 10 : 10, marginTop: isMobile ? 22 : 30, justifyContent: 'center' }}>
+          <button className="btn btn-primary" style={{ padding: '13px 20px', fontSize: 14, justifyContent: 'center' }} onClick={() => window.navigate?.('/signup')}>
             Analyze my policy · free <Icons.Arrow size={13}/>
           </button>
-          <button className="btn btn-ghost" style={{ padding: '13px 20px', fontSize: 14 }}>
-            <Icons.Play size={11}/> Watch 90-sec demo
-          </button>
+          {!isMobile && (
+            <button className="btn btn-ghost" style={{ padding: '13px 20px', fontSize: 14 }}>
+              <Icons.Play size={11}/> Watch 90-sec demo
+            </button>
+          )}
         </div>
-        <div style={{ display: 'flex', gap: 28, marginTop: 22, justifyContent: 'center', fontSize: 12, color: 'var(--ink-3)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Icons.Lock size={13}/> SOC 2 Type II</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Icons.Shield size={13}/> Never sold to insurers</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Icons.CheckCircle size={13}/> Not legal advice</div>
+        <div style={{ display: 'flex', gap: isMobile ? 14 : 28, marginTop: 18, justifyContent: 'center', fontSize: 11.5, color: 'var(--ink-3)', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Icons.Lock size={12}/> SOC 2 Type II</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Icons.Shield size={12}/> Never sold to insurers</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}><Icons.CheckCircle size={12}/> Not legal advice</div>
         </div>
       </div>
 
-      {/* HERO PROOF — a single, deliberate claim snapshot, one piece, no floating cards */}
-      <div style={{ padding: '24px 48px 80px', maxWidth: 1180, margin: '0 auto' }}>
+      {/* HERO PROOF — hidden on mobile, shown on desktop */}
+      {!isMobile && <div style={{ padding: '24px 48px 80px', maxWidth: 1180, margin: '0 auto' }}>
         <div className="card" style={{
           padding: 0, overflow: 'hidden', boxShadow: 'var(--sh-lg)',
           display: 'grid', gridTemplateColumns: '1.15fr 1fr',
@@ -8934,7 +8961,7 @@ function Landing() {
         <div style={{ display: 'none' }}>
           <span style={{ fontSize: 10 }}>§4.2 +$9.2k</span>
         </div>
-      </div>
+      </div>}
 
       {/* LOGOS */}
       <div style={{ padding: '12px 48px 56px', maxWidth: 1320, margin: '0 auto' }}>
@@ -9134,16 +9161,6 @@ function useRoute() {
     return () => window.removeEventListener('hashchange', handler);
   }, []);
   return path;
-}
-
-function useMobile() {
-  const [mobile, setMobile] = React.useState(window.innerWidth < 768);
-  React.useEffect(() => {
-    const handler = () => setMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
-  }, []);
-  return mobile;
 }
 
 // ─── Theme ───────────────────────────────────────────────────────
