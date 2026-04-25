@@ -227,6 +227,27 @@
 <style>
   html, body, #root { height: 100%; margin: 0; }
   body { background: #ebe6dd; }
+
+  /* ── Mobile base ─────────────────────────────── */
+  @media (max-width: 767px) {
+    html, body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    input, textarea, select { font-size: 16px !important; } /* prevent iOS zoom */
+    .shielded-root { font-size: 13px; }
+
+    /* Collapse multi-col grids */
+    .m-col-1 { grid-template-columns: 1fr !important; }
+    .m-col-2 { grid-template-columns: 1fr 1fr !important; }
+
+    /* Tighten padding on mobile */
+    .m-pad { padding: 14px 16px !important; }
+    .m-pad-sm { padding: 10px 12px !important; }
+
+    /* Hide desktop-only elements */
+    .m-hide { display: none !important; }
+
+    /* Mobile card spacing */
+    .m-gap-sm { gap: 10px !important; }
+  }
 </style>
 </head>
 <body>
@@ -1437,40 +1458,53 @@ function ActiveClaimHero({ variant = 'A' }) {
   const c = DEMO.activeClaim;
   const fmt = (n) => '$' + n.toLocaleString();
   const offerPct = ((c.insurerOffer - c.fairLow) / (c.fairHigh - c.fairLow)) * 100;
+  const isMobile = useMobile();
 
   if (variant === 'B') {
-    // Variant B: horizontal, more editorial
+    // Variant B: horizontal on desktop, stacked on mobile
     return (
-      <div className="card" style={{ padding: 22, display: 'flex', gap: 28, alignItems: 'stretch' }}>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="card" style={{ padding: isMobile ? 16 : 22, display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 14 : 28, alignItems: 'stretch' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span className="pill pill-amber"><span className="dot" style={{ background: 'var(--amber)' }}/> Negotiating</span>
             <span className="eyebrow">{c.id} · Day {c.daysOpen}</span>
           </div>
-          <div className="serif" style={{ fontSize: 32, lineHeight: 1.15, letterSpacing: '-0.01em', color: 'var(--ink)' }}>
-            Your insurer is offering <em style={{ color: 'var(--red)', fontStyle: 'normal' }}>$19,400 less</em> than a fair settlement for this claim.
+          <div className="serif" style={{ fontSize: isMobile ? 20 : 32, lineHeight: 1.2, letterSpacing: '-0.01em', color: 'var(--ink)' }}>
+            Your insurer is offering <em style={{ color: 'var(--red)', fontStyle: 'normal' }}>$19,400 less</em> than a fair settlement.
           </div>
-          <div style={{ fontSize: 13, color: 'var(--ink-3)', maxWidth: 520 }}>
-            Based on 7 comparable NC restaurant fire claims and three clauses in your policy, we estimate a defensible range of <strong style={{ color: 'var(--ink)' }}>{fmt(c.fairLow)}–{fmt(c.fairHigh)}</strong>.
-          </div>
-          <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-            <button className="btn btn-primary" onClick={() => window.navigate?.('/app/negotiate')}><Icons.Sparkle size={14}/> Draft rebuttal with AI</button>
-            <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/benchmark')}>See the math</button>
+          {!isMobile && (
+            <div style={{ fontSize: 13, color: 'var(--ink-3)', maxWidth: 520 }}>
+              Based on 7 comparable NC restaurant fire claims and three clauses in your policy, we estimate a defensible range of <strong style={{ color: 'var(--ink)' }}>{fmt(c.fairLow)}–{fmt(c.fairHigh)}</strong>.
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
+            <button className="btn btn-primary" onClick={() => window.navigate?.('/app/negotiate')} style={{ flex: isMobile ? 1 : 'none', justifyContent:'center' }}><Icons.Sparkle size={14}/> Draft rebuttal</button>
+            {!isMobile && <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/benchmark')}>See the math</button>}
           </div>
         </div>
-        <div style={{ width: 1, background: 'var(--line)' }}/>
-        <div style={{ width: 240, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 14 }}>
+        {/* Numbers row */}
+        <div style={{
+          display: 'flex', flexDirection: isMobile ? 'row' : 'column',
+          justifyContent: isMobile ? 'space-around' : 'center',
+          gap: isMobile ? 0 : 14,
+          width: isMobile ? 'auto' : 200,
+          padding: isMobile ? '12px 0 0' : 0,
+          borderTop: isMobile ? '1px solid var(--line)' : 'none',
+          borderLeft: isMobile ? 'none' : '1px solid var(--line)',
+          paddingLeft: isMobile ? 0 : 24,
+          textAlign: isMobile ? 'center' : 'left',
+        }}>
           <div>
             <div className="eyebrow">Their offer</div>
-            <div className="serif num-t" style={{ fontSize: 24, color: 'var(--red)' }}>{fmt(c.insurerOffer)}</div>
+            <div className="serif num-t" style={{ fontSize: isMobile ? 17 : 24, color: 'var(--red)' }}>{fmt(c.insurerOffer)}</div>
           </div>
           <div>
             <div className="eyebrow">Fair midpoint</div>
-            <div className="serif num-t" style={{ fontSize: 24, color: 'var(--teal)' }}>{fmt(c.fairMid)}</div>
+            <div className="serif num-t" style={{ fontSize: isMobile ? 17 : 24, color: 'var(--teal)' }}>{fmt(c.fairMid)}</div>
           </div>
           <div>
             <div className="eyebrow">Gap</div>
-            <div className="serif num-t" style={{ fontSize: 24 }}>+{fmt(c.delta)}</div>
+            <div className="serif num-t" style={{ fontSize: isMobile ? 17 : 24 }}>+{fmt(c.delta)}</div>
           </div>
         </div>
       </div>
@@ -1681,44 +1715,48 @@ function RecentDocs() {
 }
 
 function Dashboard({ variant = 'A' }) {
+  const isMobile = useMobile();
   return (
-    <div style={{ padding: '22px 28px 32px', display: 'flex', flexDirection: 'column', gap: 20, overflow: 'auto', flex: 1 }}>
-      {/* Greeting + stats */}
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 20 }}>
+    <div style={{ padding: isMobile ? '16px 14px 20px' : '22px 28px 32px', display: 'flex', flexDirection: 'column', gap: isMobile ? 14 : 20, overflow: 'auto', flex: 1 }}>
+      {/* Greeting + actions */}
+      <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'flex-end', justifyContent: 'space-between', gap: 12, flexDirection: isMobile ? 'column' : 'row' }}>
         <div>
-          <div className="eyebrow" style={{ marginBottom: 6 }}>April 23 · Thursday</div>
-          <h2 className="serif" style={{ margin: 0, fontSize: 30, letterSpacing: '-0.015em' }}>
+          <div className="eyebrow" style={{ marginBottom: 4 }}>April 23 · Thursday</div>
+          <h2 className="serif" style={{ margin: 0, fontSize: isMobile ? 22 : 30, letterSpacing: '-0.015em' }}>
             Good morning, Maya.
           </h2>
-          <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 2 }}>
+          <div style={{ fontSize: 12.5, color: 'var(--ink-3)', marginTop: 2 }}>
             Your claim is 43 days in. Two deadlines this week — and your insurer's offer is still 41% low.
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/documents')}><Icons.Upload size={14}/> Upload doc</button>
-          <button className="btn btn-primary" onClick={() => window.navigate?.('/claim-flow/start')}><Icons.Plus size={14}/> New claim</button>
-        </div>
+        {!isMobile && (
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/documents')}><Icons.Upload size={14}/> Upload doc</button>
+            <button className="btn btn-primary" onClick={() => window.navigate?.('/claim-flow/start')}><Icons.Plus size={14}/> New claim</button>
+          </div>
+        )}
       </div>
 
       <ActiveClaimHero variant={variant} />
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? 10 : 14 }}>
         <StatCard eyebrow="Active claims" value="1" foot="Fire · Mar 11" />
+        <StatCard eyebrow="Days to deadline" value="5" delta="urgent" deltaKind="red" foot="Proof of loss" />
         <StatCard eyebrow="Coverage used" value="$28.4k" delta="of $620k" deltaKind="neutral" foot="Within limits" />
-        <StatCard eyebrow="Days to next deadline" value="5" delta="urgent" deltaKind="red" foot="Proof of loss · Apr 28" />
-        <StatCard eyebrow="Est. recovery remaining" value="+$19.4k" delta="fair gap" deltaKind="teal" foot="Based on 7 comps" />
+        <StatCard eyebrow="Recovery gap" value="+$19.4k" delta="fair gap" deltaKind="teal" foot="Based on 7 comps" />
       </div>
 
-      {/* Two columns */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 16 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {/* Widgets — 2-col on desktop, stacked on mobile */}
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 1fr', gap: isMobile ? 12 : 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 16 }}>
           <RiskAlerts />
-          <RecentDocs />
+          {!isMobile && <RecentDocs />}
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 16 }}>
           <NegotiationSuggestions />
           <DeadlineList />
         </div>
+        {isMobile && <RecentDocs />}
       </div>
     </div>
   );
@@ -3753,10 +3791,52 @@ function GapBar({ offer, fairMid, fairLow, fairHigh, settled }) {
   );
 }
 
-function ClaimRow({ c, on, onClick }) {
+function ClaimRow({ c, on, onClick, isMobile }) {
   const I = Icons[PERIL_ICON[c.peril] || 'Claim'];
   const fmt = n => '$' + n.toLocaleString();
   const isActive = c.status === 'Negotiating' || c.status === 'In review';
+
+  if (isMobile) {
+    return (
+      <div onClick={onClick} style={{
+        padding: '14px 16px', display: 'flex', gap: 12, alignItems: 'flex-start',
+        borderTop: '1px solid var(--line)',
+        background: on ? '#eef2fb' : isActive ? 'linear-gradient(90deg, #fdf7ea 0%, transparent 40%)' : 'transparent',
+        cursor: 'pointer',
+      }}>
+        <div style={{ width: 36, height: 36, borderRadius: 8, flex: 'none', background: isActive ? 'var(--amber-soft)' : 'var(--bg-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <I size={16} style={{ color: isActive ? 'var(--amber)' : 'var(--ink-4)' }}/>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 3 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span className="mono" style={{ fontSize: 11.5, fontWeight: 600, color: on ? 'var(--navy)' : 'var(--ink)' }}>{c.id}</span>
+              {c.hot && <span className="dot" style={{ background: 'var(--amber)' }}/>}
+            </div>
+            <span className={`pill pill-${STATUS_KIND[c.status]}`} style={{ fontSize: 10 }}>{c.status}</span>
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.type}</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ fontSize: 12, color: 'var(--ink-3)' }} className="mono">
+              Offer: <span style={{ color: c.gap > 0 ? 'var(--red)' : 'var(--ink-2)', fontWeight: 600 }}>{fmt(c.offer)}</span>
+              <span style={{ color: 'var(--ink-4)', margin: '0 4px' }}>→</span>
+              <span style={{ color: c.settled ? 'var(--teal)' : 'var(--ink-3)' }}>{fmt(c.settled || c.fairMid)}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {c.gap > 0 ? (
+                <span className="pill pill-red" style={{ fontSize: 10 }}>+{fmt(c.gap)}</span>
+              ) : c.settled ? (
+                <span className="pill pill-teal" style={{ fontSize: 10 }}>Settled</span>
+              ) : null}
+              <Icons.ChevronR size={13} style={{ color: 'var(--ink-4)' }}/>
+            </div>
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--ink-4)', marginTop: 4 }} className="mono">{c.date} · {c.daysOpen}d open</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div onClick={onClick} style={{
       padding: '16px 20px', display: 'grid',
@@ -3766,16 +3846,9 @@ function ClaimRow({ c, on, onClick }) {
       background: on ? '#eef2fb' : isActive ? 'linear-gradient(90deg, #fdf7ea 0%, transparent 30%)' : 'transparent',
       cursor: 'pointer', transition: 'background .1s',
     }}>
-      {/* Peril icon */}
-      <div style={{
-        width: 28, height: 28, borderRadius: 6,
-        background: isActive ? 'var(--amber-soft)' : 'var(--bg-subtle)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
+      <div style={{ width: 28, height: 28, borderRadius: 6, background: isActive ? 'var(--amber-soft)' : 'var(--bg-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <I size={14} style={{ color: isActive ? 'var(--amber)' : 'var(--ink-4)' }}/>
       </div>
-
-      {/* Claim info */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className="mono" style={{ fontSize: 11.5, fontWeight: 600, color: on ? 'var(--navy)' : 'var(--ink)' }}>{c.id}</span>
@@ -3784,41 +3857,21 @@ function ClaimRow({ c, on, onClick }) {
         <div style={{ fontSize: 13, color: 'var(--ink-2)', marginTop: 1 }}>{c.type}</div>
         <div style={{ fontSize: 11, color: 'var(--ink-4)' }} className="mono">{c.date} · {c.daysOpen}d open</div>
       </div>
-
-      {/* Status */}
       <span className={`pill pill-${STATUS_KIND[c.status]}`}>{c.status}</span>
-
-      {/* Offer */}
       <div style={{ textAlign: 'right' }}>
         <div className="mono" style={{ fontSize: 12, color: 'var(--ink-3)' }}>Offer</div>
         <div className="serif num-t" style={{ fontSize: 15, color: c.gap > 0 ? 'var(--red)' : 'var(--ink-2)' }}>{fmt(c.offer)}</div>
       </div>
-
-      {/* Settled or fair mid */}
       <div style={{ textAlign: 'right' }}>
         <div className="mono" style={{ fontSize: 12, color: 'var(--ink-3)' }}>{c.settled ? 'Settled' : 'Fair mid'}</div>
-        <div className="serif num-t" style={{ fontSize: 15, color: c.settled ? 'var(--teal)' : 'var(--ink-2)' }}>
-          {fmt(c.settled || c.fairMid)}
-        </div>
+        <div className="serif num-t" style={{ fontSize: 15, color: c.settled ? 'var(--teal)' : 'var(--ink-2)' }}>{fmt(c.settled || c.fairMid)}</div>
       </div>
-
-      {/* Gap bar */}
-      <GapBar offer={c.offer} fairMid={c.fairMid}
-        fairLow={c.fairMid * 0.85} fairHigh={c.fairMid * 1.15}
-        settled={c.settled} />
-
-      {/* Gap delta */}
+      <GapBar offer={c.offer} fairMid={c.fairMid} fairLow={c.fairMid * 0.85} fairHigh={c.fairMid * 1.15} settled={c.settled} />
       <div style={{ textAlign: 'right' }}>
-        {c.gap > 0 ? (
-          <span className="pill pill-red" style={{ fontSize: 11 }}>+{fmt(c.gap)}</span>
-        ) : c.settled ? (
-          <span className="pill pill-teal" style={{ fontSize: 11 }}>+{fmt(c.settled - c.offer)}</span>
-        ) : (
-          <span className="pill pill-neutral" style={{ fontSize: 11 }}>Fair</span>
-        )}
+        {c.gap > 0 ? <span className="pill pill-red" style={{ fontSize: 11 }}>+{fmt(c.gap)}</span>
+          : c.settled ? <span className="pill pill-teal" style={{ fontSize: 11 }}>+{fmt(c.settled - c.offer)}</span>
+          : <span className="pill pill-neutral" style={{ fontSize: 11 }}>Fair</span>}
       </div>
-
-      {/* Arrow */}
       <Icons.ChevronR size={14} style={{ color: 'var(--ink-4)', justifySelf: 'end' }}/>
     </div>
   );
@@ -3827,6 +3880,7 @@ function ClaimRow({ c, on, onClick }) {
 function ClaimsList() {
   const [filter, setFilter] = React.useState('All');
   const [selected, setSelected] = React.useState(0);
+  const isMobile = useMobile();
   const FILTERS = ['All', 'Negotiating', 'Settled', 'Closed'];
 
   const visible = filter === 'All' ? CLAIMS_DATA : CLAIMS_DATA.filter(c => c.status === filter);
@@ -3837,49 +3891,49 @@ function ClaimsList() {
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Header */}
-      <div style={{ padding: '22px 28px 0', flex: 'none' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ padding: isMobile ? '14px 14px 0' : '22px 28px 0', flex: 'none' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 12 }}>
           <div>
-            <div className="eyebrow">Claim history</div>
-            <h2 className="serif" style={{ margin: 0, fontSize: 30, letterSpacing: '-0.015em' }}>Claims</h2>
-            <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 4 }}>
-              {CLAIMS_DATA.length} total · 1 active · {fmt(totalGap)} recovery gap open
+            {!isMobile && <div className="eyebrow">Claim history</div>}
+            <h2 className="serif" style={{ margin: 0, fontSize: isMobile ? 22 : 30, letterSpacing: '-0.015em' }}>Claims</h2>
+            <div style={{ fontSize: 12.5, color: 'var(--ink-3)', marginTop: 2 }}>
+              {CLAIMS_DATA.length} total · 1 active · {fmt(totalGap)} gap
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-ghost btn-sm"><Icons.Filter size={13}/> Filter</button>
-            <button className="btn btn-primary" onClick={() => window.navigate?.('/claim-flow/start')}><Icons.Plus size={13}/> New claim</button>
+            {!isMobile && <button className="btn btn-ghost btn-sm"><Icons.Filter size={13}/> Filter</button>}
+            <button className="btn btn-primary btn-sm" onClick={() => window.navigate?.('/claim-flow/start')}><Icons.Plus size={13}/> New claim</button>
           </div>
         </div>
 
-        {/* Summary stat strip */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 18 }}>
+        {/* Summary stat strip — 2 col on mobile */}
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? 8 : 12, marginBottom: isMobile ? 12 : 18 }}>
           {[
-            { l: 'Active claims',      v: '1',          sub: 'In negotiation',      kind: 'amber' },
-            { l: 'Open gap',           v: fmt(totalGap), sub: 'vs fair settlement',  kind: 'red'   },
-            { l: 'Total recovered',    v: fmt(totalRecovered), sub: 'across settled claims', kind: 'teal' },
-            { l: 'Avg. claim duration',v: '56 days',    sub: '2 settled claims',    kind: 'neutral'},
+            { l: 'Active claims',   v: '1',               sub: 'In negotiation'       },
+            { l: 'Open gap',        v: fmt(totalGap),      sub: 'vs fair settlement'   },
+            { l: 'Total recovered', v: fmt(totalRecovered),sub: 'across settled'       },
+            { l: 'Avg. duration',   v: '56 days',          sub: '2 settled claims'     },
           ].map(s => (
-            <div key={s.l} className="card" style={{ padding: '12px 16px' }}>
-              <div className="eyebrow">{s.l}</div>
-              <div className="serif num-t" style={{ fontSize: 22, marginTop: 4, color: 'var(--ink)' }}>{s.v}</div>
-              <div style={{ fontSize: 11, color: 'var(--ink-4)', marginTop: 2 }}>{s.sub}</div>
+            <div key={s.l} className="card" style={{ padding: isMobile ? '10px 12px' : '12px 16px' }}>
+              <div className="eyebrow" style={{ fontSize: 9 }}>{s.l}</div>
+              <div className="serif num-t" style={{ fontSize: isMobile ? 17 : 22, marginTop: 3, color: 'var(--ink)' }}>{s.v}</div>
+              {!isMobile && <div style={{ fontSize: 11, color: 'var(--ink-4)', marginTop: 2 }}>{s.sub}</div>}
             </div>
           ))}
         </div>
 
         {/* Filter tabs */}
-        <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--line)' }}>
+        <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--line)', overflowX: 'auto' }}>
           {FILTERS.map(f => {
             const count = f === 'All' ? CLAIMS_DATA.length : CLAIMS_DATA.filter(c => c.status === f).length;
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
                 border: 'none', background: 'none', cursor: 'pointer',
-                padding: '8px 14px', fontSize: 12.5, fontFamily: 'var(--f-sans)',
+                padding: isMobile ? '8px 12px' : '8px 14px', fontSize: 12.5, fontFamily: 'var(--f-sans)',
                 fontWeight: filter === f ? 600 : 400,
                 color: filter === f ? 'var(--ink)' : 'var(--ink-3)',
                 borderBottom: filter === f ? '2px solid var(--navy)' : '2px solid transparent',
-                marginBottom: -1, display: 'flex', alignItems: 'center', gap: 6,
+                marginBottom: -1, display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
               }}>
                 {f}
                 <span className="mono" style={{
@@ -3893,22 +3947,24 @@ function ClaimsList() {
         </div>
       </div>
 
-      {/* Table */}
-      <div style={{ flex: 1, overflow: 'auto', padding: '12px 28px 28px' }}>
+      {/* Table / Cards */}
+      <div style={{ flex: 1, overflow: 'auto', padding: isMobile ? '10px 14px 20px' : '12px 28px 28px' }}>
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-          {/* Column headers */}
-          <div style={{
-            padding: '10px 20px', display: 'grid',
-            gridTemplateColumns: '28px 1fr 110px 100px 100px 160px 88px 36px',
-            gap: 12, background: 'var(--bg-subtle)', borderBottom: '1px solid var(--line)',
-          }}>
-            {['', 'Claim', 'Status', 'Offer', 'Fair / Settled', 'Range', 'Gap', ''].map((h, i) => (
-              <span key={i} className="eyebrow" style={{ fontSize: 9.5, textAlign: i >= 3 && i <= 5 ? 'right' : 'left' }}>{h}</span>
-            ))}
-          </div>
+          {/* Column headers — desktop only */}
+          {!isMobile && (
+            <div style={{
+              padding: '10px 20px', display: 'grid',
+              gridTemplateColumns: '28px 1fr 110px 100px 100px 160px 88px 36px',
+              gap: 12, background: 'var(--bg-subtle)', borderBottom: '1px solid var(--line)',
+            }}>
+              {['', 'Claim', 'Status', 'Offer', 'Fair / Settled', 'Range', 'Gap', ''].map((h, i) => (
+                <span key={i} className="eyebrow" style={{ fontSize: 9.5, textAlign: i >= 3 && i <= 5 ? 'right' : 'left' }}>{h}</span>
+              ))}
+            </div>
+          )}
 
           {visible.map((c, i) => (
-            <ClaimRow key={c.id} c={c} on={i === selected} onClick={() => { setSelected(i); window.navigate?.('/app/claim-report'); }} />
+            <ClaimRow key={c.id} c={c} on={i === selected} isMobile={isMobile} onClick={() => { setSelected(i); window.navigate?.('/app/claim-report'); }} />
           ))}
         </div>
 
@@ -9080,6 +9136,16 @@ function useRoute() {
   return path;
 }
 
+function useMobile() {
+  const [mobile, setMobile] = React.useState(window.innerWidth < 768);
+  React.useEffect(() => {
+    const handler = () => setMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return mobile;
+}
+
 // ─── Theme ───────────────────────────────────────────────────────
 const APP_TWEAKS = { theme: 'light', density: 'compact', primaryHue: 264 };
 function applyTheme(t) {
@@ -9098,8 +9164,82 @@ function applyTheme(t) {
 applyTheme(APP_TWEAKS);
 
 // ─── AppFrame ────────────────────────────────────────────────────
+const MOBILE_NAV = [
+  { id: 'dashboard', label: 'Home',      icon: 'Home' },
+  { id: 'claims',    label: 'Claims',    icon: 'Claim' },
+  { id: 'policy',    label: 'Policies',  icon: 'Shield' },
+  { id: 'negotiate', label: 'Negotiate', icon: 'Scale' },
+  { id: 'documents', label: 'Docs',      icon: 'Folder' },
+];
+
 function AppFrame({ active, title, subtitle, crumbs, children, right, showAI = true }) {
-  const [aiOpen, setAiOpen] = React.useState(true);
+  const [aiOpen, setAiOpen] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const isMobile = useMobile();
+
+  if (isMobile) {
+    return (
+      <div className="shielded-root" style={{ display:'flex', flexDirection:'column', height:'100%', background:'var(--bg)', position:'relative' }}>
+        {/* Mobile top bar */}
+        <div style={{
+          padding:'0 16px', height:52, display:'flex', alignItems:'center', gap:10,
+          background:'var(--bg)', borderBottom:'1px solid var(--line)', flex:'none', zIndex:10,
+        }}>
+          <ShieldedMark size={18} color="var(--navy)"/>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:16, fontWeight:600, fontFamily:'var(--f-serif)', letterSpacing:'-0.01em', color:'var(--ink)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+              {title}
+            </div>
+          </div>
+          {right}
+          <button className="btn btn-quiet btn-sm" onClick={() => window.navigate?.('/app/search')} style={{ padding:6, flex:'none' }}><Icons.Search size={17}/></button>
+          <button className="btn btn-quiet btn-sm" onClick={() => window.navigate?.('/app/notifications')} style={{ padding:6, flex:'none', position:'relative' }}>
+            <Icons.Bell size={17}/>
+            <span style={{ position:'absolute', top:4, right:4, width:6, height:6, borderRadius:99, background:'var(--amber)' }}/>
+          </button>
+        </div>
+
+        {/* Scrollable content */}
+        <div style={{ flex:1, overflow:'auto', WebkitOverflowScrolling:'touch', paddingBottom:64 }}>
+          {children}
+        </div>
+
+        {/* Mobile bottom nav */}
+        <div style={{
+          position:'fixed', bottom:0, left:0, right:0,
+          background:'var(--bg)', borderTop:'1px solid var(--line)',
+          display:'flex', zIndex:100,
+          paddingBottom:'env(safe-area-inset-bottom)',
+        }}>
+          {MOBILE_NAV.map(n => {
+            const I = Icons[n.icon];
+            const on = n.id === active;
+            return (
+              <button key={n.id} onClick={() => dcNav(n.id)} style={{
+                flex:1, border:'none', background:'none',
+                padding:'8px 4px 6px', display:'flex', flexDirection:'column',
+                alignItems:'center', gap:3, cursor:'pointer',
+                color: on ? 'var(--navy)' : 'var(--ink-4)',
+              }}>
+                <I size={20} stroke={on ? 2 : 1.5}/>
+                <span style={{ fontSize:9, fontWeight: on ? 600 : 400, fontFamily:'var(--f-sans)', letterSpacing:0.2 }}>{n.label}</span>
+              </button>
+            );
+          })}
+          <button onClick={() => window.navigate?.('/app/settings')} style={{
+            flex:1, border:'none', background:'none',
+            padding:'8px 4px 6px', display:'flex', flexDirection:'column',
+            alignItems:'center', gap:3, cursor:'pointer',
+            color: active === 'settings' ? 'var(--navy)' : 'var(--ink-4)',
+          }}>
+            <Icons.Settings size={20} stroke={active === 'settings' ? 2 : 1.5}/>
+            <span style={{ fontSize:9, fontFamily:'var(--f-sans)', fontWeight: active === 'settings' ? 600 : 400 }}>More</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="shielded-root" style={{ display:'flex', height:'100%', background:'var(--bg)' }}>
       <Sidebar active={active} compact={false} />
