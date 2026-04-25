@@ -4515,13 +4515,23 @@ function SignIn() {
 }
 
 function SignUp() {
-  const [plan, setPlan] = React.useState('premium');
+  const [plan, setPlan] = React.useState('free');
+  const plans = [
+    { id: 'free',    label: 'Free',    price: '$0',     sub: 'forever', note: 'Policy analysis + risk report', color: 'var(--teal)' },
+    { id: 'basic',   label: 'Basic',   price: '$50',    sub: '/mo',     note: 'Claims guidance + vault' },
+    { id: 'premium', label: 'Premium', price: '$150',   sub: '/mo',     note: 'Full advocacy + AI drafts', popular: true },
+  ];
+  const selected = plans.find(p => p.id === plan);
+  const ctaText = plan === 'free'
+    ? 'Get my free policy analysis'
+    : `Start ${selected.label} · free first analysis`;
+
   return (
     <AuthShell wide>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 28 }}>
-        <div className="eyebrow">Free to start</div>
-        <h1 className="serif" style={{ margin: 0, fontSize: 34, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
-          Protect your next claim<br/>before it starts.
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 24 }}>
+        <div className="eyebrow">Free to start · no card required</div>
+        <h1 className="serif" style={{ margin: 0, fontSize: 32, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+          See what your policy<br/>actually covers.
         </h1>
         <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 4 }}>
           Already have an account? <span onClick={() => window.navigate?.('/signin')} style={{ color: 'var(--navy)', cursor: 'pointer', fontWeight: 500 }}>Sign in →</span>
@@ -4550,37 +4560,54 @@ function SignUp() {
           <input type="password" placeholder="Min. 8 characters" style={{ width: '100%' }}/>
         </div>
 
-        {/* Plan picker */}
+        {/* Plan picker — Free selected by default */}
         <div>
-          <div style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 8 }}>Start with</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            {[
-              { id: 'basic',   label: 'Basic',   price: '$50/mo', note: 'Policy analysis + guidance' },
-              { id: 'premium', label: 'Premium', price: '$150/mo', note: 'Full advocacy + AI drafts', popular: true },
-            ].map(p => (
-              <button key={p.id} onClick={() => setPlan(p.id)} style={{
-                padding: '12px 14px', borderRadius: 10, cursor: 'pointer', textAlign: 'left',
-                border: plan === p.id ? '1.5px solid var(--navy)' : '1px solid var(--line)',
-                background: plan === p.id ? '#eef2fb' : 'var(--bg-card)',
-                position: 'relative',
-              }}>
-                {p.popular && (
-                  <div style={{ position: 'absolute', top: -8, right: 10, background: 'var(--navy)', color: '#fff', fontSize: 9, padding: '2px 7px', borderRadius: 99, fontFamily: 'var(--f-mono)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Popular</div>
-                )}
-                <div style={{ fontSize: 13, fontWeight: 600, color: plan === p.id ? 'var(--navy)' : 'var(--ink)' }}>{p.label}</div>
-                <div className="serif num-t" style={{ fontSize: 18, color: plan === p.id ? 'var(--navy)' : 'var(--ink)', marginTop: 2 }}>{p.price}</div>
-                <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 3 }}>{p.note}</div>
-              </button>
-            ))}
+          <div style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 8 }}>Choose a plan</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {plans.map(p => {
+              const on = plan === p.id;
+              const accentColor = p.color || 'var(--navy)';
+              return (
+                <button key={p.id} onClick={() => setPlan(p.id)} style={{
+                  padding: '10px 14px', borderRadius: 10, cursor: 'pointer', textAlign: 'left',
+                  border: on ? `1.5px solid ${accentColor}` : '1px solid var(--line)',
+                  background: on ? (p.id === 'free' ? 'color-mix(in oklab, var(--teal) 6%, var(--bg-card))' : '#eef2fb') : 'var(--bg-card)',
+                  display: 'flex', alignItems: 'center', gap: 12, position: 'relative',
+                }}>
+                  {p.popular && (
+                    <div style={{ position: 'absolute', top: -8, right: 10, background: 'var(--navy)', color: '#fff', fontSize: 9, padding: '2px 7px', borderRadius: 99, fontFamily: 'var(--f-mono)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Most popular</div>
+                  )}
+                  {p.id === 'free' && !on && (
+                    <div style={{ position: 'absolute', top: -8, right: 10, background: 'var(--teal)', color: '#fff', fontSize: 9, padding: '2px 7px', borderRadius: 99, fontFamily: 'var(--f-mono)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Start here</div>
+                  )}
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: on ? accentColor : 'var(--ink)' }}>{p.label}</div>
+                    <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 1 }}>{p.note}</div>
+                  </div>
+                  <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+                    <span className="serif num-t" style={{ fontSize: 18, color: on ? accentColor : 'var(--ink)' }}>{p.price}</span>
+                    <span style={{ fontSize: 11, color: 'var(--ink-4)' }}> {p.sub}</span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <button className="btn btn-primary" onClick={() => window.navigate?.('/onboard')} style={{ justifyContent: 'center', padding: '12px', fontSize: 13, marginTop: 4 }}>
-          Start {plan === 'premium' ? 'Premium' : 'Basic'} · free first policy analysis <Icons.Arrow size={13}/>
+        <button
+          className="btn btn-primary"
+          onClick={() => window.navigate?.('/onboard')}
+          style={{
+            justifyContent: 'center', padding: '13px', fontSize: 13.5, marginTop: 4,
+            background: plan === 'free' ? 'var(--teal)' : undefined,
+            borderColor: plan === 'free' ? 'var(--teal)' : undefined,
+          }}
+        >
+          {ctaText} <Icons.Arrow size={13}/>
         </button>
 
         <div style={{ fontSize: 11, color: 'var(--ink-4)', textAlign: 'center' }}>
-          Cancel anytime. No card required for Basic.
+          {plan === 'free' ? 'No credit card needed · Upgrade anytime' : 'Cancel anytime · First policy analysis free'}
         </div>
       </div>
     </AuthShell>
@@ -4900,7 +4927,7 @@ function OnboardingReview() {
 function OnboardingDone() {
   return (
     <OnboardingShell step={3}>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '48px 64px', gap: 28, textAlign: 'center' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '32px 24px 48px', gap: 24, textAlign: 'center', overflow: 'auto' }}>
         <div style={{ width: 72, height: 72, borderRadius: 20, background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(15,125,108,0.3)' }}>
           <Icons.Shield size={36} style={{ color: '#fff' }}/>
         </div>
@@ -4916,7 +4943,8 @@ function OnboardingDone() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
+        {(() => { const isMob = useMobile(); return (
+        <div style={{ display: 'grid', gridTemplateColumns: isMob ? '1fr' : 'repeat(3, 1fr)', gap: 12, width: '100%', maxWidth: 680 }}>
           {[
             { icon: 'Clock',    label: 'Deadline alerts', sub: 'We\'ll email you 30, 7, and 1 day before any policy deadline.' },
             { icon: 'Sparkle', label: 'Claim ready',      sub: 'If you ever need to file, we\'ll guide every step.' },
@@ -4924,16 +4952,19 @@ function OnboardingDone() {
           ].map(item => {
             const I = Icons[item.icon];
             return (
-              <div key={item.label} className="card" style={{ padding: 20, maxWidth: 200, textAlign: 'left' }}>
-                <I size={20} style={{ color: 'var(--navy)', marginBottom: 10 }}/>
-                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{item.label}</div>
-                <div style={{ fontSize: 12, color: 'var(--ink-3)', lineHeight: 1.5 }}>{item.sub}</div>
+              <div key={item.label} className="card" style={{ padding: isMob ? '12px 16px' : 20, textAlign: 'left', display: 'flex', gap: isMob ? 12 : 0, flexDirection: isMob ? 'row' : 'column', alignItems: isMob ? 'center' : 'flex-start' }}>
+                <I size={18} style={{ color: 'var(--navy)', marginBottom: isMob ? 0 : 10, flex: 'none' }}/>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{item.label}</div>
+                  {!isMob && <div style={{ fontSize: 12, color: 'var(--ink-3)', lineHeight: 1.5 }}>{item.sub}</div>}
+                </div>
               </div>
             );
           })}
         </div>
+        ); })()}
 
-        <button className="btn btn-primary" onClick={() => window.navigate?.('/app/dashboard')} style={{ padding: '13px 28px', fontSize: 14 }}>
+        <button className="btn btn-primary" onClick={() => window.navigate?.('/app/dashboard')} style={{ padding: '13px 28px', fontSize: 14, width: '100%', maxWidth: 400, justifyContent: 'center' }}>
           Go to my dashboard <Icons.Arrow size={14}/>
         </button>
         <div style={{ fontSize: 12, color: 'var(--ink-4)' }}>
