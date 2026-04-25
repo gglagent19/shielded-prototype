@@ -267,19 +267,25 @@
 const SUPABASE_URL  = 'https://YOUR_PROJECT_REF.supabase.co';
 const SUPABASE_ANON = 'YOUR_ANON_PUBLIC_KEY';
 
+// DEMO MODE: when Supabase keys are not yet configured, skip auth guard
+// and allow full prototype access. Set to false once you add your real keys.
+const DEMO_MODE = SUPABASE_URL.includes('YOUR_PROJECT_REF');
+window.DEMO_MODE = DEMO_MODE;
+
 // Initialize the client (window.sb is used throughout the app)
 window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
   auth: {
-    persistSession:    true,   // saves JWT to localStorage across page reloads
-    autoRefreshToken:  true,   // silently refreshes before expiry
-    detectSessionInUrl: true,  // handles Google OAuth ?code= redirect
+    persistSession:    true,
+    autoRefreshToken:  true,
+    detectSessionInUrl: true,
   }
 });
 
 // ─── Global auth state ───────────────────────────────────────────────────
-window.currentUser    = null;
-window.__profile      = null;  // cached profile row — cleared on sign out
-window.__authReady    = false; // flips to true after first session check
+// In DEMO_MODE, simulate a logged-in user so all routes are accessible.
+window.currentUser    = DEMO_MODE ? { id: 'demo', email: 'demo@example.com' } : null;
+window.__profile      = DEMO_MODE ? { id: 'demo', email: 'demo@example.com', business_name: 'My Business', plan: 'premium' } : null;
+window.__authReady    = DEMO_MODE; // already ready in demo mode
 
 // Resolve session on initial load (reads from localStorage — sync-like)
 window.sb.auth.getSession().then(function(res) {
@@ -1058,6 +1064,7 @@ const Icons = {
   Check: (p) => <Icon {...p} d="M5 12l4 4 10-10" />,
   CheckCircle: (p) => <Icon {...p} d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM8 12l3 3 5-6" />,
   X: (p) => <Icon {...p} d="M6 6l12 12M18 6L6 18" />,
+  LogOut: (p) => <Icon {...p} d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />,
   Plus: (p) => <Icon {...p} d="M12 5v14M5 12h14" />,
   Search: (p) => <Icon {...p} d="M10 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12zM15 15l5 5" />,
   Arrow: (p) => <Icon {...p} d="M5 12h14M13 6l6 6-6 6" />,
@@ -1348,13 +1355,13 @@ function Sidebar({ active, onNav, compact }) {
         })}
         {/* Sign out */}
         <button onClick={authSignOut} className="btn-quiet" style={{
-          border: 'none', background: 'transparent', color: 'var(--ink-4)',
+          border: 'none', background: 'transparent', color: 'var(--red)',
           padding: compact ? '9px 0' : '8px 10px', borderRadius: 7,
           display: 'flex', alignItems: 'center', gap: 10,
           justifyContent: compact ? 'center' : 'flex-start',
           fontSize: 13, cursor: 'pointer',
         }}>
-          <Icons.X size={15}/>
+          <Icons.LogOut size={15}/>
           {!compact && <span>Sign out</span>}
         </button>
       </div>
@@ -4520,6 +4527,24 @@ function Settings() {
             sub="Permanently remove all data. Cannot be undone."
             right={<button className="btn btn-ghost btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red-soft)' }}>Delete</button>}/>
         </SettingsSection>
+
+        {/* ── Sign Out ─────────────────────────────────────────────── */}
+        <div style={{ padding: '24px 0 8px' }}>
+          <button
+            onClick={authSignOut}
+            className="btn btn-ghost"
+            style={{
+              width: '100%', justifyContent: 'center', padding: '13px',
+              fontSize: 14, color: 'var(--red)', borderColor: 'var(--red-soft)',
+              gap: 10,
+            }}
+          >
+            <Icons.LogOut size={16}/> Sign out of Shielded
+          </button>
+          <div style={{ fontSize: 11.5, color: 'var(--ink-4)', textAlign: 'center', marginTop: 8 }}>
+            {window.currentUser?.email || 'Signed in'}
+          </div>
+        </div>
 
       </div>
     </div>
@@ -9604,6 +9629,14 @@ function AppFrame({ active, title, subtitle, crumbs, children, right, showAI = t
             <Icons.Bell size={17}/>
             <span style={{ position:'absolute', top:4, right:4, width:6, height:6, borderRadius:99, background:'var(--amber)' }}/>
           </button>
+          {/* Avatar → Settings (where Sign out lives) */}
+          <button onClick={() => window.navigate?.('/app/settings')} style={{
+            width:30, height:30, borderRadius:99, background:'var(--navy)',
+            color:'#fff', display:'flex', alignItems:'center', justifyContent:'center',
+            fontSize:11, fontWeight:600, border:'none', cursor:'pointer', flex:'none',
+          }}>
+            {window.currentUser?.email?.[0]?.toUpperCase() || 'U'}
+          </button>
         </div>
 
         {/* Scrollable content */}
@@ -9707,7 +9740,7 @@ function App() {
     </div>
   );
 
-  if (!user && route.startsWith('/app')) {
+  if (!user && !window.DEMO_MODE && route.startsWith('/app')) {
     window.navigate('/signin');
     return null;
   }
