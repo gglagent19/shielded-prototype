@@ -76,9 +76,7 @@ create table public.claims (
   insurer_offer_cents  integer,
   fair_low_cents       integer,
   fair_high_cents      integer,
-  days_open            integer generated always as (
-                         (current_date - incident_date)
-                       ) stored,
+  -- days_open computed in queries as: current_date - incident_date
   notes                text,
   created_at           timestamptz not null default now(),
   updated_at           timestamptz not null default now()
