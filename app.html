@@ -9931,7 +9931,156 @@ function App() {
   return null;
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+// ─── Disclaimer Gate ─────────────────────────────────────────────
+const DISCLAIMER_KEY = 'shielded_disclaimer_v1';
+
+function DisclaimerGate({ children }) {
+  const [accepted, setAccepted] = React.useState(
+    () => localStorage.getItem(DISCLAIMER_KEY) === 'yes'
+  );
+
+  function accept() {
+    localStorage.setItem(DISCLAIMER_KEY, 'yes');
+    setAccepted(true);
+  }
+
+  if (accepted) return children;
+
+  const S = {
+    overlay: {
+      position: 'fixed', inset: 0, background: 'rgba(10,14,20,0.75)',
+      backdropFilter: 'blur(5px)', WebkitBackdropFilter: 'blur(5px)',
+      zIndex: 99999, display: 'flex', alignItems: 'center',
+      justifyContent: 'center', padding: 20,
+      fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+    },
+    card: {
+      background: '#f6f3ee', borderRadius: 18, maxWidth: 520, width: '100%',
+      boxShadow: '0 32px 80px rgba(0,0,0,0.32)', overflow: 'hidden',
+    },
+    header: {
+      background: 'linear-gradient(135deg, #1c2333 0%, #243050 100%)',
+      padding: '26px 32px 22px',
+      display: 'flex', alignItems: 'center', gap: 14,
+    },
+    iconWrap: {
+      width: 46, height: 46, borderRadius: 13,
+      background: 'rgba(255,255,255,0.10)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0, border: '1px solid rgba(255,255,255,0.12)',
+    },
+    body: { padding: '26px 32px 20px' },
+    badge: {
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      background: '#fff8e1', border: '1px solid #f5d060',
+      borderRadius: 6, padding: '5px 10px', marginBottom: 18,
+      fontSize: 11, fontWeight: 700, color: '#7a5500',
+      letterSpacing: '0.05em', textTransform: 'uppercase',
+    },
+    para: { fontSize: 13.5, color: '#2a3140', lineHeight: 1.68, marginBottom: 13 },
+    paraLead: { fontSize: 14, color: '#14181f', lineHeight: 1.65, marginBottom: 13, fontWeight: 500 },
+    box: {
+      background: '#eeeae2', borderRadius: 10, padding: '14px 16px',
+      marginBottom: 22, fontSize: 12.5, color: '#5b6472', lineHeight: 1.65,
+    },
+    btnPrimary: {
+      width: '100%', padding: '13px 20px',
+      background: 'linear-gradient(135deg, #1c2333, #2a3a5c)',
+      color: '#fff', border: 'none', borderRadius: 10,
+      fontSize: 14.5, fontWeight: 600, cursor: 'pointer',
+      letterSpacing: '-0.01em', marginBottom: 10,
+      transition: 'opacity 0.15s',
+    },
+    btnSecondary: {
+      width: '100%', padding: '11px 20px',
+      background: 'transparent', color: '#6b7280',
+      border: '1px solid #d4cec5', borderRadius: 10,
+      fontSize: 13, cursor: 'pointer',
+    },
+    footer: {
+      borderTop: '1px solid #e8e3da', padding: '11px 32px',
+      display: 'flex', justifyContent: 'space-between',
+      fontSize: 11, color: '#9ca3af',
+    },
+  };
+
+  return (
+    <div style={S.overlay}>
+      <div style={S.card}>
+        {/* Header */}
+        <div style={S.header}>
+          <div style={S.iconWrap}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L4 5.5V11C4 15.5 7.5 19.7 12 21C16.5 19.7 20 15.5 20 11V5.5L12 2Z"
+                stroke="#fff" strokeWidth="1.7" strokeLinejoin="round"/>
+              <path d="M9 12l2 2 4-4" stroke="#7ecdc8" strokeWidth="1.8"
+                strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <div style={{ color: '#fff', fontWeight: 600, fontSize: 16, letterSpacing: '-0.01em' }}>
+              Before you continue
+            </div>
+            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11.5, marginTop: 2 }}>
+              Important notice — please read carefully
+            </div>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={S.body}>
+          <div style={S.badge}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            Not Legal Advice — Informational Only
+          </div>
+
+          <p style={S.paraLead}>
+            <strong>Shielded is a knowledge-sharing platform — not a law firm.</strong> We are not attorneys, licensed public adjusters, or insurance professionals.
+          </p>
+
+          <p style={S.para}>
+            All content, analyses, and reports on this platform are provided for <strong>informational and educational purposes only</strong>. Our analysis reads your policy language and compares it to publicly available benchmarks and legal resources. This does <strong>not</strong> constitute legal advice.
+          </p>
+
+          <p style={S.para}>
+            Any report generated here cites your actual policy sections and publicly available data. For formal disputes or legal representation, always consult a <strong>licensed attorney in your state</strong>.
+          </p>
+
+          <div style={S.box}>
+            By clicking "I Understand &amp; Accept" you confirm that: (1) Shielded is not a licensed attorney or public adjuster; (2) nothing on this platform creates an attorney–client relationship; (3) you are using this information at your own discretion.
+          </div>
+
+          <button
+            style={S.btnPrimary}
+            onClick={accept}
+            onMouseOver={e => e.currentTarget.style.opacity = '0.88'}
+            onMouseOut={e => e.currentTarget.style.opacity = '1'}
+          >
+            I Understand &amp; Accept
+          </button>
+          <button
+            style={S.btnSecondary}
+            onClick={() => { window.history.back() || (window.location.href = 'about:blank'); }}
+          >
+            Exit — Take Me Back
+          </button>
+        </div>
+
+        {/* Footer */}
+        <div style={S.footer}>
+          <span>© 2026 Shielded, Inc.</span>
+          <span>Knowledge sharing · Not legal advice</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <DisclaimerGate><App/></DisclaimerGate>
+);
 </script>
 </body>
 </html>
