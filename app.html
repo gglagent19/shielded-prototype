@@ -1153,10 +1153,10 @@ function Sidebar({ active, onNav, compact }) {
       <div style={{ flex: 1 }}/>
 
       {!compact && (
-        <div style={{
+        <div onClick={() => window.navigate?.('/app/upgrade')} style={{
           padding: 12, borderRadius: 10, border: '1px solid var(--line)',
           background: 'linear-gradient(180deg, var(--bg-card), var(--bg-subtle))',
-          fontSize: 12, color: 'var(--ink-2)',
+          fontSize: 12, color: 'var(--ink-2)', cursor: 'pointer',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
             <Icons.Sparkle size={13} style={{ color: 'var(--navy)' }}/>
@@ -1219,7 +1219,7 @@ function TopBar({ title, subtitle, crumbs, right }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         {right}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, marginLeft: 4, borderLeft: '1px solid var(--line)' }}>
-          <button className="btn btn-quiet btn-sm" style={{ padding: 6 }}><Icons.Bell size={15} /></button>
+          <button className="btn btn-quiet btn-sm" onClick={() => window.navigate?.('/app/notifications')} style={{ padding: 6 }}><Icons.Bell size={15} /></button>
           <div style={{
             width: 28, height: 28, borderRadius: 99, background: 'var(--navy)',
             color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -1454,8 +1454,8 @@ function ActiveClaimHero({ variant = 'A' }) {
             Based on 7 comparable NC restaurant fire claims and three clauses in your policy, we estimate a defensible range of <strong style={{ color: 'var(--ink)' }}>{fmt(c.fairLow)}–{fmt(c.fairHigh)}</strong>.
           </div>
           <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-            <button className="btn btn-primary"><Icons.Sparkle size={14}/> Draft rebuttal with AI</button>
-            <button className="btn btn-ghost">See the math</button>
+            <button className="btn btn-primary" onClick={() => window.navigate?.('/app/negotiate')}><Icons.Sparkle size={14}/> Draft rebuttal with AI</button>
+            <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/benchmark')}>See the math</button>
           </div>
         </div>
         <div style={{ width: 1, background: 'var(--line)' }}/>
@@ -1501,8 +1501,8 @@ function ActiveClaimHero({ variant = 'A' }) {
           GreatWest's offer of <strong>{fmt(c.insurerOffer)}</strong> sits below the fair range. Three policy clauses and comparable claims in NC support pushing back.
         </div>
         <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
-          <button className="btn btn-primary"><Icons.Sparkle size={14}/> Draft rebuttal</button>
-          <button className="btn btn-ghost">View claim</button>
+          <button className="btn btn-primary" onClick={() => window.navigate?.('/app/negotiate')}><Icons.Sparkle size={14}/> Draft rebuttal</button>
+          <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/claim-report')}>View claim</button>
         </div>
       </div>
       <div style={{
@@ -1554,7 +1554,7 @@ function RiskAlerts() {
           <div style={{ fontSize: 13, fontWeight: 500 }}>Policy risk alerts</div>
           <div style={{ fontSize: 11.5, color: 'var(--ink-4)' }}>From your latest policy analysis</div>
         </div>
-        <button className="btn btn-quiet btn-sm">See all 7</button>
+        <button className="btn btn-quiet btn-sm" onClick={() => window.navigate?.('/app/policy-analysis')}>See all 7</button>
       </div>
       {DEMO.risks.map((r, i) => (
         <div key={i} style={{
@@ -1580,7 +1580,7 @@ function DeadlineList() {
     <div className="card" style={{ padding: 0 }}>
       <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--line)' }}>
         <div style={{ fontSize: 13, fontWeight: 500 }}>Deadlines</div>
-        <button className="btn btn-quiet btn-sm">Timeline <Icons.Arrow size={12}/></button>
+        <button className="btn btn-quiet btn-sm" onClick={() => window.navigate?.('/app/deadlines')}>Timeline <Icons.Arrow size={12}/></button>
       </div>
       {DEMO.deadlines.map((d, i) => {
         const soon = d.day <= 7;
@@ -1626,7 +1626,7 @@ function NegotiationSuggestions() {
           </div>
           <div style={{ fontSize: 11.5, color: 'var(--ink-4)' }}>3 strategies to recover the gap</div>
         </div>
-        <button className="btn btn-ghost btn-sm">Generate letter</button>
+        <button className="btn btn-ghost btn-sm" onClick={() => window.navigate?.('/app/negotiate')}>Generate letter</button>
       </div>
       {suggestions.map((s, i) => (
         <div key={i} style={{
@@ -1655,7 +1655,7 @@ function RecentDocs() {
     <div className="card" style={{ padding: 0 }}>
       <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--line)' }}>
         <div style={{ fontSize: 13, fontWeight: 500 }}>Recent documents</div>
-        <button className="btn btn-quiet btn-sm"><Icons.Upload size={13}/> Upload</button>
+        <button className="btn btn-quiet btn-sm" onClick={() => window.navigate?.('/app/documents')}><Icons.Upload size={13}/> Upload</button>
       </div>
       {DEMO.recentDocs.map((d, i) => (
         <div key={i} style={{
@@ -1695,8 +1695,8 @@ function Dashboard({ variant = 'A' }) {
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn-ghost"><Icons.Upload size={14}/> Upload doc</button>
-          <button className="btn btn-primary"><Icons.Plus size={14}/> New claim</button>
+          <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/documents')}><Icons.Upload size={14}/> Upload doc</button>
+          <button className="btn btn-primary" onClick={() => window.navigate?.('/claim-flow/start')}><Icons.Plus size={14}/> New claim</button>
         </div>
       </div>
 
@@ -1758,7 +1758,7 @@ function DashboardEmpty() {
               <div className="serif" style={{ fontSize: 18, letterSpacing: '-0.01em', marginBottom: 8 }}>{s.title}</div>
               <div style={{ fontSize: 12.5, color: 'var(--ink-3)', lineHeight: 1.55, marginBottom: 16 }}>{s.sub}</div>
               {s.cta && (
-                <button className="btn btn-primary btn-sm">
+                <button className="btn btn-primary btn-sm" onClick={() => window.navigate?.('/app/policy-upload')}>
                   <I size={12}/> {s.cta}
                 </button>
               )}
@@ -1782,7 +1782,7 @@ function DashboardEmpty() {
       </div>
 
       <div style={{ textAlign: 'center' }}>
-        <button className="btn btn-primary" style={{ padding: '13px 28px', fontSize: 14 }}>
+        <button className="btn btn-primary" onClick={() => window.navigate?.('/app/policy-upload')} style={{ padding: '13px 28px', fontSize: 14 }}>
           <Icons.Upload size={14}/> Upload my first policy
         </button>
         <div style={{ fontSize: 12, color: 'var(--ink-4)', marginTop: 10 }}>PDF · DOCX · up to 50 MB · analyzed in ~90 seconds</div>
@@ -2222,8 +2222,8 @@ function ClaimCreate() {
           <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
             <button className="btn btn-ghost">Save draft</button>
             <div style={{ flex: 1 }}/>
-            <button className="btn btn-ghost"><Icons.ChevronL size={12}/> Back</button>
-            <button className="btn btn-primary">Continue <Icons.Arrow size={12}/></button>
+            <button className="btn btn-ghost" onClick={() => window.navigate?.('/claim-flow/start')}><Icons.ChevronL size={12}/> Back</button>
+            <button className="btn btn-primary" onClick={() => window.navigate?.('/claim-flow/docs')}>Continue <Icons.Arrow size={12}/></button>
           </div>
         </div>
 
@@ -2512,7 +2512,7 @@ function ClaimSettled() {
         <button className="btn btn-primary" style={{ flex: 1, justifyContent: 'center' }}>
           <Icons.Download size={13}/> Download settlement report
         </button>
-        <button className="btn btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>
+        <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/policy-upload')} style={{ flex: 1, justifyContent: 'center' }}>
           <Icons.Upload size={13}/> Upload renewal policy
         </button>
       </div>
@@ -2629,9 +2629,9 @@ function ClaimStart() {
       </div>
 
       <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
-        <button className="btn btn-ghost"><Icons.ChevronL size={12}/> Back to claims</button>
+        <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/claims')}><Icons.ChevronL size={12}/> Back to claims</button>
         <div style={{ flex: 1 }}/>
-        <button className="btn btn-primary">Continue to details <Icons.Arrow size={12}/></button>
+        <button className="btn btn-primary" onClick={() => window.navigate?.('/claim-flow/create')}>Continue to details <Icons.Arrow size={12}/></button>
       </div>
     </div>
   );
@@ -2753,9 +2753,9 @@ function ClaimFirstReport() {
       </div>
 
       <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
-        <button className="btn btn-ghost"><Icons.ChevronL size={12}/> Back</button>
+        <button className="btn btn-ghost" onClick={() => window.navigate?.('/claim-flow/docs')}><Icons.ChevronL size={12}/> Back</button>
         <div style={{ flex: 1 }}/>
-        <button className="btn btn-primary" disabled={!sent} style={{ opacity: sent ? 1 : 0.5 }}>
+        <button className="btn btn-primary" disabled={!sent} onClick={() => sent && window.navigate?.('/claim-flow/file')} style={{ opacity: sent ? 1 : 0.5 }}>
           Continue to file <Icons.Arrow size={12}/>
         </button>
       </div>
@@ -2851,7 +2851,7 @@ function ClaimFile() {
       <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
         <button className="btn btn-ghost"><Icons.Copy size={12}/> Copy claim ID</button>
         <div style={{ flex: 1 }}/>
-        <button className="btn btn-primary" style={{ padding: '10px 24px' }}>
+        <button className="btn btn-primary" onClick={() => window.navigate?.('/claim-flow/docs')} style={{ padding: '10px 24px' }}>
           Start documentation <Icons.Arrow size={12}/>
         </button>
       </div>
@@ -2892,7 +2892,7 @@ function Benchmark() {
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost"><Icons.Filter size={13}/> Adjust filters</button>
-          <button className="btn btn-primary"><Icons.Sparkle size={14}/> Draft rebuttal</button>
+          <button className="btn btn-primary" onClick={() => window.navigate?.('/app/negotiate')}><Icons.Sparkle size={14}/> Draft rebuttal</button>
         </div>
       </div>
 
@@ -3848,7 +3848,7 @@ function ClaimsList() {
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button className="btn btn-ghost btn-sm"><Icons.Filter size={13}/> Filter</button>
-            <button className="btn btn-primary"><Icons.Plus size={13}/> New claim</button>
+            <button className="btn btn-primary" onClick={() => window.navigate?.('/claim-flow/start')}><Icons.Plus size={13}/> New claim</button>
           </div>
         </div>
 
@@ -3908,7 +3908,7 @@ function ClaimsList() {
           </div>
 
           {visible.map((c, i) => (
-            <ClaimRow key={c.id} c={c} on={i === selected} onClick={() => setSelected(i)} />
+            <ClaimRow key={c.id} c={c} on={i === selected} onClick={() => { setSelected(i); window.navigate?.('/app/claim-report'); }} />
           ))}
         </div>
 
@@ -3928,7 +3928,7 @@ function ClaimsList() {
             <div style={{ fontSize: 13, fontWeight: 500 }}>Start a new claim</div>
             <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>We'll build a documentation checklist tailored to your peril and policy.</div>
           </div>
-          <button className="btn btn-ghost btn-sm">Start <Icons.Arrow size={11}/></button>
+          <button className="btn btn-ghost btn-sm" onClick={() => window.navigate?.('/claim-flow/start')}>Start <Icons.Arrow size={11}/></button>
         </div>
       </div>
     </div>
@@ -4072,7 +4072,7 @@ function PoliciesList() {
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost btn-sm"><Icons.Download size={13}/> Export</button>
-          <button className="btn btn-primary"><Icons.Upload size={13}/> Add policy</button>
+          <button className="btn btn-primary" onClick={() => window.navigate?.('/app/policy-upload')}><Icons.Upload size={13}/> Add policy</button>
         </div>
       </div>
 
@@ -4107,7 +4107,7 @@ function PoliciesList() {
       {/* Policy cards grid */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {POLICIES_DATA.map((p, i) => (
-          <PolicyCard key={p.id} p={p} selected={i === selected} onClick={() => setSelected(i)} />
+          <PolicyCard key={p.id} p={p} selected={i === selected} onClick={() => { setSelected(i); window.navigate?.('/app/policy-analysis'); }} />
         ))}
       </div>
 
@@ -4115,7 +4115,7 @@ function PoliciesList() {
       <div style={{
         padding: '20px 24px', border: '1.5px dashed var(--line-2)', borderRadius: 12,
         background: 'var(--bg-subtle)', display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer',
-      }}>
+      }} onClick={() => window.navigate?.('/app/policy-upload')}>
         <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--bg-card)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Icons.Upload size={18} style={{ color: 'var(--navy)' }}/>
         </div>
@@ -4123,7 +4123,7 @@ function PoliciesList() {
           <div style={{ fontSize: 13, fontWeight: 500 }}>Add another policy</div>
           <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>Upload a PDF — we'll extract coverage, exclusions, and flag gaps in ~90 seconds.</div>
         </div>
-        <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto' }}>Upload <Icons.Arrow size={11}/></button>
+        <button className="btn btn-ghost btn-sm" onClick={() => window.navigate?.('/app/policy-upload')} style={{ marginLeft: 'auto' }}>Upload <Icons.Arrow size={11}/></button>
       </div>
     </div>
   );
@@ -4812,7 +4812,7 @@ function OnboardingReview() {
         </div>
 
         <div style={{ display: 'flex', gap: 10, paddingBottom: 8 }}>
-          <button className="btn btn-ghost"><Icons.ChevronL size={12}/> Back</button>
+          <button className="btn btn-ghost" onClick={() => window.navigate?.('/onboard/1')}><Icons.ChevronL size={12}/> Back</button>
           <div style={{ flex: 1 }}/>
           <button className="btn btn-ghost"><Icons.Download size={13}/> Save report</button>
           <button className="btn btn-primary" onClick={() => window.navigate?.('/onboard/3')}>Go to my dashboard <Icons.Arrow size={13}/></button>
@@ -5933,7 +5933,7 @@ function PolicyRenewal() {
             ))}
             <div style={{ padding: '10px 18px', borderTop: '1px solid var(--line)', background: 'var(--bg-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>You're paying <strong style={{ color: 'var(--amber)' }}>10% above</strong> market median for similar coverage</span>
-              <button className="btn btn-ghost btn-sm" style={{ fontSize: 11 }}>Get 3 quotes <Icons.Arrow size={10}/></button>
+              <button className="btn btn-ghost btn-sm" onClick={() => window.navigate?.('/app/policy-compare')} style={{ fontSize: 11 }}>Get 3 quotes <Icons.Arrow size={10}/></button>
             </div>
           </div>
         </div>
@@ -6376,7 +6376,7 @@ function Correspondence() {
 
                 {/* Reply bar */}
                 <div style={{ padding: '14px 28px', borderTop: '1px solid var(--line)', background: 'var(--bg-subtle)', display: 'flex', gap: 10, alignItems: 'center', flex: 'none' }}>
-                  <button className="btn btn-primary"><Icons.Sparkle size={13}/> Draft reply with AI</button>
+                  <button className="btn btn-primary" onClick={() => window.navigate?.('/app/negotiate')}><Icons.Sparkle size={13}/> Draft reply with AI</button>
                   <button className="btn btn-ghost"><Icons.Copy size={13}/> Copy message</button>
                   <button className="btn btn-ghost"><Icons.Download size={13}/> Save as PDF</button>
                   <div style={{ flex: 1 }}/>
@@ -6883,7 +6883,7 @@ function PaywallModal() {
               ))}
             </div>
 
-            <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', fontSize: 14, marginBottom: 10 }}>
+            <button className="btn btn-primary" onClick={() => window.navigate?.('/signup')} style={{ width: '100%', justifyContent: 'center', padding: '12px', fontSize: 14, marginBottom: 10 }}>
               Upgrade to Premium · $150/mo <Icons.Arrow size={13}/>
             </button>
             <button className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center', fontSize: 13 }}>
@@ -7263,20 +7263,20 @@ function NotFound() {
         </p>
 
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 24 }}>
-          <button className="btn btn-primary"><Icons.Home size={14}/> Go to dashboard</button>
-          <button className="btn btn-ghost"><Icons.ChevronL size={12}/> Go back</button>
+          <button className="btn btn-primary" onClick={() => window.navigate?.('/app/dashboard')}><Icons.Home size={14}/> Go to dashboard</button>
+          <button className="btn btn-ghost" onClick={() => window.history.back()}><Icons.ChevronL size={12}/> Go back</button>
         </div>
 
         <div className="card" style={{ padding: '14px 18px', textAlign: 'left', background: 'var(--bg-subtle)' }}>
           <div style={{ fontSize: 12, fontWeight: 500, marginBottom: 8, color: 'var(--ink-2)' }}>Quick links</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {[
-              ['Dashboard', 'Home · Overview'],
-              ['Claims', 'Your active and past claims'],
-              ['Policies', 'Uploaded insurance policies'],
-              ['Documents', 'Your document vault'],
-            ].map(([label, sub]) => (
-              <div key={label} style={{ display: 'flex', gap: 10, alignItems: 'center', cursor: 'pointer', padding: '4px 0' }}>
+              ['Dashboard', 'Home · Overview',  '/app/dashboard'],
+              ['Claims',    'Your active and past claims', '/app/claims'],
+              ['Policies',  'Uploaded insurance policies', '/app/policies'],
+              ['Documents', 'Your document vault', '/app/documents'],
+            ].map(([label, sub, href]) => (
+              <div key={label} onClick={() => window.navigate?.(href)} style={{ display: 'flex', gap: 10, alignItems: 'center', cursor: 'pointer', padding: '4px 0' }}>
                 <Icons.ChevronR size={12} style={{ color: 'var(--ink-4)', flex: 'none' }}/>
                 <div>
                   <span style={{ fontSize: 13, fontWeight: 500 }}>{label}</span>
@@ -7308,8 +7308,8 @@ function AppError() {
         </p>
 
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 24 }}>
-          <button className="btn btn-primary"><Icons.TrendUp size={14}/> Reload page</button>
-          <button className="btn btn-ghost"><Icons.Home size={13}/> Dashboard</button>
+          <button className="btn btn-primary" onClick={() => window.location.reload()}><Icons.TrendUp size={14}/> Reload page</button>
+          <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/dashboard')}><Icons.Home size={13}/> Dashboard</button>
         </div>
 
         <div className="card" style={{ padding: '14px 18px', textAlign: 'left' }}>
@@ -7343,7 +7343,7 @@ function OfflineState() {
           Shielded needs a connection to load your claims and policy data. Check your internet and try again.
         </p>
 
-        <button className="btn btn-primary" style={{ justifyContent: 'center', width: '100%', marginBottom: 12 }}>
+        <button className="btn btn-primary" onClick={() => window.location.reload()} style={{ justifyContent: 'center', width: '100%', marginBottom: 12 }}>
           Try again
         </button>
 
@@ -7677,8 +7677,8 @@ function BrokerLanding() {
           ))}
         </div>
         <div style={{ flex: 1 }}/>
-        <button className="btn btn-quiet btn-sm">Sign in</button>
-        <button className="btn btn-primary btn-sm">Book a demo <Icons.Arrow size={11}/></button>
+        <button className="btn btn-quiet btn-sm" onClick={() => window.navigate?.('/signin')}>Sign in</button>
+        <button className="btn btn-primary btn-sm" onClick={() => window.navigate?.('/broker/dashboard')}>Book a demo <Icons.Arrow size={11}/></button>
       </div>
 
       <div style={{ maxWidth: 1120, margin: '0 auto', padding: '0 48px' }}>
@@ -7695,10 +7695,10 @@ function BrokerLanding() {
               Shielded gives independent brokerages the tools to catch underpaid claims, generate negotiation-ready rebuttals, and deliver branded reports — without a public adjuster license.
             </p>
             <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
-              <button className="btn btn-primary" style={{ padding: '13px 20px', fontSize: 14 }}>
+              <button className="btn btn-primary" onClick={() => window.navigate?.('/broker/dashboard')} style={{ padding: '13px 20px', fontSize: 14 }}>
                 Book a demo <Icons.Arrow size={13}/>
               </button>
-              <button className="btn btn-ghost" style={{ padding: '13px 20px', fontSize: 14 }}>
+              <button className="btn btn-ghost" onClick={() => window.navigate?.('/app/upgrade')} style={{ padding: '13px 20px', fontSize: 14 }}>
                 See pricing
               </button>
             </div>
@@ -7802,7 +7802,7 @@ function BrokerLanding() {
               Enterprise plans start at 5 clients and scale to unlimited. Includes white-label reports, API access, dedicated success manager, and referral revenue share.
             </p>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button className="btn btn-primary" style={{ padding: '12px 20px' }}>Book a demo <Icons.Arrow size={12}/></button>
+              <button className="btn btn-primary" onClick={() => window.navigate?.('/broker/dashboard')} style={{ padding: '12px 20px' }}>Book a demo <Icons.Arrow size={12}/></button>
               <button className="btn btn-ghost" style={{ padding: '12px 20px' }}>Talk to sales</button>
             </div>
           </div>
@@ -8735,9 +8735,9 @@ function LandingNav() {
       <ShieldedLogo size={20} color="var(--ink)" />
       <div style={{ display: 'flex', gap: 22, fontSize: 13, color: 'var(--ink-2)', marginLeft: 20 }}>
         <span style={{ cursor: 'pointer' }}>How it works</span>
-        <span style={{ cursor: 'pointer' }}>For brokers</span>
-        <span style={{ cursor: 'pointer' }}>Pricing</span>
-        <span style={{ cursor: 'pointer' }}>Claim stories</span>
+        <span onClick={() => window.navigate?.('/broker')} style={{ cursor: 'pointer' }}>For brokers</span>
+        <span onClick={() => window.navigate?.('/app/upgrade')} style={{ cursor: 'pointer' }}>Pricing</span>
+        <span onClick={() => window.navigate?.('/app/claim-stories')} style={{ cursor: 'pointer' }}>Claim stories</span>
         <span style={{ cursor: 'pointer' }}>Resources</span>
       </div>
       <div style={{ flex: 1 }}/>
@@ -9188,9 +9188,81 @@ function App() {
   );
   if (route === '/app/search') return (
     <AppFrame active="dashboard" title="Search" crumbs={['Search']} showAI={false}>
-      <Search />
+      <GlobalSearch />
     </AppFrame>
   );
+  if (route === '/app/notifications') return (
+    <AppFrame active="dashboard" title="Notifications" crumbs={['Notifications']} showAI={false}>
+      <NotificationCenter />
+    </AppFrame>
+  );
+  if (route === '/app/public-status') return <Page ch={<PublicStatus />}/>;
+  if (route === '/app/doc-viewer') return (
+    <AppFrame active="documents" title="Document viewer" crumbs={['Documents','Viewer']} showAI={false}>
+      <DocumentViewer />
+    </AppFrame>
+  );
+  if (route === '/app/policy-renewal') return (
+    <AppFrame active="policy" title="Policy renewal" crumbs={['Policies','Renewal']} showAI={false}>
+      <PolicyRenewal />
+    </AppFrame>
+  );
+  if (route === '/app/correspondence') return (
+    <AppFrame active="claims" title="Correspondence" crumbs={['Claims','CLM-2041','Correspondence']} showAI={false}>
+      <Correspondence />
+    </AppFrame>
+  );
+  if (route === '/app/email-templates') return (
+    <AppFrame active="dashboard" title="Email templates" crumbs={['Email Templates']} showAI={false}>
+      <div style={{ padding: 28, display: 'flex', flexDirection: 'column', gap: 32, overflow: 'auto' }}>
+        <EmailDeadlineAlert />
+        <EmailSettlementOffer />
+        <EmailWeeklyDigest />
+      </div>
+    </AppFrame>
+  );
+  if (route === '/app/policy-compare') return (
+    <AppFrame active="policy" title="Policy comparison" crumbs={['Policies','Compare']} showAI={false}>
+      <PolicyComparison />
+    </AppFrame>
+  );
+  if (route === '/app/upgrade') return <Page ch={<UpgradePage />}/>;
+  if (route === '/app/claim-stories') return (
+    <AppFrame active="dashboard" title="Claim stories" crumbs={['Stories']} showAI={false}>
+      <ClaimStories />
+    </AppFrame>
+  );
+  if (route === '/app/claim-report') return (
+    <AppFrame active="claims" title="Claim report · CLM-2041" crumbs={['Claims','CLM-2041','Report']} showAI={false}>
+      <ClaimReport />
+    </AppFrame>
+  );
+  if (route === '/app/policy-analysis') return (
+    <AppFrame active="policy" title="Policy analysis" crumbs={['Policies','CPP-48291-B']}>
+      <PolicyAnalysis />
+    </AppFrame>
+  );
+  if (route === '/app/policy-upload') return (
+    <AppFrame active="policy" title="Upload policy" crumbs={['Policies','Upload']} showAI={false}>
+      <PolicyUpload />
+    </AppFrame>
+  );
+  if (route === '/broker') return <Page ch={<BrokerLanding />}/>;
+  if (route === '/broker/dashboard') return (
+    <div className="shielded-root" style={{ height:'100%' }}>
+      <BrokerDashboard />
+    </div>
+  );
+  if (route === '/claim-flow/start')        return <Page ch={<ClaimStart />}/>;
+  if (route === '/claim-flow/create')       return <Page ch={<ClaimCreate />}/>;
+  if (route === '/claim-flow/docs')         return <Page ch={<ClaimDocs />}/>;
+  if (route === '/claim-flow/file')         return <Page ch={<ClaimFile />}/>;
+  if (route === '/claim-flow/first-report') return <Page ch={<ClaimFirstReport />}/>;
+  if (route === '/claim-flow/settled')      return <Page ch={<ClaimSettled />}/>;
+  if (route === '/mobile') return <Page ch={<MobileDashboard />}/>;
+  if (route === '/not-found') return <Page ch={<NotFound />}/>;
+  if (route === '/error')     return <Page ch={<AppError />}/>;
+  if (route === '/offline')   return <Page ch={<OfflineState />}/>;
 
   window.navigate('/');
   return null;
