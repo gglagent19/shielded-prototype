@@ -219,5 +219,53 @@ create policy "storage: owner delete" on storage.objects
 -- DONE. Verify by running:
 -- select tablename from pg_tables where schemaname = 'public';
 -- You should see: profiles, policies, coverage_items, policy_risks,
--- claims, documents, deadlines, notification_prefs
+-- claims, documents, deadlines, notification_prefs, waitlist, email_events
 -- ═══════════════════════════════════════════════════════════════════
+
+-- ─── WAITLIST ────────────────────────────────────────────────────────────────
+create table public.waitlist (
+  id          uuid primary key default uuid_generate_v4(),
+  email       text not null unique,
+  name        text,
+  biz_type    text,
+  situation   text,  -- active_claim, denied, underpaid, preparing, reviewing
+  state       text,
+  source      text,  -- referrer URL
+  converted   boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+
+-- Allow anonymous inserts (waitlist form on the frontend)
+alter table public.waitlist enable row level security;
+create policy "waitlist: anon insert" on public.waitlist for insert with check (true);
+create policy "waitlist: owner read"  on public.waitlist for select using (auth.role() = 'service_role');
+
+-- Trigger: send welcome email after waitlist insert
+create or replace function public.handle_waitlist_signup()
+returns trigger language plpgsql security definer as $$
+begin
+  perform net.http_post(
+    url     := current_setting('app.supabase_url') || '/functions/v1/send-welcome',
+    headers := '{"Content-Type":"application/json","Authorization":"Bearer ' || current_setting('app.service_role_key') || '"}'::jsonb,
+    body    := json_build_object('type','waitlist','email',new.email,'name',new.name)::text
+  );
+  return new;
+end;
+$$;
+
+create trigger on_waitlist_signup
+  after insert on public.waitlist
+  for each row execute function public.handle_waitlist_signup();
+
+-- ─── EMAIL EVENTS (audit log) ────────────────────────────────────────────────
+create table public.email_events (
+  id          uuid primary key default uuid_generate_v4(),
+  user_id     uuid references public.profiles(id) on delete set null,
+  email       text not null,
+  event_type  text not null,  -- welcome, analysis_ready, deadline_reminder, weekly_digest
+  status      text not null default 'sent',
+  created_at  timestamptz not null default now()
+);
+
+alter table public.email_events enable row level security;
+create policy "email_events: service role" on public.email_events for all using (auth.role() = 'service_role');

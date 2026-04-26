@@ -1205,7 +1205,7 @@ function intersectionPage(incident, state, city) {
 <nav class="nav"><div class="wrap ni">
 <a class="nl" href="${root}/index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5.5V11C4 15.5 7.5 19.7 12 21C16.5 19.7 20 15.5 20 11V5.5L12 2Z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#7ecdc8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Shielded</a>
 <div class="na"><a href="${root}/claims/index.html">Claims</a><a href="${root}/app.html">App</a></div>
-<a class="nc" href="${root}/app.html">Analyze My Claim →</a>
+<a class="nc" href="${root}/waitlist/index.html">Get Free Analysis →</a>
 </div></nav>
 
 <div class="hero"><div class="wrap">
@@ -1214,7 +1214,7 @@ function intersectionPage(incident, state, city) {
 <h1>${incident.name} Insurance Claim in ${city.n}, ${state.abbr}</h1>
 <p>${incident.desc} Under ${state.statute}, ${city.n} businesses have <strong>${state.sol} year${state.sol>1?'s':''}</strong> to pursue underpaid claims. ${state.note}</p>
 <div class="ha">
-<a class="bp" href="${root}/app.html">Analyze My ${city.n} Claim →</a>
+<a class="bp" href="${root}/waitlist/index.html">Get Free Claim Analysis →</a>
 <a class="bs" href="../../index.html">All ${state.abbr} Claims</a>
 </div>
 </div></div>
@@ -1268,7 +1268,7 @@ function intersectionPage(incident, state, city) {
 <div class="sc">
 <h3>Free Claim Analysis</h3>
 <p>Upload your ${state.name} commercial policy. Get an instant breakdown citing your exact policy sections.</p>
-<a class="bp" href="${root}/app.html" style="display:block;text-align:center">Analyze Free →</a>
+<a class="bp" href="${root}/waitlist/index.html" style="display:block;text-align:center">Get Free Analysis →</a>
 </div>
 <div class="sc">
 <h3>${city.n} Claim Timeline</h3>
@@ -1343,7 +1343,7 @@ function cityIncidentHub(city, state) {
 <div class="hb">${city.n}, ${state.abbr}</div>
 <h1>Insurance Claims for ${city.n} Businesses</h1>
 <p>${state.statute} applies. You have <strong>${state.sol} year${state.sol>1?'s':''}</strong> to pursue underpaid claims. ${state.note}</p>
-<div class="ha"><a class="bp" href="../../app.html">Analyze My Claim Free →</a></div>
+<div class="ha"><a class="bp" href="../../waitlist/index.html">Get Free Analysis →</a></div>
 </div></div>
 <div class="pg"><div class="wrap">
 <div class="warn">⚠ Not legal advice. Consult a licensed ${state.name} attorney.</div>
