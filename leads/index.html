@@ -217,7 +217,8 @@ tr.sel td{background:#eff6ff}
     </div>
     <div class="mfooter">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-send-email" id="m-send-btn" onclick="sendFromModal()">Send Email →</button>
+      <button class="btn-cancel" onclick="copyFromModal()" style="border-color:var(--blue);color:var(--blue)">📋 Copy Email</button>
+      <button class="btn-send-email" id="m-send-btn" onclick="sendFromModal()">✉ Open in Email Client</button>
     </div>
   </div>
 </div>
@@ -312,7 +313,8 @@ function render() {
       <td>
         <div class="row-acts">
           <button class="ra" onclick="openModal('${l.id}')">Preview</button>
-          ${l.contact_email&&l.outreach_status==='pending'?`<button class="ra ra-send" onclick="quickSend('${l.id}')">Send</button>`:''}
+          <button class="ra" onclick="copyEmail('${l.id}')" title="Copy email to clipboard">Copy</button>
+          ${l.contact_email&&l.outreach_status==='pending'?`<button class="ra ra-send" onclick="quickSend('${l.id}')">Open Mail</button>`:''}
           ${l.outreach_status==='pending'?`<button class="ra ra-skip" onclick="skipLead('${l.id}')">Skip</button>`:''}
         </div>
       </td>
@@ -392,36 +394,45 @@ async function sendFromModal() {
   await sendEmail(curLeadId, to, l.outreach_email_subject, l.outreach_email_body);
   closeModal();
 }
+async function copyFromModal() {
+  const l = allLeads.find(x => x.id === curLeadId); if (!l) return;
+  const to = document.getElementById('m-to').value.trim();
+  const text = `To: ${to}\nSubject: ${l.outreach_email_subject}\n\n${l.outreach_email_body}`;
+  await navigator.clipboard.writeText(text);
+  if (to && to.includes('@') && to !== l.contact_email) {
+    await sb?.from('business_leads').update({ contact_email: to }).eq('id', curLeadId); l.contact_email = to;
+  }
+  toast('📋 Copied! Paste into your email client.');
+}
 async function quickSend(id) {
   const l = allLeads.find(x => x.id === id);
   if (!l?.contact_email) { openModal(id); return; }
-  if (!confirm(`Send to ${l.contact_email}?`)) return;
   await sendEmail(id, l.contact_email, l.outreach_email_subject, l.outreach_email_body);
 }
 
-// ── Send email via Resend API ─────────────────────────────────────────────────
+// ── Send email ────────────────────────────────────────────────────────────────
+// Opens mailto: in the user's email client (Gmail/Outlook) with content pre-filled.
+// Also marks lead as sent in the database.
 async function sendEmail(id, to, subject, body) {
-  const resendKey = cfg.RESEND_API_KEY;
-  const fromEmail = cfg.FROM_EMAIL || 'hello@attorneyaitools.org';
-  if (!resendKey) { alert('No RESEND_API_KEY in config'); return; }
-  try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: `Shielded <${fromEmail}>`, to: [to], subject,
-        text: body,
-        html: body.replace(/\n/g,'<br>').replace(/(https:\/\/\S+)/g,'<a href="$1">$1</a>')
-      })
-    });
-    const d = await res.json();
-    if (d.id || res.ok) {
-      await sb?.from('business_leads').update({ outreach_status:'sent', contact_email:to, sent_at:new Date().toISOString() }).eq('id', id);
-      allLeads = allLeads.map(l => l.id===id ? {...l, outreach_status:'sent', contact_email:to} : l);
-      toast('✅ Email sent to ' + to);
-      updateStats(); render(); buildIncidentList();
-    } else throw new Error(d.message || JSON.stringify(d));
-  } catch(e) { alert('Send error: ' + e.message); }
+  // Open email client with pre-filled content
+  const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailto, '_blank');
+  // Mark as sent in DB
+  await markSent(id, to);
+}
+
+async function markSent(id, to) {
+  await sb?.from('business_leads').update({ outreach_status:'sent', contact_email:to, sent_at:new Date().toISOString() }).eq('id', id);
+  allLeads = allLeads.map(l => l.id===id ? {...l, outreach_status:'sent', contact_email:to} : l);
+  toast('✅ Email opened — marked as sent');
+  updateStats(); render(); buildIncidentList();
+}
+
+async function copyEmail(id) {
+  const l = allLeads.find(x => x.id === id); if (!l) return;
+  const text = `To: ${l.contact_email || ''}\nSubject: ${l.outreach_email_subject}\n\n${l.outreach_email_body}`;
+  await navigator.clipboard.writeText(text);
+  toast('📋 Email copied to clipboard');
 }
 
 async function skipLead(id) {
@@ -558,9 +569,30 @@ Reply "remove" to unsubscribe.`;
   return { subject, body };
 }
 
+// ── Fetch Google News RSS via CORS proxy (no API key, no CORS issues) ──────
+async function fetchNews(query) {
+  // Google News RSS → allorigins.win CORS proxy
+  const rss = `https://news.google.com/rss/search?q=${encodeURIComponent(query + ' United States')}&hl=en-US&gl=US&ceid=US:en`;
+  const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(rss)}`;
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
+    if (!res.ok) return [];
+    const xml = await res.text();
+    const arts = [];
+    for (const m of xml.matchAll(/<item>([\s\S]*?)<\/item>/g)) {
+      const it = m[1];
+      const title = (it.match(/<title><!\[CDATA\[(.*?)\]\]>/)?.[1] || it.match(/<title>(.*?)<\/title>/)?.[1] || '').trim();
+      const link  = (it.match(/<link>(.*?)<\/link>/)?.[1] || '').trim();
+      const desc  = (it.match(/<description><!\[CDATA\[(.*?)\]\]>/)?.[1] || '').replace(/<[^>]+>/g,'').trim();
+      const src   = (it.match(/<source[^>]*>(.*?)<\/source>/)?.[1] || 'Google News').trim();
+      const pub   = (it.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] || '').trim();
+      if (title && link) arts.push({ title, url: link, description: desc, source: src, publishedAt: pub });
+    }
+    return arts.slice(0, 8);
+  } catch { return []; }
+}
+
 async function startMonitor() {
-  const key = cfg.SERPAPI_KEY;
-  if (!key) { alert('No SERPAPI_KEY in js/config.js'); return; }
   if (!sb) { alert('Supabase not configured'); return; }
 
   const btn = document.getElementById('start-btn');
@@ -580,28 +612,24 @@ async function startMonitor() {
     document.getElementById('prog-pct').textContent = i + ' / ' + QUERIES.length;
   }
 
-  log('Starting SerpAPI Google News scan…', 'info');
+  log('Scanning Google News for US business incidents…', 'info');
 
   for (let i = 0; i < QUERIES.length; i++) {
     const query = QUERIES[i];
     setProg(i + 1);
     try {
-      // SerpAPI Google News endpoint — works with CORS
-      const url = `https://serpapi.com/search.json?engine=google_news&q=${encodeURIComponent(query)}&gl=us&hl=en&api_key=${key}`;
-      const res = await fetch(url);
-      if (!res.ok) { log(`⚠ Query "${query}": ${res.status}`, 'warn'); continue; }
-      const data = await res.json();
-      const articles = (data.news_results || []).slice(0, 6);
+      const articles = await fetchNews(query);
+      log(`Query ${i+1}/${QUERIES.length}: "${query}" → ${articles.length} articles`, '');
 
       for (const art of articles) {
         checked++;
-        const text = (art.title || '') + ' ' + (art.snippet || '');
+        const text = (art.title || '') + ' ' + (art.description || '');
         const loc = parseLocation(text);
         if (!loc) continue;
         const inc = parseIncident(text);
-        const biz = parseBizName(art.title || '', art.snippet || '');
+        const biz = parseBizName(art.title || '', art.description || '');
         const citySlug = loc.city.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
-        const articleUrl = art.link || art.url || '';
+        const articleUrl = art.url || '';
         if (!articleUrl) continue;
 
         // Skip duplicate
@@ -614,7 +642,7 @@ async function startMonitor() {
           city: loc.city, state: loc.state, state_slug: loc.stateSlug, city_slug: citySlug,
           article_title: art.title, article_url: articleUrl,
           article_date: new Date().toISOString().split('T')[0],
-          source: art.source?.name || 'Google News',
+          source: (typeof art.source === 'string' ? art.source : art.source?.name) || 'Google News',
           search_query: query,
           outreach_email_subject: out.subject,
           outreach_email_body: out.body,
