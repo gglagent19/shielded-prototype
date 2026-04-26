@@ -269,3 +269,39 @@ create table public.email_events (
 
 alter table public.email_events enable row level security;
 create policy "email_events: service role" on public.email_events for all using (auth.role() = 'service_role');
+
+-- ─── BUSINESS LEADS (news monitor agent) ────────────────────────────────────
+create table public.business_leads (
+  id                     uuid primary key default gen_random_uuid(),
+  business_name          text,
+  incident_type          text,
+  incident_slug          text,
+  city                   text,
+  state                  text,
+  state_slug             text,
+  city_slug              text,
+  article_title          text,
+  article_url            text unique,
+  article_date           date,
+  source                 text,  -- NewsAPI, Google News RSS
+  search_query           text,
+  contact_email          text,
+  contact_website        text,
+  outreach_status        text not null default 'pending'
+                         check (outreach_status in ('pending','sent','replied','skipped','bounced')),
+  outreach_email_subject text,
+  outreach_email_body    text,
+  sent_at                timestamptz,
+  replied_at             timestamptz,
+  notes                  text,
+  created_at             timestamptz not null default now()
+);
+
+-- Index for fast status queries
+create index business_leads_status_idx on public.business_leads(outreach_status);
+create index business_leads_date_idx   on public.business_leads(article_date desc);
+
+alter table public.business_leads enable row level security;
+create policy "leads: service role" on public.business_leads for all using (auth.role() = 'service_role');
+-- Allow reading leads in the dashboard (authenticated users only)
+create policy "leads: authenticated read" on public.business_leads for select using (auth.role() = 'authenticated');

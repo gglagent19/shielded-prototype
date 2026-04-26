@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leads Dashboard — Shielded</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../js/config.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f6f3ee;--card:#fff;--navy:#1c2333;--teal:#2a9d8f;--line:#e0dbd2;--ink:#14181f;--ink2:#2a3140;--ink3:#5b6472;--r:10px;--green:#16a34a;--amber:#d97706;--red:#dc2626}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
+.nav{background:var(--navy);padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{color:#fff;font-weight:700;font-size:15px;text-decoration:none}
+.nav-actions{display:flex;gap:10px;align-items:center}
+.btn{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
+.btn-primary{background:#fff;color:var(--navy)}
+.btn-green{background:var(--green);color:#fff}
+.btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)}
+.wrap{max-width:1300px;margin:0 auto;padding:24px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.stat-num{font-size:28px;font-weight:700;color:var(--navy);letter-spacing:-.02em}
+.stat-label{font-size:12px;color:var(--ink3);margin-top:2px}
+.filters{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font-size:12.5px;font-family:inherit;color:var(--ink2)}
+.filter-btn.active{border-color:var(--teal);background:var(--teal);color:#fff}
+.search{padding:8px 12px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;flex:1;max-width:300px;min-width:180px}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#faf9f7}
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.badge-pending{background:#fef3c7;color:#92400e}
+.badge-sent{background:#d1fae5;color:#065f46}
+.badge-skipped{background:#f3f4f6;color:#6b7280}
+.badge-replied{background:#dbeafe;color:#1e40af}
+.badge-bounced{background:#fee2e2;color:#991b1b}
+.incident-tag{background:var(--bg);border-radius:6px;padding:2px 7px;font-size:11.5px;color:var(--ink3);display:inline-block}
+.action-btns{display:flex;gap:6px}
+.action-btn{padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:11.5px;font-family:inherit;color:var(--ink2)}
+.action-btn:hover{border-color:var(--teal);color:var(--teal)}
+.action-btn.send{border-color:var(--green);color:var(--green)}
+.action-btn.skip{border-color:var(--red);color:var(--red)}
+.empty{text-align:center;padding:60px;color:var(--ink3)}
+.empty h3{font-size:18px;font-weight:600;color:var(--navy);margin-bottom:8px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{background:#fff;border-radius:12px;padding:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+.modal-box h3{font-size:17px;font-weight:700;margin-bottom:16px;color:var(--navy)}
+.email-preview{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;font-size:13px;line-height:1.7;white-space:pre-wrap;font-family:inherit}
+.modal-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
+.loading{text-align:center;padding:40px;color:var(--ink3)}
+a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-logo" href="../app.html">🛡 Shielded · Leads</a>
+  <div class="nav-actions">
+    <span id="lead-count" style="color:rgba(255,255,255,.6);font-size:13px"></span>
+    <button class="btn btn-outline" onclick="runMonitor()">▶ Run Monitor Now</button>
+    <a href="../app.html" class="btn btn-primary">App →</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="stats" id="stats">
+    <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total Leads</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-pending">—</div><div class="stat-label">Pending</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-sent">—</div><div class="stat-label">Sent</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-replied">—</div><div class="stat-label">Replied</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-today">—</div><div class="stat-label">Found Today</div></div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setFilter('pending', this)">Pending</button>
+    <button class="filter-btn" onclick="setFilter('sent', this)">Sent</button>
+    <button class="filter-btn" onclick="setFilter('replied', this)">Replied</button>
+    <button class="filter-btn" onclick="setFilter('skipped', this)">Skipped</button>
+    <input class="search" id="search" type="text" placeholder="Search business, city, incident..." oninput="renderTable()">
+  </div>
+
+  <div id="table-container">
+    <div class="loading">Loading leads...</div>
+  </div>
+</div>
+
+<!-- Email preview modal -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3 id="modal-title">Email Preview</h3>
+    <div><strong style="font-size:12px;color:var(--ink3)">SUBJECT</strong><div id="modal-subject" style="margin:4px 0 12px;font-weight:600"></div></div>
+    <div><strong style="font-size:12px;color:var(--ink3)">BODY</strong></div>
+    <div class="email-preview" id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" style="color:var(--ink2);border-color:var(--line)" onclick="closeModal()">Close</button>
+      <button class="btn btn-green" id="modal-send-btn">Send Email</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const cfg = window.SHIELDED_CONFIG || {};
+let sb = null;
+let allLeads = [];
+let currentFilter = 'all';
+let currentLeadId = null;
+
+if (cfg.SUPABASE_URL && !cfg.SUPABASE_URL.includes('YOUR_PROJECT')) {
+  sb = supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+  loadLeads();
+} else {
+  document.getElementById('table-container').innerHTML = '<div class="empty"><h3>Supabase not configured</h3><p>Add your keys to js/config.js</p></div>';
+}
+
+async function loadLeads() {
+  if (!sb) return;
+  const { data, error } = await sb.from('business_leads').select('*').order('created_at', { ascending: false }).limit(500);
+  if (error) { console.error(error); return; }
+  allLeads = data || [];
+  updateStats();
+  renderTable();
+}
+
+function updateStats() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('stat-total').textContent = allLeads.length;
+  document.getElementById('stat-pending').textContent = allLeads.filter(l => l.outreach_status === 'pending').length;
+  document.getElementById('stat-sent').textContent = allLeads.filter(l => l.outreach_status === 'sent').length;
+  document.getElementById('stat-replied').textContent = allLeads.filter(l => l.outreach_status === 'replied').length;
+  document.getElementById('stat-today').textContent = allLeads.filter(l => l.article_date === today || l.created_at?.startsWith(today)).length;
+  document.getElementById('lead-count').textContent = `${allLeads.length} leads`;
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function renderTable() {
+  const search = document.getElementById('search').value.toLowerCase();
+  let leads = allLeads.filter(l => {
+    if (currentFilter !== 'all' && l.outreach_status !== currentFilter) return false;
+    if (search) {
+      const hay = `${l.business_name} ${l.city} ${l.state} ${l.incident_type} ${l.article_title}`.toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  if (!leads.length) {
+    document.getElementById('table-container').innerHTML = `<div class="empty"><h3>No leads found</h3><p>Run the monitor or adjust filters</p></div>`;
+    return;
+  }
+
+  const rows = leads.map(l => `
+    <tr>
+      <td>
+        ${l.business_name ? `<strong>${l.business_name}</strong><br>` : ''}
+        <span class="incident-tag">${l.incident_type || '—'}</span>
+      </td>
+      <td>${l.city || '—'}, ${l.state || ''}</td>
+      <td>
+        <a href="${l.article_url}" target="_blank" title="${l.article_title}" style="font-size:12px">${(l.article_title || '').substring(0, 60)}${l.article_title?.length > 60 ? '…' : ''}</a>
+        <div style="font-size:11px;color:var(--ink3);margin-top:2px">${l.article_date || ''} · ${l.source || ''}</div>
+      </td>
+      <td>${l.contact_email ? `<a href="mailto:${l.contact_email}">${l.contact_email}</a>` : '<span style="color:var(--ink3)">Not found</span>'}</td>
+      <td><span class="badge badge-${l.outreach_status}">${l.outreach_status}</span></td>
+      <td>
+        <div class="action-btns">
+          <button class="action-btn" onclick="previewEmail('${l.id}')">Preview</button>
+          ${l.contact_email ? `<button class="action-btn send" onclick="sendOne('${l.id}')">Send</button>` : ''}
+          <button class="action-btn skip" onclick="skipLead('${l.id}')">Skip</button>
+          <a class="action-btn" href="https://attorneyaitools.org/claims/${l.state_slug}/${l.city_slug}/${l.incident_slug}/" target="_blank">Page</a>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  document.getElementById('table-container').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>Business / Incident</th>
+        <th>Location</th>
+        <th>Article</th>
+        <th>Contact Email</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function previewEmail(id) {
+  const lead = allLeads.find(l => l.id === id);
+  if (!lead) return;
+  currentLeadId = id;
+  document.getElementById('modal-title').textContent = `Outreach: ${lead.business_name || 'Unknown Business'}`;
+  document.getElementById('modal-subject').textContent = lead.outreach_email_subject;
+  document.getElementById('modal-body').textContent = lead.outreach_email_body;
+  document.getElementById('modal-send-btn').onclick = () => sendOne(id);
+  document.getElementById('modal-send-btn').disabled = !lead.contact_email;
+  document.getElementById('modal-send-btn').title = lead.contact_email ? `Send to ${lead.contact_email}` : 'No email found';
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+async function sendOne(id) {
+  if (!confirm('Send this outreach email?')) return;
+  const res = await fetch(`${cfg.SUPABASE_URL}/functions/v1/send-outreach`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.SUPABASE_ANON_KEY}` },
+    body: JSON.stringify({ lead_id: id, auto_send: true })
+  });
+  const data = await res.json();
+  if (data.emails_sent > 0) { alert('✅ Email sent!'); closeModal(); loadLeads(); }
+  else alert('❌ Error: ' + (data.error || JSON.stringify(data)));
+}
+
+async function skipLead(id) {
+  if (!sb) return;
+  await sb.from('business_leads').update({ outreach_status: 'skipped' }).eq('id', id);
+  allLeads = allLeads.map(l => l.id === id ? { ...l, outreach_status: 'skipped' } : l);
+  renderTable(); updateStats();
+}
+
+async function runMonitor() {
+  if (!cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes('YOUR')) { alert('Configure Supabase in js/config.js first'); return; }
+  const btn = document.querySelector('.btn-outline');
+  btn.textContent = '⏳ Running...'; btn.disabled = true;
+  try {
+    const res = await fetch(`${cfg.SUPABASE_URL}/functions/v1/news-monitor`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.SUPABASE_ANON_KEY}` },
+      body: '{}'
+    });
+    const data = await res.json();
+    alert(`✅ Monitor complete!\n\nProcessed: ${data.processed} articles\nNew leads: ${data.leads_created}`);
+    loadLeads();
+  } catch(e) { alert('Error: ' + e.message); }
+  btn.textContent = '▶ Run Monitor Now'; btn.disabled = false;
+}
+
+// Close modal on outside click
+document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+// Auto-refresh every 30s
+setInterval(loadLeads, 30000);
+</script>
+</body>
+</html>
