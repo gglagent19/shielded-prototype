@@ -569,27 +569,51 @@ Reply "remove" to unsubscribe.`;
   return { subject, body };
 }
 
-// ── Fetch Google News RSS via CORS proxy (no API key, no CORS issues) ──────
+// ── Fetch Google News via rss2json.com (CORS-friendly, free, no key needed) ─
+function parseRSSXml(xml) {
+  const arts = [];
+  for (const m of xml.matchAll(/<item>([\s\S]*?)<\/item>/g)) {
+    const it = m[1];
+    const title = (it.match(/<title><!\[CDATA\[(.*?)\]\]>/s)?.[1] || it.match(/<title>(.*?)<\/title>/s)?.[1] || '').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').trim();
+    const link  = (it.match(/<link>(.*?)<\/link>/s)?.[1] || '').trim();
+    const desc  = (it.match(/<description><!\[CDATA\[(.*?)\]\]>/s)?.[1] || '').replace(/<[^>]+>/g,'').trim();
+    const src   = (it.match(/<source[^>]*>(.*?)<\/source>/s)?.[1] || 'Google News').trim();
+    const pub   = (it.match(/<pubDate>(.*?)<\/pubDate>/s)?.[1] || '').trim();
+    if (title && link) arts.push({ title, url: link, description: desc, source: src, publishedAt: pub });
+  }
+  return arts.slice(0, 8);
+}
+
 async function fetchNews(query) {
-  // Google News RSS → allorigins.win CORS proxy
   const rss = `https://news.google.com/rss/search?q=${encodeURIComponent(query + ' United States')}&hl=en-US&gl=US&ceid=US:en`;
-  const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(rss)}`;
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) return [];
-    const xml = await res.text();
-    const arts = [];
-    for (const m of xml.matchAll(/<item>([\s\S]*?)<\/item>/g)) {
-      const it = m[1];
-      const title = (it.match(/<title><!\[CDATA\[(.*?)\]\]>/)?.[1] || it.match(/<title>(.*?)<\/title>/)?.[1] || '').trim();
-      const link  = (it.match(/<link>(.*?)<\/link>/)?.[1] || '').trim();
-      const desc  = (it.match(/<description><!\[CDATA\[(.*?)\]\]>/)?.[1] || '').replace(/<[^>]+>/g,'').trim();
-      const src   = (it.match(/<source[^>]*>(.*?)<\/source>/)?.[1] || 'Google News').trim();
-      const pub   = (it.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] || '').trim();
-      if (title && link) arts.push({ title, url: link, description: desc, source: src, publishedAt: pub });
-    }
-    return arts.slice(0, 8);
-  } catch { return []; }
+
+  // Try 3 different CORS proxies in order — first one that works wins
+  const attempts = [
+    // 1. rss2json.com — parses RSS to clean JSON, CORS-friendly
+    async () => {
+      const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}&count=8`, { signal: AbortSignal.timeout(10000) });
+      const d = await r.json();
+      if (d.status !== 'ok' || !d.items?.length) throw new Error('no items');
+      return d.items.map(i => ({ title: i.title, url: i.link || i.guid, description: (i.description||'').replace(/<[^>]+>/g,''), source: i.author || 'Google News', publishedAt: i.pubDate }));
+    },
+    // 2. allorigins.win — general CORS proxy, returns raw XML
+    async () => {
+      const r = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(rss)}`, { signal: AbortSignal.timeout(10000) });
+      if (!r.ok) throw new Error('allorigins failed');
+      return parseRSSXml(await r.text());
+    },
+    // 3. corsproxy.io — another CORS proxy
+    async () => {
+      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(rss)}`, { signal: AbortSignal.timeout(10000) });
+      if (!r.ok) throw new Error('corsproxy failed');
+      return parseRSSXml(await r.text());
+    },
+  ];
+
+  for (const attempt of attempts) {
+    try { const arts = await attempt(); if (arts.length) return arts; } catch { continue; }
+  }
+  return [];
 }
 
 async function startMonitor() {
@@ -612,7 +636,7 @@ async function startMonitor() {
     document.getElementById('prog-pct').textContent = i + ' / ' + QUERIES.length;
   }
 
-  log('Scanning Google News for US business incidents…', 'info');
+  log('v3 — Scanning Google News RSS for US business incidents…', 'info');
 
   for (let i = 0; i < QUERIES.length; i++) {
     const query = QUERIES[i];
