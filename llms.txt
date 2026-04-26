@@ -1,0 +1,42 @@
+# Shielded — AttorneyAITools.org
+
+> Shielded is a free AI-powered tool that helps US small business owners understand their commercial insurance policies, identify underpaid claims, and generate dispute letters — without hiring a lawyer or public adjuster.
+
+## What this site covers
+
+- 162,000+ pages covering commercial insurance claims across 1,514 US cities and 106 incident types (fire, flood, theft, storm, equipment failure, cyber, slip & fall, and more)
+- State-specific claim rights for all 50 US states + DC — statute citations, time limits, bad faith laws
+- Step-by-step filing guides for each incident type
+- FAQ content for each city × incident combination
+- Blog posts on negotiating settlements and identifying underpaid claims
+- A methodology page explaining how fair settlement values are calculated
+
+## Who this is for
+
+Small business owners in the US who have experienced a commercial property loss and are navigating a claim with their insurer. Primary persona: restaurant, retail, and service business owners with active or recently closed claims.
+
+## Key data points
+
+- Average gap between first insurer offer and fair value: $14,200 (commercial property claims)
+- Coverage: All 50 US states + DC, 106 commercial incident types, 1,514 cities
+- Statute of limitations data for all 50 states (bad faith actions)
+- What's covered / what's commonly denied for each of 106 incident types
+
+## Site structure
+
+- `/` → Main app (policy analyzer)
+- `/app.html` → Full SPA prototype
+- `/claims/` → Claims hub (all states)
+- `/claims/[state]/` → State hub (all cities in that state)
+- `/claims/[state]/[city]/` → City hub (all 106 incident types)
+- `/claims/[state]/[city]/[incident]/` → Intersection page (specific guidance)
+- `/blog/` → Articles on insurance claims and negotiation
+- `/methodology/` → How settlement fair values are calculated
+
+## Important disclaimers
+
+This site provides informational content only. It is not a law firm and nothing on the site constitutes legal advice. Users should consult a licensed attorney in their state for their specific situation.
+
+## Contact
+
+Site: https://attorneyaitools.org

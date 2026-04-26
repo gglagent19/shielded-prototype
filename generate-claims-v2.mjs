@@ -1179,7 +1179,7 @@ const CITIES = [
 ];
 
 // ─── LEAN CSS ─────────────────────────────────────────────────────
-const CSS=`*{box-sizing:border-box;margin:0;padding:0}:root{--bg:#f6f3ee;--card:#fff;--subtle:#eeeae2;--ink:#14181f;--ink2:#2a3140;--ink3:#5b6472;--navy:#1c2333;--teal:#2a9d8f;--line:#e0dbd2;--r:10px}body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6}a{color:var(--navy);text-decoration:none}.wrap{max-width:1080px;margin:0 auto;padding:0 20px}.nav{background:var(--navy);padding:12px 0;position:sticky;top:0;z-index:99}.ni{display:flex;align-items:center;justify-content:space-between}.nl{color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;gap:7px}.na{display:flex;gap:20px}.na a{color:rgba(255,255,255,.65);font-size:12.5px}.nc{background:#fff;color:var(--navy);padding:6px 14px;border-radius:7px;font-size:12.5px;font-weight:600}.hero{background:linear-gradient(135deg,var(--navy) 0%,#243050 100%);color:#fff;padding:48px 0 36px}.hb{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,.75);margin-bottom:16px;text-transform:uppercase;letter-spacing:.04em}.hero h1{font-size:clamp(22px,3.5vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.25;margin-bottom:12px;max-width:640px}.hero p{font-size:14.5px;color:rgba(255,255,255,.72);max-width:560px;margin-bottom:22px}.ha{display:flex;gap:10px;flex-wrap:wrap}.bp{background:#fff;color:var(--navy);padding:10px 20px;border-radius:9px;font-weight:600;font-size:13.5px;display:inline-block}.bs{background:rgba(255,255,255,.1);color:#fff;padding:10px 20px;border-radius:9px;font-size:13.5px;border:1px solid rgba(255,255,255,.18);display:inline-block}.pg{padding:36px 0 56px}.g2{display:grid;grid-template-columns:1fr 300px;gap:32px;align-items:start}@media(max-width:760px){.g2{grid-template-columns:1fr}}.sec{margin-bottom:36px}.st{font-size:17px;font-weight:700;color:var(--navy);letter-spacing:-.015em;margin-bottom:14px}.lb{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:18px}.lb h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:14px}.li{display:flex;gap:10px;margin-bottom:10px;font-size:13.5px}.ll{font-weight:600;color:var(--navy);min-width:100px;flex-shrink:0}.lv{color:var(--ink2)}.cl,.dl{list-style:none;margin-bottom:14px}.cl li::before{content:"✓ ";color:var(--teal);font-weight:700}.dl li::before{content:"✗ ";color:#e05252;font-weight:700}.cl li,.dl li{font-size:13.5px;color:var(--ink2);margin-bottom:5px;padding-left:2px}.kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.tag{display:inline-block;background:var(--subtle);border-radius:14px;padding:3px 9px;font-size:11.5px;color:var(--ink3)}.sc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:16px}.sc h3{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:10px}.sc p{font-size:13px;color:var(--ink2);margin-bottom:14px;line-height:1.6}.sc ul{list-style:none}.sc ul li{font-size:12.5px;color:var(--ink2);padding:5px 0;border-bottom:1px solid var(--line)}.sc ul li:last-child{border-bottom:none}.warn{background:#fff8e1;border:1px solid #f5d060;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#7a5500;margin-bottom:20px;line-height:1.6}.bc{font-size:11.5px;color:rgba(255,255,255,.55);margin-bottom:10px}.bc a{color:rgba(255,255,255,.55)}.bc span{margin:0 5px;color:rgba(255,255,255,.35)}.ft{background:var(--navy);color:rgba(255,255,255,.5);padding:32px 0;margin-top:56px;font-size:12px}.fd{border-top:1px solid rgba(255,255,255,.1);margin-top:24px;padding-top:16px;font-size:11px;color:rgba(255,255,255,.35);line-height:1.6}hr{border:none;border-top:1px solid var(--line);margin:24px 0}`;
+const CSS=`*{box-sizing:border-box;margin:0;padding:0}:root{--bg:#f6f3ee;--card:#fff;--subtle:#eeeae2;--ink:#14181f;--ink2:#2a3140;--ink3:#5b6472;--navy:#1c2333;--teal:#2a9d8f;--line:#e0dbd2;--r:10px}body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6}a{color:var(--navy);text-decoration:none}.wrap{max-width:1080px;margin:0 auto;padding:0 20px}.nav{background:var(--navy);padding:12px 0;position:sticky;top:0;z-index:99}.ni{display:flex;align-items:center;justify-content:space-between}.nl{color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;gap:7px}.na{display:flex;gap:20px}.na a{color:rgba(255,255,255,.65);font-size:12.5px}.nc{background:#fff;color:var(--navy);padding:6px 14px;border-radius:7px;font-size:12.5px;font-weight:600}.hero{background:linear-gradient(135deg,var(--navy) 0%,#243050 100%);color:#fff;padding:48px 0 36px}.hb{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,.75);margin-bottom:16px;text-transform:uppercase;letter-spacing:.04em}.hero h1{font-size:clamp(22px,3.5vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.25;margin-bottom:12px;max-width:640px}.hero p{font-size:14.5px;color:rgba(255,255,255,.72);max-width:560px;margin-bottom:22px}.ha{display:flex;gap:10px;flex-wrap:wrap}.bp{background:#fff;color:var(--navy);padding:10px 20px;border-radius:9px;font-weight:600;font-size:13.5px;display:inline-block}.bs{background:rgba(255,255,255,.1);color:#fff;padding:10px 20px;border-radius:9px;font-size:13.5px;border:1px solid rgba(255,255,255,.18);display:inline-block}.pg{padding:36px 0 56px}.g2{display:grid;grid-template-columns:1fr 300px;gap:32px;align-items:start}@media(max-width:760px){.g2{grid-template-columns:1fr}}.sec{margin-bottom:36px}.st{font-size:17px;font-weight:700;color:var(--navy);letter-spacing:-.015em;margin-bottom:14px}.lb{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:18px}.lb h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:14px}.li{display:flex;gap:10px;margin-bottom:10px;font-size:13.5px}.ll{font-weight:600;color:var(--navy);min-width:100px;flex-shrink:0}.lv{color:var(--ink2)}.cl,.dl{list-style:none;margin-bottom:14px}.cl li::before{content:"✓ ";color:var(--teal);font-weight:700}.dl li::before{content:"✗ ";color:#e05252;font-weight:700}.cl li,.dl li{font-size:13.5px;color:var(--ink2);margin-bottom:5px;padding-left:2px}.kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.tag{display:inline-block;background:var(--subtle);border-radius:14px;padding:3px 9px;font-size:11.5px;color:var(--ink3)}.sc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:16px}.sc h3{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:10px}.sc p{font-size:13px;color:var(--ink2);margin-bottom:14px;line-height:1.6}.sc ul{list-style:none}.sc ul li{font-size:12.5px;color:var(--ink2);padding:5px 0;border-bottom:1px solid var(--line)}.sc ul li:last-child{border-bottom:none}.warn{background:#fff8e1;border:1px solid #f5d060;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#7a5500;margin-bottom:20px;line-height:1.6}.bc{font-size:11.5px;color:rgba(255,255,255,.55);margin-bottom:10px}.bc a{color:rgba(255,255,255,.55)}.bc span{margin:0 5px;color:rgba(255,255,255,.35)}.ft{background:var(--navy);color:rgba(255,255,255,.5);padding:32px 0;margin-top:56px;font-size:12px}.fd{border-top:1px solid rgba(255,255,255,.1);margin-top:24px;padding-top:16px;font-size:11px;color:rgba(255,255,255,.35);line-height:1.6}hr{border:none;border-top:1px solid var(--line);margin:24px 0}.steps{margin:14px 0}.step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}.sn{background:var(--navy);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}.faq-sec{background:var(--subtle);padding:36px 0;margin-top:32px}.faq details{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px}.faq summary{padding:14px 18px;font-weight:600;font-size:14px;color:var(--navy);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}.faq summary::-webkit-details-marker{display:none}.faq summary::after{content:"＋";font-size:18px;color:var(--teal)}.faq details[open] summary::after{content:"−"}.faq details[open] summary{border-bottom:1px solid var(--line)}.faq details p{padding:14px 18px;font-size:13.5px;color:var(--ink2);line-height:1.65}`;
 
 // ─── INTERSECTION PAGE TEMPLATE ───────────────────────────────────
 function intersectionPage(incident, state, city) {
@@ -1198,6 +1198,8 @@ function intersectionPage(incident, state, city) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>${CSS}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E3B3VNZZGK"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-E3B3VNZZGK');</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"${incident.name} Insurance Claim in ${city.n}, ${state.abbr}","description":"${desc}","url":"https://attorneyaitools.org/claims/${state.slug}/${city.s}/${incident.slug}/"}</script>
 </head><body>
 <nav class="nav"><div class="wrap ni">
@@ -1241,6 +1243,18 @@ function intersectionPage(incident, state, city) {
 
 <hr>
 <div class="sec">
+<div class="st">How to File a ${incident.name} Claim in ${city.n}, ${state.abbr}</div>
+<div class="steps">
+<div class="step"><span class="sn">1</span><div><strong>Document everything immediately</strong> — Photograph and video all damage before any cleanup or repairs. Preserve every receipt, invoice, and financial record related to the loss.</div></div>
+<div class="step"><span class="sn">2</span><div><strong>Notify your insurer promptly</strong> — Most ${state.name} policies require notice within a specific timeframe. Under ${state.statute}, late notice can be used to contest coverage. Report by phone and follow up in writing.</div></div>
+<div class="step"><span class="sn">3</span><div><strong>Submit a sworn proof of loss</strong> — File an itemized proof of loss within the time specified in your policy. Keep a dated copy. This document is your formal demand for coverage.</div></div>
+<div class="step"><span class="sn">4</span><div><strong>Request the adjuster's line-item breakdown</strong> — You are entitled to a written itemization of how your settlement was calculated. Compare each line against your own contractor estimates and policy language.</div></div>
+<div class="step"><span class="sn">5</span><div><strong>Dispute in writing if underpaid</strong> — Cite the specific policy clauses that support a higher amount. ${state.note} You have <strong>${state.sol} year${state.sol>1?'s':''}</strong> from the date of loss.</div></div>
+</div>
+</div>
+
+<hr>
+<div class="sec">
 <div class="st">Search Keywords for This Claim Type</div>
 <div class="kw">${kwtags}
 <span class="tag">${incident.name.toLowerCase()} insurance claim ${city.n.toLowerCase()}</span>
@@ -1276,6 +1290,18 @@ function intersectionPage(incident, state, city) {
 </div>
 </div></div></div>
 
+<div class="faq-sec"><div class="wrap">
+<div class="st" style="margin-bottom:16px">Frequently Asked Questions — ${incident.name} in ${city.n}, ${state.abbr}</div>
+<div class="faq">
+<details><summary>How long do I have to file a ${incident.name.toLowerCase()} insurance claim in ${city.n}?</summary>
+<p>Under ${state.statute}, ${city.n} businesses generally have <strong>${state.sol} year${state.sol>1?'s':''}</strong> from the date of loss to pursue a bad faith action. Your policy may also require prompt notice (typically 30–60 days) and a sworn proof of loss within a shorter window. ${state.note} Consult a licensed ${state.name} attorney for your specific timeline.</p></details>
+<details><summary>What should I do immediately after a ${incident.name.toLowerCase()} at my ${city.n} business?</summary>
+<p>1) Ensure safety and contact emergency services if needed. 2) Photograph and video all damage before any cleanup. 3) Notify your insurer promptly — late notice can be used to contest coverage. 4) Preserve all damaged property until your adjuster inspects it. 5) Keep all receipts for emergency mitigation, repairs, and any temporary relocation costs.</p></details>
+<details><summary>Can my insurer deny my ${incident.name.toLowerCase()} claim in ${state.name}?</summary>
+<p>Yes — common denial reasons for ${incident.name.toLowerCase()} claims include: ${incident.denied}. If your claim is denied, request the specific policy provision in writing. Under ${state.statute}, insurers must provide a written explanation citing the exact exclusion. You have the right to dispute any denial.</p></details>
+</div>
+</div></div>
+
 <footer class="ft"><div class="wrap">
 <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
 <span style="color:#fff;font-weight:600">Shielded</span>
@@ -1304,6 +1330,8 @@ function cityIncidentHub(city, state) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>${CSS}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E3B3VNZZGK"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-E3B3VNZZGK');</script>
 </head><body>
 <nav class="nav"><div class="wrap ni">
 <a class="nl" href="../../index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5.5V11C4 15.5 7.5 19.7 12 21C16.5 19.7 20 15.5 20 11V5.5L12 2Z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#7ecdc8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Shielded</a>
@@ -1369,35 +1397,54 @@ console.log(`   ${count.toLocaleString()} intersection pages (${CITIES.length} c
 console.log(`   ${total.toLocaleString()} new pages total\n`);
 console.log('Add more cities to CITIES[] to scale further.\n');
 
-// ─── GENERATE XML SITEMAP ─────────────────────────────────────────
-console.log('📋 Generating sitemap...');
+// ─── GENERATE SPLIT XML SITEMAPS (max 50k URLs each) ──────────────
+console.log('📋 Generating split sitemaps...');
 const BASE_URL = 'https://attorneyaitools.org';
 const today = new Date().toISOString().split('T')[0];
 
-let urls = [`${BASE_URL}/claims/`];
+// Priority helper
+const prio = u => u === `${BASE_URL}/claims/` ? '1.0' : u.split('/').length <= 5 ? '0.8' : '0.6';
 
-// State pages
-for (const s of STATES) urls.push(`${BASE_URL}/claims/${s.slug}/`);
-
-// City hubs + intersection pages
+// Collect all URLs
+const allUrls = [
+  `${BASE_URL}/`,
+  `${BASE_URL}/app.html`,
+  `${BASE_URL}/methodology/`,
+  `${BASE_URL}/blog/`,
+  `${BASE_URL}/blog/was-my-insurance-claim-underpaid/`,
+  `${BASE_URL}/blog/how-to-negotiate-insurance-settlement/`,
+  `${BASE_URL}/claims/`,
+];
+for (const s of STATES) allUrls.push(`${BASE_URL}/claims/${s.slug}/`);
 for (const city of CITIES) {
   const state = STATES.find(s=>s.abbr===city.a);
   if (!state) continue;
-  urls.push(`${BASE_URL}/claims/${state.slug}/${city.s}/`);
+  allUrls.push(`${BASE_URL}/claims/${state.slug}/${city.s}/`);
   for (const inc of INCIDENTS) {
-    urls.push(`${BASE_URL}/claims/${state.slug}/${city.s}/${inc.slug}/`);
+    allUrls.push(`${BASE_URL}/claims/${state.slug}/${city.s}/${inc.slug}/`);
   }
 }
 
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(u=>`  <url>
-    <loc>${u}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>${u===`${BASE_URL}/claims/`?'1.0':u.split('/').length<=5?'0.8':'0.6'}</priority>
-  </url>`).join('\n')}
-</urlset>`;
+// Split into chunks of 50,000
+const CHUNK = 50000;
+const chunks = [];
+for (let i = 0; i < allUrls.length; i += CHUNK) chunks.push(allUrls.slice(i, i + CHUNK));
 
-write(join(__dirname,'claims-sitemap.xml'), sitemap);
-console.log(`✅ Sitemap: claims-sitemap.xml (${urls.length.toLocaleString()} URLs)\n`);
+const sitemapFiles = chunks.map((chunk, idx) => {
+  const fname = `sitemap-claims-${idx+1}.xml`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${chunk.map(u=>`  <url>\n    <loc>${u}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${prio(u)}</priority>\n  </url>`).join('\n')}
+</urlset>`;
+  write(join(__dirname, fname), xml);
+  console.log(`  ✅ ${fname}: ${chunk.length.toLocaleString()} URLs`);
+  return fname;
+});
+
+// Sitemap index
+const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapFiles.map(f=>`  <sitemap>\n    <loc>${BASE_URL}/${f}</loc>\n    <lastmod>${today}</lastmod>\n  </sitemap>`).join('\n')}
+</sitemapindex>`;
+write(join(__dirname,'sitemap-index.xml'), sitemapIndex);
+console.log(`✅ sitemap-index.xml → ${sitemapFiles.length} sub-sitemaps, ${allUrls.length.toLocaleString()} total URLs\n`);
