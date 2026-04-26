@@ -788,6 +788,206 @@ const CITIES = [
   {n:'Montpelier',s:'montpelier-vt2',a:'VT'},{n:'Richmond',s:'richmond-va2',a:'VA'},
   {n:'Olympia',s:'olympia-wa2',a:'WA'},{n:'Charleston',s:'charleston-wv2',a:'WV'},
   {n:'Madison',s:'madison-wi2',a:'WI'},{n:'Cheyenne',s:'cheyenne-wy2',a:'WY'},
+
+  // ── FINAL BATCH — 300 more cities to reach ~1,350 ───────────────
+
+  // California (30)
+  {n:'Indio',s:'indio-ca',a:'CA'},{n:'Palm Desert',s:'palm-desert',a:'CA'},{n:'Palm Springs',s:'palm-springs-ca',a:'CA'},
+  {n:'San Jacinto',s:'san-jacinto',a:'CA'},{n:'Perris',s:'perris-ca',a:'CA'},{n:'Eastvale',s:'eastvale',a:'CA'},
+  {n:'Beaumont',s:'beaumont-ca',a:'CA'},{n:'Camarillo',s:'camarillo',a:'CA'},{n:'San Luis Obispo',s:'san-luis-obispo',a:'CA'},
+  {n:'Santa Barbara',s:'santa-barbara',a:'CA'},{n:'Santa Maria',s:'santa-maria-ca',a:'CA'},{n:'Lompoc',s:'lompoc',a:'CA'},
+  {n:'Santa Cruz',s:'santa-cruz-ca',a:'CA'},{n:'Watsonville',s:'watsonville',a:'CA'},{n:'Gilroy',s:'gilroy',a:'CA'},
+  {n:'Morgan Hill',s:'morgan-hill',a:'CA'},{n:'San Clemente',s:'san-clemente',a:'CA'},{n:'Laguna Niguel',s:'laguna-niguel',a:'CA'},
+  {n:'Aliso Viejo',s:'aliso-viejo',a:'CA'},{n:'Dana Point',s:'dana-point',a:'CA'},{n:'Madera',s:'madera-ca',a:'CA'},
+  {n:'Hanford',s:'hanford-ca',a:'CA'},{n:'Tulare',s:'tulare-ca',a:'CA'},{n:'Porterville',s:'porterville-ca',a:'CA'},
+  {n:'Apple Valley',s:'apple-valley-ca',a:'CA'},{n:'El Centro',s:'el-centro',a:'CA'},{n:'Banning',s:'banning-ca',a:'CA'},
+  {n:'Paso Robles',s:'paso-robles',a:'CA'},{n:'Goleta',s:'goleta-ca',a:'CA'},{n:'Cathedral City',s:'cathedral-city',a:'CA'},
+
+  // Texas (12)
+  {n:'Katy',s:'katy-tx',a:'TX'},{n:'Galveston',s:'galveston-tx',a:'TX'},{n:'The Woodlands',s:'the-woodlands',a:'TX'},
+  {n:'Wylie',s:'wylie-tx',a:'TX'},{n:'Sachse',s:'sachse-tx',a:'TX'},{n:'Cedar Hill',s:'cedar-hill-tx',a:'TX'},
+  {n:'Duncanville',s:'duncanville-tx',a:'TX'},{n:'DeSoto',s:'desoto-tx',a:'TX'},{n:'Lancaster',s:'lancaster-tx',a:'TX'},
+  {n:'Texarkana',s:'texarkana-tx',a:'TX'},{n:'Victoria',s:'victoria-tx',a:'TX'},{n:'Nacogdoches',s:'nacogdoches',a:'TX'},
+
+  // Florida (14)
+  {n:'Naples',s:'naples-fl',a:'FL'},{n:'Bonita Springs',s:'bonita-springs',a:'FL'},{n:'Altamonte Springs',s:'altamonte-springs',a:'FL'},
+  {n:'Winter Springs',s:'winter-springs',a:'FL'},{n:'Jupiter',s:'jupiter-fl',a:'FL'},{n:'Lake Worth',s:'lake-worth-fl',a:'FL'},
+  {n:'Wellington',s:'wellington-fl',a:'FL'},{n:'Royal Palm Beach',s:'royal-palm-beach',a:'FL'},{n:'Port Charlotte',s:'port-charlotte',a:'FL'},
+  {n:'Stuart',s:'stuart-fl',a:'FL'},{n:'Vero Beach',s:'vero-beach',a:'FL'},{n:'Titusville',s:'titusville-fl',a:'FL'},
+  {n:'Palm City',s:'palm-city-fl',a:'FL'},{n:'Coconut Creek',s:'coconut-creek',a:'FL'},
+
+  // Ohio (10)
+  {n:'Dublin',s:'dublin-oh',a:'OH'},{n:'Westerville',s:'westerville-oh',a:'OH'},{n:'Reynoldsburg',s:'reynoldsburg',a:'OH'},
+  {n:'Grove City',s:'grove-city-oh',a:'OH'},{n:'Hilliard',s:'hilliard-oh',a:'OH'},{n:'Gahanna',s:'gahanna',a:'OH'},
+  {n:'Beavercreek',s:'beavercreek',a:'OH'},{n:'Fairborn',s:'fairborn',a:'OH'},{n:'Mason',s:'mason-oh',a:'OH'},
+  {n:'Stow',s:'stow-oh',a:'OH'},
+
+  // Georgia (8)
+  {n:'Cumming',s:'cumming-ga',a:'GA'},{n:'Canton',s:'canton-ga',a:'GA'},{n:'Cartersville',s:'cartersville',a:'GA'},
+  {n:'Acworth',s:'acworth-ga',a:'GA'},{n:'Douglasville',s:'douglasville',a:'GA'},{n:'Newnan',s:'newnan',a:'GA'},
+  {n:'Peachtree Corners',s:'peachtree-corners',a:'GA'},{n:'McDonough',s:'mcdonough',a:'GA'},
+
+  // North Carolina (6)
+  {n:'Morrisville',s:'morrisville-nc',a:'NC'},{n:'Garner',s:'garner-nc',a:'NC'},{n:'Statesville',s:'statesville-nc',a:'NC'},
+  {n:'Hickory',s:'hickory-nc',a:'NC'},{n:'Salisbury',s:'salisbury-nc',a:'NC'},{n:'Goldsboro',s:'goldsboro-nc',a:'NC'},
+
+  // Michigan (8)
+  {n:'Muskegon',s:'muskegon-mi',a:'MI'},{n:'Holland',s:'holland-mi',a:'MI'},{n:'Battle Creek',s:'battle-creek',a:'MI'},
+  {n:'Portage',s:'portage-mi',a:'MI'},{n:'Wyoming',s:'wyoming-mi',a:'MI'},{n:'Kentwood',s:'kentwood-mi',a:'MI'},
+  {n:'East Lansing',s:'east-lansing',a:'MI'},{n:'Ypsilanti',s:'ypsilanti',a:'MI'},
+
+  // Illinois (8)
+  {n:'Normal',s:'normal-il',a:'IL'},{n:'Carbondale',s:'carbondale-il',a:'IL'},{n:'Belleville',s:'belleville-il',a:'IL'},
+  {n:'Orland Park',s:'orland-park',a:'IL'},{n:'Oak Lawn',s:'oak-lawn-il',a:'IL'},{n:'Tinley Park',s:'tinley-park',a:'IL'},
+  {n:'Bolingbrook',s:'bolingbrook-il',a:'IL'},{n:'Carol Stream',s:'carol-stream',a:'IL'},
+
+  // New York (8)
+  {n:'Hicksville',s:'hicksville-ny',a:'NY'},{n:'Amherst',s:'amherst-ny',a:'NY'},{n:'Cheektowaga',s:'cheektowaga',a:'NY'},
+  {n:'Tonawanda',s:'tonawanda-ny',a:'NY'},{n:'West Seneca',s:'west-seneca',a:'NY'},{n:'Bay Shore',s:'bay-shore-ny',a:'NY'},
+  {n:'Centereach',s:'centereach-ny',a:'NY'},{n:'Commack',s:'commack-ny',a:'NY'},
+
+  // New Jersey (6)
+  {n:'Piscataway',s:'piscataway-nj',a:'NJ'},{n:'Irvington',s:'irvington-nj',a:'NJ'},{n:'East Brunswick',s:'east-brunswick-nj',a:'NJ'},
+  {n:'Cherry Hill',s:'cherry-hill-nj',a:'NJ'},{n:'Hackensack',s:'hackensack',a:'NJ'},{n:'Middletown',s:'middletown-nj',a:'NJ'},
+
+  // Pennsylvania (6)
+  {n:'West Chester',s:'west-chester-pa',a:'PA'},{n:'Coatesville',s:'coatesville-pa',a:'PA'},{n:'Phoenixville',s:'phoenixville-pa',a:'PA'},
+  {n:'Pottstown',s:'pottstown-pa',a:'PA'},{n:'Upper Darby',s:'upper-darby',a:'PA'},{n:'Chester',s:'chester-pa2',a:'PA'},
+
+  // Virginia (5)
+  {n:'Winchester',s:'winchester-va',a:'VA'},{n:'Danville',s:'danville-va',a:'VA'},{n:'Roanoke',s:'roanoke-va2',a:'VA'},
+  {n:'Harrisonburg',s:'harrisonburg-va2',a:'VA'},{n:'Staunton',s:'staunton-va',a:'VA'},
+
+  // Washington (5)
+  {n:'Spokane Valley',s:'spokane-valley',a:'WA'},{n:'Burien',s:'burien-wa',a:'WA'},{n:'Sammamish',s:'sammamish',a:'WA'},
+  {n:'Issaquah',s:'issaquah-wa',a:'WA'},{n:'Walla Walla',s:'walla-walla',a:'WA'},
+
+  // Massachusetts (5)
+  {n:'Peabody',s:'peabody-ma',a:'MA'},{n:'Medford',s:'medford-ma',a:'MA'},{n:'Taunton',s:'taunton-ma',a:'MA'},
+  {n:'Attleboro',s:'attleboro',a:'MA'},{n:'Revere',s:'revere-ma',a:'MA'},
+
+  // Colorado (5)
+  {n:'Grand Junction',s:'grand-junction-co',a:'CO'},{n:'Brighton',s:'brighton-co',a:'CO'},{n:'Pueblo',s:'pueblo-co2',a:'CO'},
+  {n:'Highlands Ranch',s:'highlands-ranch-co',a:'CO'},{n:'Englewood',s:'englewood-co',a:'CO'},
+
+  // Minnesota (5)
+  {n:'Edina',s:'edina-mn',a:'MN'},{n:'Richfield',s:'richfield-mn',a:'MN'},{n:'St. Louis Park',s:'st-louis-park-mn',a:'MN'},
+  {n:'Minnetonka',s:'minnetonka-mn',a:'MN'},{n:'Fridley',s:'fridley-mn',a:'MN'},
+
+  // Wisconsin (5)
+  {n:'West Bend',s:'west-bend-wi',a:'WI'},{n:'Menomonee Falls',s:'menomonee-falls',a:'WI'},{n:'Neenah',s:'neenah-wi',a:'WI'},
+  {n:'Menasha',s:'menasha-wi',a:'WI'},{n:'Wausau',s:'wausau-wi',a:'WI'},
+
+  // South Carolina (4)
+  {n:'Greer',s:'greer-sc',a:'SC'},{n:'Hilton Head Island',s:'hilton-head',a:'SC'},{n:'Aiken',s:'aiken-sc',a:'SC'},
+  {n:'Lexington',s:'lexington-sc',a:'SC'},
+
+  // Alabama (4)
+  {n:'Vestavia Hills',s:'vestavia-hills',a:'AL'},{n:'Prattville',s:'prattville-al',a:'AL'},{n:'Madison',s:'madison-al',a:'AL'},
+  {n:'Phenix City',s:'phenix-city',a:'AL'},
+
+  // Utah (5)
+  {n:'Logan',s:'logan-ut',a:'UT'},{n:'Tooele',s:'tooele-ut',a:'UT'},{n:'Spanish Fork',s:'spanish-fork',a:'UT'},
+  {n:'Riverton',s:'riverton-ut',a:'UT'},{n:'American Fork',s:'american-fork',a:'UT'},
+
+  // Kansas (4)
+  {n:'Lenexa',s:'lenexa-ks',a:'KS'},{n:'Garden City',s:'garden-city-ks',a:'KS'},{n:'Hays',s:'hays-ks',a:'KS'},
+  {n:'Leavenworth',s:'leavenworth-ks',a:'KS'},
+
+  // Iowa (4)
+  {n:'Marion',s:'marion-ia',a:'IA'},{n:'Bettendorf',s:'bettendorf-ia',a:'IA'},{n:'Urbandale',s:'urbandale-ia',a:'IA'},
+  {n:'Johnston',s:'johnston-ia',a:'IA'},
+
+  // Missouri (4)
+  {n:'Wentzville',s:'wentzville-mo',a:'MO'},{n:'Raymore',s:'raymore-mo',a:'MO'},{n:'Ballwin',s:'ballwin-mo',a:'MO'},
+  {n:'Chesterfield',s:'chesterfield-mo',a:'MO'},
+
+  // Oklahoma (4)
+  {n:'Owasso',s:'owasso-ok',a:'OK'},{n:'Mustang',s:'mustang-ok',a:'OK'},{n:'Sand Springs',s:'sand-springs-ok',a:'OK'},
+  {n:'Ponca City',s:'ponca-city',a:'OK'},
+
+  // Arizona (3)
+  {n:'Prescott Valley',s:'prescott-valley-az',a:'AZ'},{n:'El Mirage',s:'el-mirage-az',a:'AZ'},{n:'Sedona',s:'sedona-az',a:'AZ'},
+
+  // Oregon (4)
+  {n:'Tigard',s:'tigard-or',a:'OR'},{n:'Lake Oswego',s:'lake-oswego',a:'OR'},{n:'Oregon City',s:'oregon-city',a:'OR'},
+  {n:'Hillsboro',s:'hillsboro-or2',a:'OR'},
+
+  // Indiana (4)
+  {n:'Noblesville',s:'noblesville-in',a:'IN'},{n:'Westfield',s:'westfield-in',a:'IN'},{n:'Columbus',s:'columbus-in2',a:'IN'},
+  {n:'Kokomo',s:'kokomo-in',a:'IN'},
+
+  // Tennessee (4)
+  {n:'Mount Juliet',s:'mount-juliet-tn',a:'TN'},{n:'Oak Ridge',s:'oak-ridge-tn',a:'TN'},{n:'Morristown',s:'morristown-tn',a:'TN'},
+  {n:'Germantown',s:'germantown-tn',a:'TN'},
+
+  // Maryland (4)
+  {n:'Columbia',s:'columbia-md',a:'MD'},{n:'Ellicott City',s:'ellicott-city',a:'MD'},{n:'Hagerstown',s:'hagerstown-md2',a:'MD'},
+  {n:'Cumberland',s:'cumberland-md',a:'MD'},
+
+  // Louisiana (3)
+  {n:'Houma',s:'houma-la2',a:'LA'},{n:'Sulphur',s:'sulphur-la',a:'LA'},{n:'Natchitoches',s:'natchitoches',a:'LA'},
+
+  // Kentucky (3)
+  {n:'Georgetown',s:'georgetown-ky',a:'KY'},{n:'Somerset',s:'somerset-ky',a:'KY'},{n:'Paducah',s:'paducah-ky2',a:'KY'},
+
+  // Arkansas (3)
+  {n:'Hot Springs',s:'hot-springs-ar',a:'AR'},{n:'West Memphis',s:'west-memphis-ar',a:'AR'},{n:'Russellville',s:'russellville-ar',a:'AR'},
+
+  // Mississippi (3)
+  {n:'Ridgeland',s:'ridgeland-ms',a:'MS'},{n:'Brandon',s:'brandon-ms',a:'MS'},{n:'Hattiesburg',s:'hattiesburg-ms2',a:'MS'},
+
+  // Connecticut (3)
+  {n:'Greenwich',s:'greenwich-ct',a:'CT'},{n:'Manchester',s:'manchester-ct',a:'CT'},{n:'Enfield',s:'enfield-ct',a:'CT'},
+
+  // Nebraska (3)
+  {n:'Papillion',s:'papillion-ne',a:'NE'},{n:'La Vista',s:'la-vista-ne',a:'NE'},{n:'Norfolk',s:'norfolk-ne',a:'NE'},
+
+  // Nevada (2)
+  {n:'Mesquite',s:'mesquite-nv',a:'NV'},{n:'Elko',s:'elko-nv',a:'NV'},
+
+  // New Mexico (2)
+  {n:'Alamogordo',s:'alamogordo-nm',a:'NM'},{n:'Carlsbad',s:'carlsbad-nm',a:'NM'},
+
+  // Hawaii (3)
+  {n:'Waipahu',s:'waipahu',a:'HI'},{n:'Kihei',s:'kihei',a:'HI'},{n:'Kahului',s:'kahului',a:'HI'},
+
+  // Idaho (2)
+  {n:'Rexburg',s:'rexburg-id',a:'ID'},{n:'Post Falls',s:'post-falls',a:'ID'},
+
+  // New Hampshire (2)
+  {n:'Salem',s:'salem-nh',a:'NH'},{n:'Merrimack',s:'merrimack-nh',a:'NH'},
+
+  // Montana (2)
+  {n:'Havre',s:'havre-mt',a:'MT'},{n:'Anaconda',s:'anaconda-mt',a:'MT'},
+
+  // West Virginia (2)
+  {n:'Clarksburg',s:'clarksburg-wv',a:'WV'},{n:'Morgantown',s:'morgantown-wv2',a:'WV'},
+
+  // Alaska (2)
+  {n:'Kodiak',s:'kodiak-ak',a:'AK'},{n:'Palmer',s:'palmer-ak',a:'AK'},
+
+  // Maine (2)
+  {n:'Brunswick',s:'brunswick-me',a:'ME'},{n:'Sanford',s:'sanford-me',a:'ME'},
+
+  // Vermont (2)
+  {n:'Winooski',s:'winooski-vt',a:'VT'},{n:'Bennington',s:'bennington-vt',a:'VT'},
+
+  // Wyoming (2)
+  {n:'Riverton',s:'riverton-wy',a:'WY'},{n:'Green River',s:'green-river-wy',a:'WY'},
+
+  // Rhode Island (2)
+  {n:'Central Falls',s:'central-falls-ri',a:'RI'},{n:'Woonsocket',s:'woonsocket-ri2',a:'RI'},
+
+  // North Dakota (2)
+  {n:'Jamestown',s:'jamestown-nd',a:'ND'},{n:'Dickinson',s:'dickinson-nd',a:'ND'},
+
+  // South Dakota (2)
+  {n:'Huron',s:'huron-sd',a:'SD'},{n:'Spearfish',s:'spearfish-sd',a:'SD'},
+
+  // Delaware (2)
+  {n:'Seaford',s:'seaford-de',a:'DE'},{n:'Georgetown',s:'georgetown-de',a:'DE'},
+
 ];
 
 // ─── LEAN CSS ─────────────────────────────────────────────────────

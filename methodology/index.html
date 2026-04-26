@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How Shielded Works — Methodology & Data Sources | Shielded</title>
+<meta name="description" content="How Shielded analyzes insurance policies: data sources, methodology, accuracy standards, and what every generated report cites. Not legal advice — informational only.">
+<link rel="canonical" href="https://attorneyaitools.org/methodology/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Shielded Methodology — How Insurance Policy Analysis Works",
+  "description": "Transparent explanation of how Shielded analyzes insurance policies, what data sources are used, and how every finding is cited.",
+  "url": "https://attorneyaitools.org/methodology/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shielded",
+    "url": "https://attorneyaitools.org"
+  }
+}
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f6f3ee;--bg-card:#fff;--bg-subtle:#eeeae2;--bg-muted:#e8e3da;
+  --ink:#14181f;--ink-2:#2a3140;--ink-3:#5b6472;--ink-4:#8a9097;
+  --navy:#1c2333;--navy-2:#2a3a5c;--teal:#2a9d8f;--amber:#f59e0b;
+  --line:#e0dbd2;--r:10px;--r-lg:14px
+}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;font-size:15px}
+a{color:var(--navy);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:900px;margin:0 auto;padding:0 24px}
+.wrap-wide{max-width:1100px;margin:0 auto;padding:0 24px}
+
+/* Nav */
+.nav{background:var(--navy);padding:14px 0;position:sticky;top:0;z-index:100}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{color:#fff;font-weight:700;font-size:16px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.nav-links{display:flex;gap:24px}
+.nav-links a{color:rgba(255,255,255,.65);font-size:13px}
+.nav-cta{background:#fff;color:var(--navy);padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600}
+.nav-cta:hover{background:#f0ede8;text-decoration:none}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#243050 100%);color:#fff;padding:60px 0 48px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:5px 12px;font-size:11.5px;color:rgba(255,255,255,.8);margin-bottom:20px;letter-spacing:.04em;text-transform:uppercase}
+.hero h1{font-family:'Instrument Serif',Georgia,serif;font-size:clamp(32px,4vw,52px);font-weight:400;line-height:1.15;margin-bottom:16px;max-width:700px}
+.hero p{font-size:16px;color:rgba(255,255,255,.72);max-width:580px;line-height:1.65}
+
+/* Content */
+.page{padding:56px 0 80px}
+.toc{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;margin-bottom:48px}
+.toc h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin-bottom:14px}
+.toc ol{list-style:decimal;padding-left:20px}
+.toc ol li{margin-bottom:8px}
+.toc ol li a{font-size:14px;color:var(--navy);font-weight:500}
+
+/* Section headings */
+.section{margin-bottom:56px;scroll-margin-top:80px}
+.section h2{font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--navy);margin-bottom:8px;padding-bottom:10px;border-bottom:2px solid var(--teal)}
+.section h3{font-size:16px;font-weight:600;color:var(--navy);margin:24px 0 10px}
+.section p{font-size:14.5px;color:var(--ink-2);line-height:1.7;margin-bottom:14px}
+.section ul,.section ol{padding-left:20px;margin-bottom:16px}
+.section ul li,.section ol li{font-size:14.5px;color:var(--ink-2);line-height:1.65;margin-bottom:7px}
+
+/* Source cards */
+.source-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin:20px 0}
+.source-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.source-card .sc-icon{font-size:24px;margin-bottom:10px}
+.source-card h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.source-card p{font-size:13px;color:var(--ink-3);line-height:1.6}
+.source-card .sc-cite{font-size:12px;color:var(--teal);font-weight:500;margin-top:8px;font-family:monospace}
+
+/* Step flow */
+.steps{counter-reset:step;margin:20px 0}
+.step{display:flex;gap:16px;margin-bottom:20px;align-items:flex-start}
+.step-num{counter-increment:step;background:var(--navy);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px}
+.step-num::before{content:counter(step)}
+.step-body h4{font-size:14.5px;font-weight:600;color:var(--navy);margin-bottom:5px}
+.step-body p{font-size:13.5px;color:var(--ink-2);line-height:1.65}
+
+/* Warning boxes */
+.warn-box{border-radius:var(--r);padding:18px 20px;margin:20px 0}
+.warn-box.yellow{background:#fffbeb;border:1px solid #f5d060}
+.warn-box.blue{background:#eff6ff;border:1px solid #bfdbfe}
+.warn-box.green{background:#f0fdf4;border:1px solid #bbf7d0}
+.warn-box h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.warn-box.yellow h4{color:#92400e}
+.warn-box.blue h4{color:#1e40af}
+.warn-box.green h4{color:#14532d}
+.warn-box p{font-size:13.5px;line-height:1.65}
+.warn-box.yellow p{color:#78350f}
+.warn-box.blue p{color:#1e3a8a}
+.warn-box.green p{color:#166534}
+
+/* Accuracy table */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
+th{background:var(--navy);color:#fff;padding:10px 14px;text-align:left;font-weight:600;font-size:12.5px}
+td{padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top}
+tr:nth-child(even) td{background:var(--bg-subtle)}
+
+/* Footer */
+.footer{background:var(--navy);color:rgba(255,255,255,.55);padding:40px 0;margin-top:80px}
+.footer-bottom{display:flex;justify-content:space-between;font-size:12px;flex-wrap:wrap;gap:8px}
+.footer-disclaimer{border-top:1px solid rgba(255,255,255,.1);margin-top:20px;padding-top:16px;font-size:11px;color:rgba(255,255,255,.35);line-height:1.65}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap-wide nav-inner">
+    <a class="nav-logo" href="../index.html">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L4 5.5V11C4 15.5 7.5 19.7 12 21C16.5 19.7 20 15.5 20 11V5.5L12 2Z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M9 12l2 2 4-4" stroke="#7ecdc8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Shielded
+    </a>
+    <div class="nav-links">
+      <a href="../claims/index.html">Claims</a>
+      <a href="../app.html">App</a>
+    </div>
+    <a class="nav-cta" href="../app.html">Analyze My Policy →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-badge">Methodology · Last reviewed April 2026</div>
+    <h1>How Shielded Analyzes Insurance Policies</h1>
+    <p>Every finding in a Shielded report is traceable to one of three sources: your policy language, a state statute, or a published benchmark. Here is exactly how it works.</p>
+  </div>
+</div>
+
+<div class="page">
+  <div class="wrap">
+
+    <!-- TOC -->
+    <div class="toc">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#what-we-do">What Shielded does — and does not do</a></li>
+        <li><a href="#data-sources">The three data sources behind every report</a></li>
+        <li><a href="#how-analysis-works">How the analysis works — step by step</a></li>
+        <li><a href="#accuracy">Accuracy standards and limitations</a></li>
+        <li><a href="#dispute">If an insurer disputes a finding</a></li>
+        <li><a href="#not-legal-advice">Legal disclaimers</a></li>
+      </ol>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="section" id="what-we-do">
+      <h2>1. What Shielded does — and does not do</h2>
+
+      <div class="warn-box yellow">
+        <h4>⚠ Not Legal Advice</h4>
+        <p>Shielded is an informational and educational tool. Nothing on this platform — including any report, analysis, benchmark, or guidance — constitutes legal advice, and no use of this platform creates an attorney–client relationship. For legal representation, consult a licensed attorney in your state.</p>
+      </div>
+
+      <h3>What Shielded does</h3>
+      <ul>
+        <li><strong>Reads your policy language verbatim</strong> — identifies covered perils, exclusions, sublimits, and conditions using the exact text of your policy document</li>
+        <li><strong>Compares your insurer's offer to your policy terms</strong> — flags where the offer appears inconsistent with what the policy says</li>
+        <li><strong>References applicable state law</strong> — cites the relevant state insurance statute, statute of limitations, and bad faith law for your state</li>
+        <li><strong>Benchmarks against published settlement data</strong> — compares loss amounts to publicly available NAIC and industry benchmark data</li>
+        <li><strong>Generates a cited report</strong> — every finding includes the source (policy section, statute number, or benchmark reference)</li>
+      </ul>
+
+      <h3>What Shielded does NOT do</h3>
+      <ul>
+        <li>Give legal advice or represent you in any legal proceeding</li>
+        <li>Act as a licensed public adjuster</li>
+        <li>Guarantee any outcome in a claim dispute</li>
+        <li>Replace a licensed attorney, public adjuster, or insurance professional</li>
+        <li>Access your insurer's internal systems or adjuster notes</li>
+      </ul>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="section" id="data-sources">
+      <h2>2. The three data sources behind every report</h2>
+      <p>Every single finding in a Shielded report is tied to one of these three sources. If we cannot cite a source, we do not make the finding.</p>
+
+      <div class="source-grid">
+        <div class="source-card">
+          <div class="sc-icon">📄</div>
+          <h4>Source 1 — Your Policy Document</h4>
+          <p>The uploaded PDF of your commercial insurance policy. We read the exact text — coverage sections, exclusion clauses, conditions, definitions, endorsements, and declarations page.</p>
+          <div class="sc-cite">Citation format: "Per §4.2 of policy CPP-XXXXX…"</div>
+        </div>
+        <div class="source-card">
+          <div class="sc-icon">⚖️</div>
+          <h4>Source 2 — State Insurance Law</h4>
+          <p>State insurance statutes, unfair claims practices acts, bad faith law, and state insurance commissioner bulletins. All public record, cited with statute numbers.</p>
+          <div class="sc-cite">Citation format: "Under Tex. Ins. Code §541…"</div>
+        </div>
+        <div class="source-card">
+          <div class="sc-icon">📊</div>
+          <h4>Source 3 — Published Benchmarks</h4>
+          <p>NAIC (National Association of Insurance Commissioners) loss cost data, ISO published forms, and industry settlement benchmarks from publicly available databases.</p>
+          <div class="sc-cite">Citation format: "NAIC 2024 commercial property benchmark…"</div>
+        </div>
+      </div>
+
+      <div class="warn-box blue">
+        <h4>ℹ Why this matters for your claim</h4>
+        <p>When you present a Shielded report to your insurer, every finding is traceable to public record or your own policy text. An insurer cannot call a finding "false" if it is quoting their own policy language back to them. The citation is your defense against a bad-faith pushback.</p>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="section" id="how-analysis-works">
+      <h2>3. How the analysis works — step by step</h2>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h4>Upload your policy PDF</h4>
+            <p>Shielded reads your commercial insurance policy document — the declarations page, coverage forms, exclusions, and all endorsements. We extract the policy number, insurer, coverage limits, named perils, and exclusions.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h4>Identify the incident type</h4>
+            <p>You tell us what happened (fire, water damage, theft, equipment failure, etc.). We match that incident type to the relevant policy sections — covered perils, applicable exclusions, and any endorsements that change the coverage.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h4>Read coverage language verbatim</h4>
+            <p>We extract the exact policy language covering your incident. We identify: (a) what is expressly covered, (b) what is excluded, (c) any conditions or duties after loss that apply, and (d) the applicable sublimit or deductible.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h4>Compare offer to policy terms</h4>
+            <p>If you enter your insurer's settlement offer, we compare it against the coverage language. We flag specific sections where the offer may undervalue the loss — citing the exact policy clause that supports a higher amount.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h4>Apply state law context</h4>
+            <p>We apply the relevant statute of limitations and bad faith law for your state. We note: how long you have to dispute the claim, what your state requires the insurer to do under its unfair claims practices act, and whether bad faith penalties apply.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h4>Benchmark against published data</h4>
+            <p>Where applicable, we reference NAIC published loss benchmarks to show how your claim compares to documented settlement ranges for similar incidents. This contextualizes the gap between the offer and fair value.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h4>Generate the cited report</h4>
+            <p>The final report lists every finding with its source reference. The report is designed to be presented to your insurer, a public adjuster, or an attorney — not as legal advice, but as organized, cited documentation of what your policy says.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="section" id="accuracy">
+      <h2>4. Accuracy standards and limitations</h2>
+
+      <table>
+        <thead>
+          <tr><th>What we cite</th><th>Source</th><th>Accuracy level</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Policy coverage language</td><td>Your uploaded policy PDF</td><td>Verbatim — we quote the document exactly</td></tr>
+          <tr><td>State statutes</td><td>Official state code, last reviewed April 2026</td><td>High — public law, cited with statute numbers</td></tr>
+          <tr><td>Claim deadlines / SOL</td><td>State insurance codes</td><td>High — verify current law with a licensed attorney</td></tr>
+          <tr><td>Settlement benchmarks</td><td>NAIC data, industry publications</td><td>Directional — ranges, not guarantees</td></tr>
+          <tr><td>Coverage gap estimates</td><td>Policy + benchmarks</td><td>Informational — not a legal valuation</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Known limitations</h3>
+      <ul>
+        <li><strong>PDF parsing:</strong> Poorly scanned or non-standard policy PDFs may not parse correctly. Always review the extracted text for accuracy before using the report.</li>
+        <li><strong>Policy interpretation:</strong> Policy language is sometimes ambiguous. Shielded flags ambiguity — it does not resolve legal disputes about policy interpretation. An attorney does that.</li>
+        <li><strong>State law changes:</strong> Statutes are reviewed periodically but may not reflect very recent legislative changes. Always verify current law with a licensed professional.</li>
+        <li><strong>Benchmark data:</strong> Settlement benchmarks represent published ranges, not guaranteed outcomes. Individual claims vary significantly based on documentation, jurisdiction, and insurer.</li>
+        <li><strong>Endorsements:</strong> Custom policy endorsements that modify standard forms may not be fully captured. Review all endorsements separately.</li>
+      </ul>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="section" id="dispute">
+      <h2>5. If an insurer disputes a finding</h2>
+
+      <div class="warn-box green">
+        <h4>✓ Every finding is traceable to public record</h4>
+        <p>Because every Shielded finding cites either your own policy text, a state statute, or a published benchmark — an insurer cannot call it "false" without disputing their own policy language or public law. That is your strongest defense.</p>
+      </div>
+
+      <h3>If the insurer says the report is inaccurate:</h3>
+      <ol>
+        <li><strong>Ask them to identify the specific finding they dispute.</strong> A vague "this report is inaccurate" is not a substantive response.</li>
+        <li><strong>Point to the source citation in the report.</strong> "Shielded cites §4.2 of your own policy for this finding. Which part of §4.2 do you believe is being misread?"</li>
+        <li><strong>Request their denial in writing</strong> with the specific policy exclusion or legal basis for denying each disputed item.</li>
+        <li><strong>File a complaint</strong> with your state insurance commissioner if the insurer cannot substantiate their denial with policy language.</li>
+        <li><strong>Consult a licensed insurance attorney</strong> who can formally dispute the denial using the report as supporting documentation.</li>
+      </ol>
+
+      <h3>What Shielded cannot do in a dispute:</h3>
+      <p>Shielded is not a party to your claim and cannot represent you, file on your behalf, or appear in any proceeding. The report is a knowledge tool — what you do with it is your decision, ideally in consultation with a licensed professional.</p>
+    </div>
+
+    <!-- Section 6 -->
+    <div class="section" id="not-legal-advice">
+      <h2>6. Legal disclaimers</h2>
+
+      <div class="warn-box yellow">
+        <h4>⚠ Full Legal Disclaimer</h4>
+        <p><strong>Shielded is not a law firm and does not provide legal advice.</strong> All content on this platform — including reports, analyses, guides, state law summaries, benchmarks, and any other output — is provided for informational and educational purposes only.</p>
+        <p style="margin-top:10px">Nothing on this platform creates an attorney–client relationship. No communication through Shielded constitutes legal advice, and you should not rely on any content from Shielded as a substitute for advice from a licensed attorney in your jurisdiction.</p>
+        <p style="margin-top:10px"><strong>Shielded is not a licensed public adjuster.</strong> If you need formal representation in an insurance claim dispute, you should retain a licensed public adjuster or insurance claim attorney in your state.</p>
+        <p style="margin-top:10px">Results from using Shielded will vary based on your specific policy, the facts of your claim, your state's law, and your insurer's practices. <strong>Shielded does not guarantee any outcome.</strong></p>
+      </div>
+
+      <h3>State licensing note</h3>
+      <p>Public adjuster licensing requirements vary by state. Shielded does not perform public adjusting services. We provide informational analysis of your policy language — the same type of information available from state insurance departments, NAIC publications, and legal self-help resources. You are using Shielded to better understand your own policy, not to have Shielded adjust your claim.</p>
+
+      <h3>Unauthorized Practice of Law (UPL)</h3>
+      <p>Shielded does not provide legal opinions, legal strategies, or legal representation of any kind. Our reports organize factual information from your policy and publicly available sources. This is knowledge sharing — the same information available in a library or from your state insurance commissioner's website — presented in a structured, searchable format specific to your policy.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="wrap-wide">
+    <div class="footer-bottom">
+      <span style="color:#fff;font-weight:600">Shielded</span>
+      <span>© 2026 Shielded, Inc. · Methodology last reviewed April 2026</span>
+    </div>
+    <p class="footer-disclaimer">
+      Shielded is an informational tool, not a law firm or licensed public adjuster. Nothing on this platform constitutes legal advice or creates an attorney–client relationship. All reports and analyses are for educational purposes only. Findings are based on uploaded policy documents and publicly available data. Consult a licensed attorney or public adjuster in your state for formal representation.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
