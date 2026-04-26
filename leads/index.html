@@ -10,671 +10,642 @@
 <script src="../js/config.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#f0f2f5;--card:#fff;--navy:#1c2333;--teal:#2a9d8f;
-  --line:#e5e7eb;--ink:#111827;--ink2:#374151;--ink3:#6b7280;
-  --green:#16a34a;--amber:#d97706;--red:#dc2626;--blue:#2563eb;--r:10px
-}
+:root{--bg:#f0f2f5;--card:#fff;--navy:#1c2333;--teal:#2a9d8f;--line:#e5e7eb;--ink:#111827;--ink2:#374151;--ink3:#6b7280;--green:#16a34a;--amber:#d97706;--red:#dc2626;--blue:#2563eb;--r:10px}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh}
 
-/* ── Nav ── */
 .nav{background:var(--navy);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 6px rgba(0,0,0,.2)}
-.nav-left{display:flex;align-items:center;gap:16px}
 .logo{color:#fff;font-weight:800;font-size:16px;letter-spacing:-.02em;text-decoration:none;display:flex;align-items:center;gap:8px}
-.nav-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
-.nav-right{display:flex;align-items:center;gap:10px}
-.nav-btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
-.nav-btn-start{background:#fff;color:var(--navy)}
-.nav-btn-start:hover{background:#f0ede8}
-.nav-btn-start:disabled{opacity:.6;cursor:not-allowed}
-.nav-btn-outline{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2)}
-.nav-btn-outline:hover{background:rgba(255,255,255,.08)}
-.monitor-status{font-size:12px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
-.dot-idle{background:rgba(255,255,255,.3)}
-.dot-running{background:#4ade80;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.nav-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);padding:2px 9px;border-radius:12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.monitor-status{font-size:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:6px;margin-left:16px}
+.dot{width:8px;height:8px;border-radius:50%}
+.dot-idle{background:rgba(255,255,255,.25)}
+.dot-run{background:#4ade80;animation:blink .9s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-right{display:flex;gap:10px;align-items:center}
+.btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn-start{background:#fff;color:var(--navy)}
+.btn-start:hover{background:#f0ede8}
+.btn-start:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.2)}
+.btn-ghost:hover{background:rgba(255,255,255,.08)}
 
-/* ── Layout ── */
-.layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 56px)}
+.layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 56px)}
+.sidebar{background:#fff;border-right:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:4px}
+.sb-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);padding:0 8px;margin:12px 0 4px}
+.sb-title:first-child{margin-top:0}
+.sb-btn{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--ink2);border:none;background:none;font-family:inherit;width:100%;text-align:left}
+.sb-btn:hover{background:#f9fafb}
+.sb-btn.active{background:#eff6ff;color:var(--blue);font-weight:600}
+.sb-btn.active .cnt{background:#bfdbfe;color:#1d4ed8}
+.cnt{background:#f3f4f6;color:var(--ink3);padding:1px 7px;border-radius:10px;font-size:11.5px;font-weight:600}
+.inc-list{display:flex;flex-direction:column;gap:2px;max-height:260px;overflow-y:auto}
+.inc-btn{padding:5px 10px;border-radius:6px;font-size:12px;color:var(--ink3);cursor:pointer;border:none;background:none;font-family:inherit;width:100%;text-align:left;display:flex;align-items:center;gap:6px}
+.inc-btn:hover{background:#f9fafb;color:var(--ink)}
+.inc-btn.active{background:#f0fdf4;color:var(--green);font-weight:600}
+.last-run{font-size:11.5px;color:var(--ink3);padding:0 8px;margin-top:auto;padding-top:16px}
 
-/* ── Sidebar ── */
-.sidebar{background:#fff;border-right:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:6px}
-.sidebar-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin:12px 0 6px;padding:0 8px}
-.sidebar-title:first-child{margin-top:0}
-.filter-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--ink2);border:none;background:none;font-family:inherit;width:100%;text-align:left;transition:background .1s}
-.filter-item:hover{background:#f9fafb}
-.filter-item.active{background:#eff6ff;color:var(--blue);font-weight:600}
-.filter-item.active .count{background:#bfdbfe;color:#1d4ed8}
-.count{background:#f3f4f6;color:var(--ink3);padding:1px 7px;border-radius:10px;font-size:11.5px;font-weight:600;min-width:24px;text-align:center}
-.incident-list{display:flex;flex-direction:column;gap:4px;max-height:280px;overflow-y:auto}
-.inc-filter{padding:5px 10px;border-radius:6px;font-size:12px;color:var(--ink3);cursor:pointer;border:none;background:none;font-family:inherit;width:100%;text-align:left;display:flex;align-items:center;gap:6px}
-.inc-filter:hover{background:#f9fafb;color:var(--ink)}
-.inc-filter.active{background:#f0fdf4;color:var(--green);font-weight:600}
-.inc-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.main{padding:24px;display:flex;flex-direction:column;gap:18px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.stat-n{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.03em}
+.stat-l{font-size:11.5px;color:var(--ink3);margin-top:3px}
 
-/* ── Main ── */
-.main{padding:24px;display:flex;flex-direction:column;gap:20px}
+/* Progress panel */
+.prog-panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;display:none}
+.prog-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.prog-title{font-size:14px;font-weight:600;color:var(--navy)}
+.prog-pct{font-size:12.5px;color:var(--ink3)}
+.prog-bar{height:4px;background:#e5e7eb;border-radius:2px;overflow:hidden;margin-bottom:10px}
+.prog-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .5s;width:0}
+.prog-log{background:#0f172a;color:#94a3b8;border-radius:8px;padding:12px;font-size:12px;font-family:'Courier New',monospace;line-height:1.65;max-height:140px;overflow-y:auto}
+.pl-ok{color:#4ade80}.pl-info{color:#60a5fa}.pl-warn{color:#fbbf24}
 
-/* ── Stats bar ── */
-.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
-.stat-num{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.03em;line-height:1}
-.stat-label{font-size:11.5px;color:var(--ink3);margin-top:4px}
-.stat-delta{font-size:11px;margin-top:3px}
-.delta-up{color:var(--green)}
-
-/* ── Toolbar ── */
+/* Toolbar */
 .toolbar{display:flex;align-items:center;gap:10px}
-.search-box{flex:1;max-width:340px;position:relative}
-.search-box input{width:100%;padding:8px 10px 8px 34px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;color:var(--ink);background:#fff;outline:none}
-.search-box input:focus{border-color:var(--teal)}
-.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:14px}
-.sort-select{padding:7px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink2);cursor:pointer;outline:none}
+.search{flex:1;max-width:320px;padding:8px 10px 8px 32px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Ccircle cx='6' cy='6' r='4'/%3E%3Cpath d='m11 11-2.5-2.5'/%3E%3C/svg%3E") 10px center no-repeat}
+.search:focus{border-color:var(--teal)}
+.sort{padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink2);outline:none;cursor:pointer}
 .spacer{flex:1}
-.bulk-actions{display:flex;gap:8px;align-items:center}
-.selected-count{font-size:13px;color:var(--ink3)}
-.action-btn-sm{padding:6px 12px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:#fff;font-family:inherit;color:var(--ink2)}
-.action-btn-sm:hover{border-color:var(--teal);color:var(--teal)}
-.action-btn-send{border-color:var(--green);color:var(--green)}
-.action-btn-send:hover{background:#f0fdf4}
+.bulk-bar{display:none;align-items:center;gap:8px}
+.bulk-bar.show{display:flex}
+.sel-lbl{font-size:13px;color:var(--ink3)}
+.ab{padding:6px 12px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:#fff;font-family:inherit;color:var(--ink2)}
+.ab:hover{border-color:var(--teal);color:var(--teal)}
+.ab-send{border-color:#d1fae5;color:var(--green)}.ab-send:hover{background:#f0fdf4}
 
-/* ── Table ── */
-.table-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+/* Table */
+.tbl-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 table{width:100%;border-collapse:collapse}
-thead th{background:#f9fafb;border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;font-size:11.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
-thead th:first-child{padding-left:16px}
-tbody td{padding:12px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13px;color:var(--ink2)}
-tbody td:first-child{padding-left:16px}
-tbody tr:last-child td{border-bottom:none}
-tbody tr:hover{background:#fafafa}
-tbody tr.selected{background:#eff6ff}
-.cb{width:15px;height:15px;cursor:pointer;accent-color:var(--blue)}
-
-/* ── Cell components ── */
-.biz-name{font-weight:600;color:var(--ink);font-size:13.5px;margin-bottom:3px}
-.incident-badge{display:inline-flex;align-items:center;gap:4px;background:#f3f4f6;border-radius:6px;padding:2px 8px;font-size:11.5px;color:var(--ink2);font-weight:500}
-.location-text{font-size:13px;color:var(--ink2);font-weight:500}
-.location-sub{font-size:11.5px;color:var(--ink3);margin-top:2px}
-.article-link{color:var(--blue);text-decoration:none;font-size:12.5px;display:block;line-height:1.45}
-.article-link:hover{text-decoration:underline}
-.article-meta{font-size:11px;color:var(--ink3);margin-top:3px}
-.email-found{color:var(--green);font-size:12.5px;font-weight:500}
-.email-none{color:var(--ink3);font-size:12px}
-.status-badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.s-pending{background:#fef3c7;color:#92400e}
-.s-sent{background:#d1fae5;color:#065f46}
-.s-replied{background:#dbeafe;color:#1e40af}
-.s-skipped{background:#f3f4f6;color:#6b7280}
-.s-bounced{background:#fee2e2;color:#991b1b}
-.row-actions{display:flex;gap:5px;flex-wrap:wrap}
-.ra{padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:11.5px;font-family:inherit;color:var(--ink2);white-space:nowrap}
+th{background:#f9fafb;border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13px;color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+tr.sel td{background:#eff6ff}
+.cb{width:14px;height:14px;cursor:pointer;accent-color:var(--blue)}
+.biz{font-weight:600;color:var(--ink);margin-bottom:3px}
+.ibadge{display:inline-flex;align-items:center;gap:3px;background:#f3f4f6;border-radius:6px;padding:2px 7px;font-size:11.5px;color:var(--ink2)}
+.loc{font-weight:500;color:var(--ink)}
+.loc-link{font-size:11px;color:var(--teal);text-decoration:none;display:block;margin-top:2px}
+.loc-link:hover{text-decoration:underline}
+.art-link{color:var(--blue);text-decoration:none;font-size:12.5px;display:block;line-height:1.45}
+.art-link:hover{text-decoration:underline}
+.art-meta{font-size:11px;color:var(--ink3);margin-top:2px}
+.em-ok{color:var(--green);font-size:12.5px;font-weight:500}
+.em-no{color:var(--ink3);font-size:12px}
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.b-pending{background:#fef3c7;color:#92400e}
+.b-sent{background:#d1fae5;color:#065f46}
+.b-replied{background:#dbeafe;color:#1e40af}
+.b-skipped{background:#f3f4f6;color:#6b7280}
+.row-acts{display:flex;gap:5px;flex-wrap:wrap}
+.ra{padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:11.5px;font-family:inherit;color:var(--ink2)}
 .ra:hover{border-color:var(--teal);color:var(--teal)}
-.ra-send{border-color:#d1fae5;color:var(--green)}
-.ra-send:hover{background:#f0fdf4}
-.ra-skip{border-color:#fee2e2;color:var(--red)}
-.ra-skip:hover{background:#fef2f2}
+.ra-send{border-color:#d1fae5;color:var(--green)}.ra-send:hover{background:#f0fdf4}
+.ra-skip{border-color:#fee2e2;color:var(--red)}.ra-skip:hover{background:#fef2f2}
 
-/* ── Empty/loading states ── */
-.empty-state{padding:64px;text-align:center}
-.empty-state h3{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:8px}
-.empty-state p{color:var(--ink3);font-size:14px;margin-bottom:20px;line-height:1.6}
-.start-monitor-btn{background:var(--navy);color:#fff;padding:11px 24px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit}
-.start-monitor-btn:hover{background:#243050}
-.loading-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:48px;color:var(--ink3)}
-.spinner{width:20px;height:20px;border:2.5px solid var(--line);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+.empty{padding:60px;text-align:center}
+.empty h3{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.empty p{color:var(--ink3);line-height:1.7;margin-bottom:20px}
+.empty-btn{background:var(--navy);color:#fff;padding:11px 24px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit}
 
-/* ── Modal ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:20px}
+/* Modal */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
-.modal{background:#fff;border-radius:14px;width:100%;max-width:620px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-.modal-header{padding:18px 20px 14px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.modal-title{font-size:16px;font-weight:700;color:var(--navy);line-height:1.35}
-.modal-subtitle{font-size:12.5px;color:var(--ink3);margin-top:3px}
-.modal-close{background:none;border:none;cursor:pointer;padding:4px;color:var(--ink3);font-size:18px;line-height:1;flex-shrink:0}
-.modal-body{padding:18px 20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
-.email-field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);display:block;margin-bottom:5px}
-.subject-preview{font-size:14px;font-weight:600;color:var(--ink);padding:9px 12px;background:#f9fafb;border-radius:8px;border:1px solid var(--line)}
-.body-preview{white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--ink2);padding:12px 14px;background:#f9fafb;border-radius:8px;border:1px solid var(--line);max-height:280px;overflow-y:auto;font-family:inherit}
-.to-field{display:flex;gap:8px;align-items:center}
-.to-field input{flex:1;padding:8px 11px;border:1.5px solid var(--line);border-radius:7px;font-size:13px;font-family:inherit;outline:none}
-.to-field input:focus{border-color:var(--teal)}
-.modal-footer{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:600px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.mh{padding:18px 20px 14px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between}
+.m-title{font-size:15px;font-weight:700;color:var(--navy)}
+.m-sub{font-size:12.5px;color:var(--ink3);margin-top:3px}
+.m-close{background:none;border:none;cursor:pointer;font-size:18px;color:var(--ink3);padding:4px;line-height:1;flex-shrink:0}
+.mb{padding:18px 20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
+.mf-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);display:block;margin-bottom:5px}
+.m-subj{font-size:14px;font-weight:600;color:var(--ink);padding:9px 12px;background:#f9fafb;border-radius:8px;border:1px solid var(--line)}
+.m-body{white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--ink2);padding:12px 14px;background:#f9fafb;border-radius:8px;border:1px solid var(--line);max-height:260px;overflow-y:auto;font-family:inherit}
+.m-to{width:100%;padding:8px 11px;border:1.5px solid var(--line);border-radius:7px;font-size:13px;font-family:inherit;outline:none}
+.m-to:focus{border-color:var(--teal)}
+.mfooter{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
 .btn-cancel{padding:8px 16px;border-radius:8px;border:1.5px solid var(--line);background:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink2)}
-.btn-send{padding:8px 20px;border-radius:8px;border:none;background:var(--green);color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit}
-.btn-send:hover{background:#15803d}
-.btn-send:disabled{opacity:.5;cursor:not-allowed}
+.btn-send-email{padding:8px 20px;border-radius:8px;border:none;background:var(--green);color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-send-email:hover{background:#15803d}
+.btn-send-email:disabled{opacity:.5;cursor:not-allowed}
 
-/* ── Monitor progress ── */
-.progress-bar{height:3px;background:#e5e7eb;border-radius:2px;overflow:hidden;margin-top:8px}
-.progress-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .4s;width:0%}
-.monitor-log{background:#1e293b;color:#94a3b8;border-radius:8px;padding:14px;font-size:12px;font-family:'Courier New',monospace;line-height:1.6;max-height:160px;overflow-y:auto;margin-top:12px}
-.log-success{color:#4ade80}
-.log-info{color:#60a5fa}
-.log-warn{color:#fbbf24}
-
-@media(max-width:900px){
-  .layout{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .stats-bar{grid-template-columns:repeat(3,1fr)}
-}
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:opacity .3s;pointer-events:none}
 </style>
 </head>
 <body>
-
-<!-- Nav -->
 <nav class="nav">
-  <div class="nav-left">
+  <div style="display:flex;align-items:center;gap:0">
     <a class="logo" href="../app.html">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5.5V11C4 15.5 7.5 19.7 12 21C16.5 19.7 20 15.5 20 11V5.5L12 2Z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#7ecdc8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Shielded
     </a>
-    <span class="nav-badge">Leads Monitor</span>
+    <span class="nav-badge" style="margin-left:12px">Leads</span>
     <div class="monitor-status">
-      <span class="dot dot-idle" id="status-dot"></span>
-      <span id="status-text">Idle — click Start to scan news</span>
+      <span class="dot dot-idle" id="dot"></span>
+      <span id="status-txt">Ready — press Start Monitor</span>
     </div>
   </div>
   <div class="nav-right">
-    <button class="nav-btn nav-btn-outline" onclick="location.href='../app.html'">App</button>
-    <button class="nav-btn nav-btn-start" id="start-btn" onclick="startMonitor()">▶ Start Monitor</button>
+    <button class="btn btn-ghost" onclick="location.href='../app.html'">← App</button>
+    <button class="btn btn-start" id="start-btn" onclick="startMonitor()">▶ Start Monitor</button>
   </div>
 </nav>
 
-<!-- Layout -->
 <div class="layout">
-
-  <!-- Sidebar -->
   <aside class="sidebar">
-    <div class="sidebar-title">Status</div>
-    <button class="filter-item active" onclick="setStatus('all',this)">
-      All Leads <span class="count" id="cnt-all">0</span>
-    </button>
-    <button class="filter-item" onclick="setStatus('pending',this)">
-      Pending <span class="count" id="cnt-pending">0</span>
-    </button>
-    <button class="filter-item" onclick="setStatus('sent',this)">
-      Sent <span class="count" id="cnt-sent">0</span>
-    </button>
-    <button class="filter-item" onclick="setStatus('replied',this)">
-      Replied <span class="count" id="cnt-replied">0</span>
-    </button>
-    <button class="filter-item" onclick="setStatus('skipped',this)">
-      Skipped <span class="count" id="cnt-skipped">0</span>
-    </button>
-
-    <div class="sidebar-title">Incident Type</div>
-    <div class="incident-list" id="incident-filters"></div>
-
-    <div class="sidebar-title" style="margin-top:auto;padding-top:16px">Last run</div>
-    <div style="font-size:12px;color:var(--ink3);padding:0 8px" id="last-run">Never</div>
+    <div class="sb-title">Status</div>
+    <button class="sb-btn active" onclick="setFilter('all',this)">All Leads <span class="cnt" id="c-all">0</span></button>
+    <button class="sb-btn" onclick="setFilter('pending',this)">Pending <span class="cnt" id="c-pending">0</span></button>
+    <button class="sb-btn" onclick="setFilter('sent',this)">Sent <span class="cnt" id="c-sent">0</span></button>
+    <button class="sb-btn" onclick="setFilter('replied',this)">Replied <span class="cnt" id="c-replied">0</span></button>
+    <button class="sb-btn" onclick="setFilter('skipped',this)">Skipped <span class="cnt" id="c-skipped">0</span></button>
+    <div class="sb-title">Incident Type</div>
+    <div class="inc-list" id="inc-list"></div>
+    <div class="last-run" id="last-run">Never run</div>
   </aside>
 
-  <!-- Main -->
   <main class="main">
-
-    <!-- Stats -->
-    <div class="stats-bar">
-      <div class="stat">
-        <div class="stat-num" id="s-total">0</div>
-        <div class="stat-label">Total Leads</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="s-pending">0</div>
-        <div class="stat-label">Pending Outreach</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="s-sent">0</div>
-        <div class="stat-label">Emails Sent</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="s-replied">0</div>
-        <div class="stat-label">Replied</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="s-today">0</div>
-        <div class="stat-label">Found Today</div>
-      </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total Leads</div></div>
+      <div class="stat"><div class="stat-n" id="s-pending">0</div><div class="stat-l">Pending</div></div>
+      <div class="stat"><div class="stat-n" id="s-sent">0</div><div class="stat-l">Sent</div></div>
+      <div class="stat"><div class="stat-n" id="s-replied">0</div><div class="stat-l">Replied</div></div>
+      <div class="stat"><div class="stat-n" id="s-today">0</div><div class="stat-l">Found Today</div></div>
     </div>
 
-    <!-- Monitor progress (hidden when idle) -->
-    <div id="monitor-panel" style="display:none;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div style="font-size:14px;font-weight:600;color:var(--navy)">🔍 Scanning news…</div>
-        <div style="font-size:12.5px;color:var(--ink3)" id="scan-progress">0 / 20 queries</div>
+    <div class="prog-panel" id="prog-panel">
+      <div class="prog-header">
+        <div class="prog-title">🔍 Scanning news for business incidents…</div>
+        <div class="prog-pct" id="prog-pct">0 / 20</div>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
-      <div class="monitor-log" id="monitor-log">Starting news scan…</div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+      <div class="prog-log" id="prog-log"></div>
     </div>
 
-    <!-- Toolbar -->
     <div class="toolbar">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="search" placeholder="Search business, city, incident…" oninput="renderTable()">
-      </div>
-      <select class="sort-select" id="sort-by" onchange="renderTable()">
+      <input class="search" type="text" id="search" placeholder="Search business, city, incident…" oninput="render()">
+      <select class="sort" id="sort" onchange="render()">
         <option value="newest">Newest first</option>
         <option value="oldest">Oldest first</option>
-        <option value="business">Business name</option>
+        <option value="biz">Business A–Z</option>
         <option value="state">State A–Z</option>
       </select>
       <div class="spacer"></div>
-      <div class="bulk-actions" id="bulk-bar" style="display:none">
-        <span class="selected-count" id="sel-count"></span>
-        <button class="action-btn-sm action-btn-send" onclick="bulkSend()">Send Selected</button>
-        <button class="action-btn-sm" onclick="bulkSkip()">Skip Selected</button>
-        <button class="action-btn-sm" onclick="clearSelection()">Clear</button>
+      <div class="bulk-bar" id="bulk-bar">
+        <span class="sel-lbl" id="sel-lbl"></span>
+        <button class="ab ab-send" onclick="bulkSend()">Send Selected</button>
+        <button class="ab" onclick="bulkSkip()">Skip</button>
+        <button class="ab" onclick="clearSel()">Clear</button>
       </div>
     </div>
 
-    <!-- Table -->
-    <div id="table-area">
-      <div class="table-wrap">
-        <div class="loading-bar"><div class="spinner"></div> Loading leads…</div>
-      </div>
-    </div>
-
+    <div id="table-area"></div>
   </main>
 </div>
 
-<!-- Email Modal -->
+<!-- Modal -->
 <div class="overlay" id="modal">
   <div class="modal">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title" id="modal-biz">Preview Outreach Email</div>
-        <div class="modal-subtitle" id="modal-meta"></div>
-      </div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="mh">
+      <div><div class="m-title" id="m-title">Outreach Email</div><div class="m-sub" id="m-sub"></div></div>
+      <button class="m-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-body">
-      <div class="email-field">
-        <label>To</label>
-        <div class="to-field">
-          <input type="email" id="modal-to" placeholder="business@email.com">
-        </div>
-      </div>
-      <div class="email-field">
-        <label>Subject</label>
-        <div class="subject-preview" id="modal-subject"></div>
-      </div>
-      <div class="email-field">
-        <label>Body</label>
-        <div class="body-preview" id="modal-body-text"></div>
-      </div>
+    <div class="mb">
+      <div><label class="mf-label">To</label><input class="m-to" type="email" id="m-to" placeholder="business@example.com"></div>
+      <div><label class="mf-label">Subject</label><div class="m-subj" id="m-subj"></div></div>
+      <div><label class="mf-label">Email Body</label><div class="m-body" id="m-body"></div></div>
     </div>
-    <div class="modal-footer">
+    <div class="mfooter">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-send" id="modal-send" onclick="sendFromModal()">Send Email →</button>
+      <button class="btn-send-email" id="m-send-btn" onclick="sendFromModal()">Send Email →</button>
     </div>
   </div>
 </div>
 
 <script>
 const cfg = window.SHIELDED_CONFIG || {};
-let sb = null, allLeads = [], selectedIds = new Set();
-let currentStatus = 'all', currentIncident = '', currentLeadId = null;
+let sb = null, allLeads = [], selected = new Set(), curFilter = 'all', curIncident = '', curLeadId = null;
 
-// Init Supabase
-if (cfg.SUPABASE_URL && !cfg.SUPABASE_URL.includes('YOUR_PROJECT')) {
+// ── Init ─────────────────────────────────────────────────────────────────────
+if (cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY) {
   sb = supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
   loadLeads();
 } else {
-  showEmpty('Configure Supabase in js/config.js first');
+  showMsg('Configure Supabase in js/config.js');
 }
 
-// ── Load leads ───────────────────────────────────────────────────────────────
 async function loadLeads() {
   if (!sb) return;
-  const { data, error } = await sb.from('business_leads')
-    .select('*').order('created_at', { ascending: false }).limit(1000);
-  if (error) { showEmpty('Error loading leads: ' + error.message); return; }
+  const { data, error } = await sb.from('business_leads').select('*').order('created_at', { ascending: false }).limit(1000);
+  if (error) { showMsg('DB error: ' + error.message); return; }
   allLeads = data || [];
-  updateStats();
-  buildIncidentFilters();
-  renderTable();
+  updateStats(); buildIncidentList(); render();
 }
 
+// ── Stats ─────────────────────────────────────────────────────────────────────
 function updateStats() {
   const today = new Date().toISOString().split('T')[0];
-  const counts = { all: allLeads.length, pending: 0, sent: 0, replied: 0, skipped: 0 };
-  allLeads.forEach(l => { if (counts[l.outreach_status] !== undefined) counts[l.outreach_status]++; });
-
-  document.getElementById('s-total').textContent  = counts.all;
-  document.getElementById('s-pending').textContent = counts.pending;
-  document.getElementById('s-sent').textContent    = counts.sent;
-  document.getElementById('s-replied').textContent = counts.replied;
-  document.getElementById('s-today').textContent   = allLeads.filter(l => l.created_at?.startsWith(today)).length;
-
-  Object.keys(counts).forEach(k => {
-    const el = document.getElementById('cnt-' + k);
-    if (el) el.textContent = counts[k];
+  const c = { all: allLeads.length, pending: 0, sent: 0, replied: 0, skipped: 0 };
+  allLeads.forEach(l => { if (c[l.outreach_status] !== undefined) c[l.outreach_status]++; });
+  ['all','pending','sent','replied','skipped'].forEach(k => {
+    const el = document.getElementById('c-' + k); if (el) el.textContent = c[k];
   });
+  document.getElementById('s-total').textContent   = c.all;
+  document.getElementById('s-pending').textContent = c.pending;
+  document.getElementById('s-sent').textContent    = c.sent;
+  document.getElementById('s-replied').textContent = c.replied;
+  document.getElementById('s-today').textContent   = allLeads.filter(l => l.created_at?.startsWith(today)).length;
+  if (allLeads[0]) document.getElementById('last-run').textContent = 'Last run: ' + new Date(allLeads[0].created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
-function buildIncidentFilters() {
-  const typeCounts = {};
-  allLeads.forEach(l => { if (l.incident_type) typeCounts[l.incident_type] = (typeCounts[l.incident_type]||0)+1; });
-  const sorted = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]);
-  const container = document.getElementById('incident-filters');
-  container.innerHTML = `
-    <button class="inc-filter ${!currentIncident?'active':''}" onclick="setIncident('',this)">
-      <span class="inc-dot"></span>All types
-    </button>` +
-    sorted.map(([type, count]) => `
-    <button class="inc-filter ${currentIncident===type?'active':''}" onclick="setIncident('${type.replace(/'/g,"\\'")}',this)">
-      <span class="inc-dot"></span>${type} <span style="margin-left:auto;font-size:11px;opacity:.6">${count}</span>
-    </button>`).join('');
-
-  const lastRun = allLeads[0]?.created_at;
-  if (lastRun) {
-    document.getElementById('last-run').textContent = new Date(lastRun).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  }
+function buildIncidentList() {
+  const counts = {};
+  allLeads.forEach(l => { if (l.incident_type) counts[l.incident_type] = (counts[l.incident_type]||0)+1; });
+  document.getElementById('inc-list').innerHTML =
+    `<button class="inc-btn ${!curIncident?'active':''}" onclick="setIncident('',this)">All types</button>` +
+    Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([t,n]) =>
+      `<button class="inc-btn ${curIncident===t?'active':''}" onclick="setIncident('${t.replace(/'/g,"\\'")}',this)">${t} <span style="margin-left:auto;opacity:.5;font-size:11px">${n}</span></button>`
+    ).join('');
 }
 
-// ── Render table ─────────────────────────────────────────────────────────────
-function renderTable() {
-  const search = document.getElementById('search').value.toLowerCase();
-  const sortBy = document.getElementById('sort-by').value;
-
+// ── Render ────────────────────────────────────────────────────────────────────
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const s = document.getElementById('sort').value;
   let leads = allLeads.filter(l => {
-    if (currentStatus !== 'all' && l.outreach_status !== currentStatus) return false;
-    if (currentIncident && l.incident_type !== currentIncident) return false;
-    if (search) {
-      const hay = [l.business_name, l.city, l.state, l.incident_type, l.article_title].join(' ').toLowerCase();
-      if (!hay.includes(search)) return false;
-    }
+    if (curFilter !== 'all' && l.outreach_status !== curFilter) return false;
+    if (curIncident && l.incident_type !== curIncident) return false;
+    if (q) return [l.business_name,l.city,l.state,l.incident_type,l.article_title].join(' ').toLowerCase().includes(q);
     return true;
   });
-
-  leads.sort((a, b) => {
-    if (sortBy === 'oldest')   return new Date(a.created_at) - new Date(b.created_at);
-    if (sortBy === 'business') return (a.business_name||'zzz').localeCompare(b.business_name||'zzz');
-    if (sortBy === 'state')    return (a.state||'').localeCompare(b.state||'');
-    return new Date(b.created_at) - new Date(a.created_at); // newest
-  });
+  leads.sort((a,b) => s==='oldest' ? new Date(a.created_at)-new Date(b.created_at) :
+    s==='biz' ? (a.business_name||'zzz').localeCompare(b.business_name||'zzz') :
+    s==='state' ? (a.state||'').localeCompare(b.state||'') :
+    new Date(b.created_at)-new Date(a.created_at));
 
   if (!leads.length) {
-    const msg = allLeads.length === 0
-      ? `<div class="empty-state">
-          <h3>No leads yet</h3>
-          <p>Click <strong>Start Monitor</strong> to scan today's news for businesses<br>affected by fires, floods, theft, vandalism, and more.</p>
-          <button class="start-monitor-btn" onclick="startMonitor()">▶ Start Monitor Now</button>
-        </div>`
-      : `<div class="empty-state"><h3>No leads match this filter</h3><p>Try a different filter or search term.</p></div>`;
-    document.getElementById('table-area').innerHTML = `<div class="table-wrap">${msg}</div>`;
+    document.getElementById('table-area').innerHTML = `<div class="tbl-wrap"><div class="empty">
+      <h3>${allLeads.length ? 'No leads match this filter' : 'No leads yet'}</h3>
+      <p>${allLeads.length ? 'Try a different filter.' : 'Click <strong>Start Monitor</strong> to scan today\'s news for businesses hit by fires, floods, theft, storms, and more.'}</p>
+      ${!allLeads.length ? '<button class="empty-btn" onclick="startMonitor()">▶ Start Monitor</button>' : ''}
+    </div></div>`;
     return;
   }
 
-  const rows = leads.map(l => {
-    const checked = selectedIds.has(l.id) ? 'checked' : '';
-    const dateStr = l.article_date || l.created_at?.split('T')[0] || '';
-    return `<tr class="${selectedIds.has(l.id)?'selected':''}" id="row-${l.id}">
-      <td><input type="checkbox" class="cb" ${checked} onchange="toggleSelect('${l.id}',this)"></td>
+  const rows = leads.map(l => `
+    <tr class="${selected.has(l.id)?'sel':''}" id="r-${l.id}">
+      <td style="width:36px"><input type="checkbox" class="cb" ${selected.has(l.id)?'checked':''} onchange="toggleSel('${l.id}',this)"></td>
       <td>
-        ${l.business_name ? `<div class="biz-name">${l.business_name}</div>` : '<div class="biz-name" style="color:var(--ink3);font-weight:400">Unknown Business</div>'}
-        <span class="incident-badge">🔥 ${l.incident_type||'—'}</span>
+        <div class="biz">${l.business_name||'<span style="color:var(--ink3);font-weight:400">Unknown Business</span>'}</div>
+        <span class="ibadge">${l.incident_type||'—'}</span>
       </td>
       <td>
-        <div class="location-text">${l.city||'—'}, ${l.state||''}</div>
-        ${l.state_slug ? `<a class="location-sub" href="https://attorneyaitools.org/claims/${l.state_slug}/${l.city_slug||''}/${l.incident_slug||''}/" target="_blank" style="color:var(--teal);text-decoration:none;font-size:11px">View claims page ↗</a>` : ''}
+        <div class="loc">${l.city||'—'}, ${l.state||''}</div>
+        ${l.state_slug ? `<a class="loc-link" href="https://attorneyaitools.org/claims/${l.state_slug}/${l.city_slug||''}/${l.incident_slug||''}/" target="_blank">Claims page ↗</a>` : ''}
       </td>
       <td>
-        <a class="article-link" href="${l.article_url||'#'}" target="_blank">${(l.article_title||'').substring(0,72)}${(l.article_title||'').length>72?'…':''}</a>
-        <div class="article-meta">${dateStr} · ${l.source||''}</div>
+        <a class="art-link" href="${l.article_url||'#'}" target="_blank" title="${l.article_title||''}">${(l.article_title||'No title').substring(0,70)}${(l.article_title||'').length>70?'…':''}</a>
+        <div class="art-meta">${l.article_date||''} · ${l.source||''}</div>
       </td>
+      <td>${l.contact_email ? `<div class="em-ok">✓ ${l.contact_email}</div>` : '<div class="em-no">—</div>'}</td>
+      <td><span class="badge b-${l.outreach_status}">${l.outreach_status}</span></td>
       <td>
-        ${l.contact_email
-          ? `<div class="email-found">✓ ${l.contact_email}</div>`
-          : `<div class="email-none">Not found</div>`}
-      </td>
-      <td><span class="status-badge s-${l.outreach_status}">${l.outreach_status}</span></td>
-      <td>
-        <div class="row-actions">
+        <div class="row-acts">
           <button class="ra" onclick="openModal('${l.id}')">Preview</button>
-          ${l.contact_email ? `<button class="ra ra-send" onclick="quickSend('${l.id}')">Send</button>` : ''}
-          ${l.outreach_status === 'pending' ? `<button class="ra ra-skip" onclick="skipLead('${l.id}')">Skip</button>` : ''}
+          ${l.contact_email&&l.outreach_status==='pending'?`<button class="ra ra-send" onclick="quickSend('${l.id}')">Send</button>`:''}
+          ${l.outreach_status==='pending'?`<button class="ra ra-skip" onclick="skipLead('${l.id}')">Skip</button>`:''}
         </div>
       </td>
-    </tr>`;
-  }).join('');
+    </tr>`).join('');
 
   document.getElementById('table-area').innerHTML = `
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th style="width:36px"><input type="checkbox" class="cb" onchange="selectAll(this)"></th>
-          <th>Business / Incident</th>
-          <th>Location</th>
-          <th>Article</th>
-          <th>Contact Email</th>
-          <th>Status</th>
-          <th style="width:130px">Actions</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
+    <div class="tbl-wrap"><table>
+      <thead><tr>
+        <th><input type="checkbox" class="cb" onchange="selAll(this)"></th>
+        <th>Business / Incident</th><th>Location</th><th>Article</th>
+        <th>Email</th><th>Status</th><th>Actions</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
 }
 
-// ── Filters ──────────────────────────────────────────────────────────────────
-function setStatus(s, btn) {
-  currentStatus = s;
-  document.querySelectorAll('.filter-item').forEach(b => b.classList.remove('active'));
+// ── Filters ───────────────────────────────────────────────────────────────────
+function setFilter(f, btn) {
+  curFilter = f;
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderTable();
+  render();
 }
-function setIncident(type, btn) {
-  currentIncident = type;
-  document.querySelectorAll('.inc-filter').forEach(b => b.classList.remove('active'));
+function setIncident(t, btn) {
+  curIncident = t;
+  document.querySelectorAll('.inc-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderTable();
+  render();
 }
 
-// ── Selection ────────────────────────────────────────────────────────────────
-function toggleSelect(id, cb) {
-  if (cb.checked) selectedIds.add(id); else selectedIds.delete(id);
+// ── Selection ─────────────────────────────────────────────────────────────────
+function toggleSel(id, cb) {
+  if (cb.checked) selected.add(id); else selected.delete(id);
+  document.getElementById('r-'+id)?.classList.toggle('sel', cb.checked);
   updateBulkBar();
-  const row = document.getElementById('row-' + id);
-  if (row) row.classList.toggle('selected', cb.checked);
 }
-function selectAll(cb) {
+function selAll(cb) {
   document.querySelectorAll('tbody .cb').forEach(c => {
     c.checked = cb.checked;
-    const id = c.closest('tr')?.id?.replace('row-','');
-    if (id) { if (cb.checked) selectedIds.add(id); else selectedIds.delete(id); }
-    c.closest('tr')?.classList.toggle('selected', cb.checked);
+    const id = c.closest('tr')?.id?.replace('r-','');
+    if (id) { if (cb.checked) selected.add(id); else selected.delete(id); }
+    c.closest('tr')?.classList.toggle('sel', cb.checked);
   });
   updateBulkBar();
 }
-function clearSelection() {
-  selectedIds.clear();
+function clearSel() {
+  selected.clear();
   document.querySelectorAll('.cb').forEach(c => c.checked = false);
-  document.querySelectorAll('tr.selected').forEach(r => r.classList.remove('selected'));
+  document.querySelectorAll('tr.sel').forEach(r => r.classList.remove('sel'));
   updateBulkBar();
 }
 function updateBulkBar() {
   const bar = document.getElementById('bulk-bar');
-  if (selectedIds.size > 0) {
-    bar.style.display = 'flex';
-    document.getElementById('sel-count').textContent = `${selectedIds.size} selected`;
-  } else {
-    bar.style.display = 'none';
-  }
+  bar.classList.toggle('show', selected.size > 0);
+  document.getElementById('sel-lbl').textContent = selected.size + ' selected';
 }
 
-// ── Modal ────────────────────────────────────────────────────────────────────
+// ── Modal ──────────────────────────────────────────────────────────────────────
 function openModal(id) {
-  const lead = allLeads.find(l => l.id === id);
-  if (!lead) return;
-  currentLeadId = id;
-  document.getElementById('modal-biz').textContent  = lead.business_name || 'Unknown Business';
-  document.getElementById('modal-meta').textContent = `${lead.incident_type} · ${lead.city}, ${lead.state}`;
-  document.getElementById('modal-to').value          = lead.contact_email || '';
-  document.getElementById('modal-subject').textContent = lead.outreach_email_subject || '';
-  document.getElementById('modal-body-text').textContent = lead.outreach_email_body || '';
-  document.getElementById('modal-send').disabled     = false;
+  const l = allLeads.find(x => x.id === id); if (!l) return;
+  curLeadId = id;
+  document.getElementById('m-title').textContent = l.business_name || 'Unknown Business';
+  document.getElementById('m-sub').textContent   = `${l.incident_type} · ${l.city}, ${l.state}`;
+  document.getElementById('m-to').value           = l.contact_email || '';
+  document.getElementById('m-subj').textContent  = l.outreach_email_subject || '';
+  document.getElementById('m-body').textContent  = l.outreach_email_body || '';
   document.getElementById('modal').classList.add('open');
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); currentLeadId = null; }
+function closeModal() { document.getElementById('modal').classList.remove('open'); curLeadId = null; }
 document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 
 async function sendFromModal() {
-  const email = document.getElementById('modal-to').value.trim();
-  if (!email) { alert('Enter an email address first'); return; }
-  const lead = allLeads.find(l => l.id === currentLeadId);
-  if (!lead) return;
-
-  // Update contact email if user typed one
-  if (email !== lead.contact_email) {
-    await sb.from('business_leads').update({ contact_email: email }).eq('id', currentLeadId);
-    lead.contact_email = email;
-  }
-  await doSend(currentLeadId, email);
+  const to = document.getElementById('m-to').value.trim();
+  if (!to || !to.includes('@')) { alert('Enter a valid email address'); return; }
+  const l = allLeads.find(x => x.id === curLeadId); if (!l) return;
+  if (to !== l.contact_email) { await sb?.from('business_leads').update({ contact_email: to }).eq('id', curLeadId); l.contact_email = to; }
+  await sendEmail(curLeadId, to, l.outreach_email_subject, l.outreach_email_body);
   closeModal();
 }
-
 async function quickSend(id) {
-  const lead = allLeads.find(l => l.id === id);
-  if (!lead?.contact_email) { openModal(id); return; }
-  if (!confirm(`Send outreach to ${lead.contact_email}?`)) return;
-  await doSend(id, lead.contact_email);
+  const l = allLeads.find(x => x.id === id);
+  if (!l?.contact_email) { openModal(id); return; }
+  if (!confirm(`Send to ${l.contact_email}?`)) return;
+  await sendEmail(id, l.contact_email, l.outreach_email_subject, l.outreach_email_body);
 }
 
-async function doSend(id, email) {
-  const lead = allLeads.find(l => l.id === id);
-  if (!lead || !sb) return;
-
+// ── Send email via Resend API ─────────────────────────────────────────────────
+async function sendEmail(id, to, subject, body) {
+  const resendKey = cfg.RESEND_API_KEY;
+  const fromEmail = cfg.FROM_EMAIL || 'hello@attorneyaitools.org';
+  if (!resendKey) { alert('No RESEND_API_KEY in config'); return; }
   try {
-    // Send via Supabase send-outreach function
-    const res = await fetch(`${cfg.SUPABASE_URL}/functions/v1/send-outreach`, {
+    const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.SUPABASE_ANON_KEY}` },
-      body: JSON.stringify({ lead_id: id, auto_send: true })
+      headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: `Shielded <${fromEmail}>`, to: [to], subject,
+        text: body,
+        html: body.replace(/\n/g,'<br>').replace(/(https:\/\/\S+)/g,'<a href="$1">$1</a>')
+      })
     });
-    const data = await res.json();
-    if (data.emails_sent > 0 || data.error === undefined) {
-      await sb.from('business_leads').update({ outreach_status: 'sent', contact_email: email, sent_at: new Date().toISOString() }).eq('id', id);
-      lead.outreach_status = 'sent'; lead.contact_email = email;
-      showToast('✅ Email sent to ' + email);
-    } else {
-      throw new Error(data.error || JSON.stringify(data));
-    }
-  } catch(e) { alert('Error sending: ' + e.message); }
-  renderTable(); updateStats();
+    const d = await res.json();
+    if (d.id || res.ok) {
+      await sb?.from('business_leads').update({ outreach_status:'sent', contact_email:to, sent_at:new Date().toISOString() }).eq('id', id);
+      allLeads = allLeads.map(l => l.id===id ? {...l, outreach_status:'sent', contact_email:to} : l);
+      toast('✅ Email sent to ' + to);
+      updateStats(); render(); buildIncidentList();
+    } else throw new Error(d.message || JSON.stringify(d));
+  } catch(e) { alert('Send error: ' + e.message); }
 }
 
 async function skipLead(id) {
-  if (!sb) return;
-  await sb.from('business_leads').update({ outreach_status: 'skipped' }).eq('id', id);
-  allLeads = allLeads.map(l => l.id === id ? {...l, outreach_status:'skipped'} : l);
-  renderTable(); updateStats(); buildIncidentFilters();
+  await sb?.from('business_leads').update({ outreach_status:'skipped' }).eq('id', id);
+  allLeads = allLeads.map(l => l.id===id ? {...l, outreach_status:'skipped'} : l);
+  updateStats(); render(); buildIncidentList();
 }
-
 async function bulkSend() {
-  if (selectedIds.size === 0) return;
-  const withEmail = [...selectedIds].filter(id => allLeads.find(l => l.id === id)?.contact_email);
-  if (!withEmail.length) { alert('None of the selected leads have contact emails.'); return; }
-  if (!confirm(`Send to ${withEmail.length} leads with email addresses?`)) return;
-  for (const id of withEmail) {
-    const lead = allLeads.find(l => l.id === id);
-    if (lead?.contact_email) await doSend(id, lead.contact_email);
-  }
-  clearSelection();
+  const ids = [...selected].filter(id => allLeads.find(l=>l.id===id)?.contact_email);
+  if (!ids.length) { alert('No selected leads have email addresses.'); return; }
+  if (!confirm(`Send to ${ids.length} leads?`)) return;
+  for (const id of ids) { const l = allLeads.find(x=>x.id===id); if(l?.contact_email) await sendEmail(id, l.contact_email, l.outreach_email_subject, l.outreach_email_body); }
+  clearSel();
 }
-
 async function bulkSkip() {
-  if (selectedIds.size === 0) return;
-  if (!confirm(`Skip ${selectedIds.size} selected leads?`)) return;
-  const ids = [...selectedIds];
-  await sb.from('business_leads').update({ outreach_status: 'skipped' }).in('id', ids);
-  allLeads = allLeads.map(l => ids.includes(l.id) ? {...l, outreach_status:'skipped'} : l);
-  clearSelection(); renderTable(); updateStats(); buildIncidentFilters();
+  if (!selected.size) return;
+  if (!confirm(`Skip ${selected.size} leads?`)) return;
+  const ids = [...selected];
+  await sb?.from('business_leads').update({outreach_status:'skipped'}).in('id', ids);
+  allLeads = allLeads.map(l => ids.includes(l.id) ? {...l,outreach_status:'skipped'} : l);
+  clearSel(); updateStats(); render(); buildIncidentList();
 }
 
-// ── Monitor ──────────────────────────────────────────────────────────────────
-function addLog(msg, type = '') {
-  const log = document.getElementById('monitor-log');
-  const cls = type === 'success' ? 'log-success' : type === 'warn' ? 'log-warn' : type === 'info' ? 'log-info' : '';
-  log.innerHTML += `<div class="${cls}">${msg}</div>`;
-  log.scrollTop = log.scrollHeight;
+// ── Monitor (runs SerpAPI directly in browser) ───────────────────────────────
+const QUERIES = [
+  'fire damage restaurant business',
+  'flood damage store commercial property',
+  'burglary break-in small business',
+  'kitchen fire restaurant',
+  'water damage business burst pipe',
+  'vandalism business property damage',
+  'theft robbery business',
+  'roof collapse commercial building',
+  'tornado hurricane damage business',
+  'equipment breakdown restaurant',
+  'slip fall lawsuit business',
+  'smoke damage commercial property',
+  'hail damage commercial roof',
+  'vehicle crash into building business',
+  'food spoilage restaurant power outage',
+  'grease fire commercial kitchen',
+  'electrical fire business',
+  'sewage backup commercial property',
+  'frozen pipe burst business',
+  'wildfire smoke damage business',
+];
+
+const STATE_MAP = {
+  'alabama':'alabama','alaska':'alaska','arizona':'arizona','arkansas':'arkansas','california':'california','colorado':'colorado','connecticut':'connecticut','delaware':'delaware','florida':'florida','georgia':'georgia','hawaii':'hawaii','idaho':'idaho','illinois':'illinois','indiana':'indiana','iowa':'iowa','kansas':'kansas','kentucky':'kentucky','louisiana':'louisiana','maine':'maine','maryland':'maryland','massachusetts':'massachusetts','michigan':'michigan','minnesota':'minnesota','mississippi':'mississippi','missouri':'missouri','montana':'montana','nebraska':'nebraska','nevada':'nevada','new hampshire':'new-hampshire','new jersey':'new-jersey','new mexico':'new-mexico','new york':'new-york','north carolina':'north-carolina','north dakota':'north-dakota','ohio':'ohio','oklahoma':'oklahoma','oregon':'oregon','pennsylvania':'pennsylvania','rhode island':'rhode-island','south carolina':'south-carolina','south dakota':'south-dakota','tennessee':'tennessee','texas':'texas','utah':'utah','vermont':'vermont','virginia':'virginia','washington':'washington','west virginia':'west-virginia','wisconsin':'wisconsin','wyoming':'wyoming',
+  'al':'alabama','ak':'alaska','az':'arizona','ar':'arkansas','ca':'california','co':'colorado','ct':'connecticut','de':'delaware','fl':'florida','ga':'georgia','hi':'hawaii','id':'idaho','il':'illinois','in':'indiana','ia':'iowa','ks':'kansas','ky':'kentucky','la':'louisiana','me':'maine','md':'maryland','ma':'massachusetts','mi':'michigan','mn':'minnesota','ms':'mississippi','mo':'missouri','mt':'montana','ne':'nebraska','nv':'nevada','nh':'new-hampshire','nj':'new-jersey','nm':'new-mexico','ny':'new-york','nc':'north-carolina','nd':'north-dakota','oh':'ohio','ok':'oklahoma','or':'oregon','pa':'pennsylvania','ri':'rhode-island','sc':'south-carolina','sd':'south-dakota','tn':'tennessee','tx':'texas','ut':'utah','vt':'vermont','va':'virginia','wa':'washington','wv':'west-virginia','wi':'wisconsin','wy':'wyoming'
+};
+
+function parseLocation(text) {
+  const states = 'Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming';
+  const m = text.match(new RegExp(`([A-Z][a-zA-Z\\s]{2,25}),\\s*(${states})`,'i')) ||
+            text.match(/([A-Z][a-zA-Z\s]{2,20}),\s+([A-Z]{2})\b/);
+  if (!m) return null;
+  const city = m[1].trim().replace(/^(in|at|near)\s+/i,'');
+  const slug = STATE_MAP[m[2].trim().toLowerCase()];
+  if (!slug || city.length < 3 || city.length > 40) return null;
+  return { city, state: m[2].trim(), stateSlug: slug };
+}
+
+function parseBizName(title, snippet) {
+  const t = title + ' ' + snippet;
+  const q = t.match(/"([^"]{3,45})"|'([^']{3,45})'/);
+  if (q) return (q[1]||q[2]).trim();
+  const at = t.match(/\bat\s+([A-Z][a-zA-Z\s&'.-]{3,35})(?:\s+(?:in|on|was|has)|\s*[,.])/);
+  if (at) return at[1].trim();
+  const biz = t.match(/([A-Z][a-zA-Z\s&'.-]{2,28})\s+(?:restaurant|bar|cafe|shop|store|salon|gym|hotel|pub|grill|bakery|auto|clinic|brewery|market|dealership)/i);
+  if (biz) return biz[1].trim();
+  return null;
+}
+
+function parseIncident(text) {
+  const t = text.toLowerCase();
+  const rules = [
+    [['kitchen fire','grease fire','cooking fire'],'Kitchen Fire','kitchen-fire'],
+    [['electrical fire','wiring fire'],'Electrical Fire','electrical-fire'],
+    [['wildfire','brush fire'],'Wildfire','wildfire'],
+    [['fire','blaze','flames','burned','arson'],'Fire Damage','structure-fire'],
+    [['smoke damage'],'Smoke Damage','smoke-damage'],
+    [['flood','flooding'],'Flood Damage','natural-flood'],
+    [['burst pipe','pipe burst','frozen pipe'],'Burst Pipe','burst-pipe'],
+    [['water damage','roof leak'],'Water Damage','roof-leak'],
+    [['roof collapse','ceiling collapse'],'Roof Collapse','roof-collapse'],
+    [['hail','hailstorm'],'Hail Damage','hail-damage'],
+    [['tornado','twister'],'Tornado Damage','tornado'],
+    [['hurricane','tropical storm'],'Hurricane Damage','hurricane'],
+    [['burglary','break-in','broke into'],'Burglary','burglary'],
+    [['robbery','armed robbery'],'Robbery','robbery'],
+    [['theft','stolen','shoplifting'],'Theft','employee-theft'],
+    [['vandalism','vandalized','graffiti'],'Vandalism','property-destruction'],
+    [['equipment breakdown','equipment failure'],'Equipment Breakdown','equipment-breakdown-gen'],
+    [['slip and fall','slip fall','customer fell'],'Slip & Fall','customer-slip-fall'],
+    [['food spoilage','freezer failure','refriger'],'Food Spoilage','food-spoilage-equip'],
+    [['sewage backup','sewer backup'],'Sewage Backup','sewer-backup'],
+    [['car crashed','vehicle hit','drove into building'],'Vehicle Hit Building','vehicle-hit-building'],
+    [['wind damage','wind storm','tree fell'],'Wind Damage','wind-damage'],
+  ];
+  for (const [kw,type,slug] of rules) if (kw.some(k=>t.includes(k))) return {type,slug};
+  return {type:'Property Damage',slug:'structure-fire'};
+}
+
+function buildOutreach(biz, incType, city, state, stateSlug, citySlug, incSlug) {
+  const claimsUrl = `https://attorneyaitools.org/claims/${stateSlug}/${citySlug}/${incSlug}/`;
+  const b = biz || 'your business';
+  const subject = biz
+    ? `${incType} at ${biz} — insurance settlement help`
+    : `${incType} in ${city}, ${state} — is your insurance settlement fair?`;
+  const body = `Hi ${biz ? biz + ' team' : 'there'},
+
+We saw the news about the ${incType.toLowerCase()} at ${b} in ${city}, ${state}.
+
+Before you accept any insurance settlement, here's something important:
+
+The average commercial insurance claim for ${incType.toLowerCase()} is settled $14,200 below what the policy actually requires — because adjusters routinely apply actual cash value instead of replacement cost, omit standard scope items, and miscalculate business income loss.
+
+Shielded is a free AI tool that reads your commercial insurance policy and shows you exactly where the settlement may be short — citing your specific policy sections by number.
+
+We wrote a free guide specifically for ${incType.toLowerCase()} claims in ${city}, ${state}:
+${claimsUrl}
+
+Full policy analysis tool (upload your PDF, 90 seconds, free):
+https://attorneyaitools.org/waitlist/
+
+No attorneys, no fees. Just your policy — explained.
+
+— Shielded Team
+AttorneyAITools.org
+
+---
+Reply "remove" to unsubscribe.`;
+  return { subject, body };
 }
 
 async function startMonitor() {
-  if (!cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes('YOUR_PROJECT')) {
-    alert('Configure Supabase in js/config.js first'); return;
-  }
+  const key = cfg.SERPAPI_KEY;
+  if (!key) { alert('No SERPAPI_KEY in js/config.js'); return; }
+  if (!sb) { alert('Supabase not configured'); return; }
 
   const btn = document.getElementById('start-btn');
-  const dot = document.getElementById('status-dot');
-  const statusText = document.getElementById('status-text');
-  const panel = document.getElementById('monitor-panel');
-  const logEl = document.getElementById('monitor-log');
-
+  const panel = document.getElementById('prog-panel');
+  const logEl = document.getElementById('prog-log');
   btn.disabled = true; btn.textContent = '⏳ Scanning…';
-  dot.className = 'dot dot-running';
-  statusText.textContent = 'Scanning news…';
+  document.getElementById('dot').className = 'dot dot-run';
+  document.getElementById('status-txt').textContent = 'Scanning news…';
   panel.style.display = 'block';
   logEl.innerHTML = '';
+  let newLeads = 0, checked = 0;
 
-  addLog('Starting news monitor…', 'info');
-  addLog('Using SerpAPI — scanning Google News for business incidents', 'info');
-
-  // Animate progress
-  let progress = 0;
-  const progInterval = setInterval(() => {
-    progress = Math.min(progress + 2, 95);
-    document.getElementById('prog-fill').style.width = progress + '%';
-    document.getElementById('scan-progress').textContent = Math.floor(progress / 5) + ' / 20 queries';
-  }, 600);
-
-  try {
-    const res = await fetch(`${cfg.SUPABASE_URL}/functions/v1/news-monitor`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.SUPABASE_ANON_KEY}` },
-      body: '{}'
-    });
-
-    clearInterval(progInterval);
-    document.getElementById('prog-fill').style.width = '100%';
-    document.getElementById('scan-progress').textContent = '20 / 20 queries';
-
-    const data = await res.json();
-
-    if (data.error) throw new Error(data.error);
-
-    addLog(`✓ Scanned ${data.queries || 20} search queries`, 'success');
-    addLog(`✓ Reviewed ${data.articles || 0} articles`, 'info');
-    addLog(`✓ Found ${data.leads_created || 0} new leads`, 'success');
-    if (data.skipped_duplicate > 0) addLog(`ℹ Skipped ${data.skipped_duplicate} duplicates`, 'warn');
-
-    showToast(`✅ Monitor complete — ${data.leads_created || 0} new leads found`);
-    statusText.textContent = `Last run: just now — ${data.leads_created || 0} leads found`;
-
-    await loadLeads();
-  } catch (e) {
-    clearInterval(progInterval);
-    addLog('✗ Error: ' + e.message, 'warn');
-    showToast('❌ Monitor error: ' + e.message);
-    statusText.textContent = 'Error — check console';
+  function log(msg, type='') { logEl.innerHTML += `<div class="${type==='ok'?'pl-ok':type==='warn'?'pl-warn':'pl-info'}">${msg}</div>`; logEl.scrollTop = logEl.scrollHeight; }
+  function setProg(i) {
+    const pct = Math.round(i / QUERIES.length * 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-pct').textContent = i + ' / ' + QUERIES.length;
   }
 
+  log('Starting SerpAPI Google News scan…', 'info');
+
+  for (let i = 0; i < QUERIES.length; i++) {
+    const query = QUERIES[i];
+    setProg(i + 1);
+    try {
+      // SerpAPI Google News endpoint — works with CORS
+      const url = `https://serpapi.com/search.json?engine=google_news&q=${encodeURIComponent(query)}&gl=us&hl=en&api_key=${key}`;
+      const res = await fetch(url);
+      if (!res.ok) { log(`⚠ Query "${query}": ${res.status}`, 'warn'); continue; }
+      const data = await res.json();
+      const articles = (data.news_results || []).slice(0, 6);
+
+      for (const art of articles) {
+        checked++;
+        const text = (art.title || '') + ' ' + (art.snippet || '');
+        const loc = parseLocation(text);
+        if (!loc) continue;
+        const inc = parseIncident(text);
+        const biz = parseBizName(art.title || '', art.snippet || '');
+        const citySlug = loc.city.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+        const articleUrl = art.link || art.url || '';
+        if (!articleUrl) continue;
+
+        // Skip duplicate
+        const { data: dup } = await sb.from('business_leads').select('id').eq('article_url', articleUrl).maybeSingle();
+        if (dup) continue;
+
+        const out = buildOutreach(biz, inc.type, loc.city, loc.state, loc.stateSlug, citySlug, inc.slug);
+        const { error } = await sb.from('business_leads').insert({
+          business_name: biz, incident_type: inc.type, incident_slug: inc.slug,
+          city: loc.city, state: loc.state, state_slug: loc.stateSlug, city_slug: citySlug,
+          article_title: art.title, article_url: articleUrl,
+          article_date: new Date().toISOString().split('T')[0],
+          source: art.source?.name || 'Google News',
+          search_query: query,
+          outreach_email_subject: out.subject,
+          outreach_email_body: out.body,
+          outreach_status: 'pending',
+        });
+        if (!error) {
+          newLeads++;
+          log(`✓ ${biz||'Business'} — ${inc.type} — ${loc.city}, ${loc.state}`, 'ok');
+        }
+      }
+    } catch(e) { log(`⚠ ${query}: ${e.message}`, 'warn'); }
+  }
+
+  setProg(QUERIES.length);
+  log(`Done — ${checked} articles checked, ${newLeads} new leads saved`, 'info');
+  toast(`✅ Monitor complete — ${newLeads} new leads found`);
   btn.disabled = false; btn.textContent = '▶ Start Monitor';
-  dot.className = 'dot dot-idle';
+  document.getElementById('dot').className = 'dot dot-idle';
+  document.getElementById('status-txt').textContent = `Last run: ${newLeads} new leads found`;
+  await loadLeads();
 }
 
-// ── Toast ────────────────────────────────────────────────────────────────────
-function showToast(msg) {
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function toast(msg) {
   const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:opacity .3s';
-  t.textContent = msg;
+  t.className = 'toast'; t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3500);
+  setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3500);
 }
-
-function showEmpty(msg) {
-  document.getElementById('table-area').innerHTML = `<div class="table-wrap"><div class="empty-state"><h3>${msg}</h3></div></div>`;
+function showMsg(msg) {
+  document.getElementById('table-area').innerHTML = `<div class="tbl-wrap"><div class="empty"><h3>${msg}</h3></div></div>`;
 }
 </script>
 </body>

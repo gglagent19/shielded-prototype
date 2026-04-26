@@ -12,6 +12,11 @@ window.SHIELDED_CONFIG = {
   STRIPE_MONTHLY_LINK:   'https://buy.stripe.com/YOUR_LINK',  // $29/mo subscription
   STRIPE_ANNUAL_LINK:    'https://buy.stripe.com/YOUR_LINK',  // $199/yr subscription
 
+  // ── News Monitor (leads dashboard) ──────────────────────────────────────────
+  SERPAPI_KEY:    '212e9e36dea44d201e6f745648bbb99048980f21d0ae1bef9fc02f10db147632',
+  RESEND_API_KEY: 're_TPYFTTbg_5zDFykKV4HY4ztC14iC9EGaD',
+  FROM_EMAIL:     'hello@attorneyaitools.org',
+
   // ── Feature flags ────────────────────────────────────────────────────────────
   LIVE_MODE:      true,   // Supabase is live — waitlist form saves to DB
   WAITLIST_MODE:  true,   // Show waitlist instead of paywall (flip false after Stripe setup)
