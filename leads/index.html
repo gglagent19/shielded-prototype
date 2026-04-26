@@ -3,260 +3,679 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Leads Dashboard — Shielded</title>
+<title>News Leads Monitor — Shielded</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="../js/config.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#f6f3ee;--card:#fff;--navy:#1c2333;--teal:#2a9d8f;--line:#e0dbd2;--ink:#14181f;--ink2:#2a3140;--ink3:#5b6472;--r:10px;--green:#16a34a;--amber:#d97706;--red:#dc2626}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
-.nav{background:var(--navy);padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{color:#fff;font-weight:700;font-size:15px;text-decoration:none}
-.nav-actions{display:flex;gap:10px;align-items:center}
-.btn{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
-.btn-primary{background:#fff;color:var(--navy)}
-.btn-green{background:var(--green);color:#fff}
-.btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)}
-.wrap{max-width:1300px;margin:0 auto;padding:24px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px}
-.stat-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
-.stat-num{font-size:28px;font-weight:700;color:var(--navy);letter-spacing:-.02em}
-.stat-label{font-size:12px;color:var(--ink3);margin-top:2px}
-.filters{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
-.filter-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font-size:12.5px;font-family:inherit;color:var(--ink2)}
-.filter-btn.active{border-color:var(--teal);background:var(--teal);color:#fff}
-.search{padding:8px 12px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;flex:1;max-width:300px;min-width:180px}
-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
-td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink2);vertical-align:top}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:#faf9f7}
-.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.badge-pending{background:#fef3c7;color:#92400e}
-.badge-sent{background:#d1fae5;color:#065f46}
-.badge-skipped{background:#f3f4f6;color:#6b7280}
-.badge-replied{background:#dbeafe;color:#1e40af}
-.badge-bounced{background:#fee2e2;color:#991b1b}
-.incident-tag{background:var(--bg);border-radius:6px;padding:2px 7px;font-size:11.5px;color:var(--ink3);display:inline-block}
-.action-btns{display:flex;gap:6px}
-.action-btn{padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:11.5px;font-family:inherit;color:var(--ink2)}
-.action-btn:hover{border-color:var(--teal);color:var(--teal)}
-.action-btn.send{border-color:var(--green);color:var(--green)}
-.action-btn.skip{border-color:var(--red);color:var(--red)}
-.empty{text-align:center;padding:60px;color:var(--ink3)}
-.empty h3{font-size:18px;font-weight:600;color:var(--navy);margin-bottom:8px}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center}
-.modal.open{display:flex}
-.modal-box{background:#fff;border-radius:12px;padding:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
-.modal-box h3{font-size:17px;font-weight:700;margin-bottom:16px;color:var(--navy)}
-.email-preview{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;font-size:13px;line-height:1.7;white-space:pre-wrap;font-family:inherit}
-.modal-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
-.loading{text-align:center;padding:40px;color:var(--ink3)}
-a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+:root{
+  --bg:#f0f2f5;--card:#fff;--navy:#1c2333;--teal:#2a9d8f;
+  --line:#e5e7eb;--ink:#111827;--ink2:#374151;--ink3:#6b7280;
+  --green:#16a34a;--amber:#d97706;--red:#dc2626;--blue:#2563eb;--r:10px
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh}
+
+/* ── Nav ── */
+.nav{background:var(--navy);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 6px rgba(0,0,0,.2)}
+.nav-left{display:flex;align-items:center;gap:16px}
+.logo{color:#fff;font-weight:800;font-size:16px;letter-spacing:-.02em;text-decoration:none;display:flex;align-items:center;gap:8px}
+.nav-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.nav-btn-start{background:#fff;color:var(--navy)}
+.nav-btn-start:hover{background:#f0ede8}
+.nav-btn-start:disabled{opacity:.6;cursor:not-allowed}
+.nav-btn-outline{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2)}
+.nav-btn-outline:hover{background:rgba(255,255,255,.08)}
+.monitor-status{font-size:12px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot-idle{background:rgba(255,255,255,.3)}
+.dot-running{background:#4ade80;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── Layout ── */
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 56px)}
+
+/* ── Sidebar ── */
+.sidebar{background:#fff;border-right:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:6px}
+.sidebar-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin:12px 0 6px;padding:0 8px}
+.sidebar-title:first-child{margin-top:0}
+.filter-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--ink2);border:none;background:none;font-family:inherit;width:100%;text-align:left;transition:background .1s}
+.filter-item:hover{background:#f9fafb}
+.filter-item.active{background:#eff6ff;color:var(--blue);font-weight:600}
+.filter-item.active .count{background:#bfdbfe;color:#1d4ed8}
+.count{background:#f3f4f6;color:var(--ink3);padding:1px 7px;border-radius:10px;font-size:11.5px;font-weight:600;min-width:24px;text-align:center}
+.incident-list{display:flex;flex-direction:column;gap:4px;max-height:280px;overflow-y:auto}
+.inc-filter{padding:5px 10px;border-radius:6px;font-size:12px;color:var(--ink3);cursor:pointer;border:none;background:none;font-family:inherit;width:100%;text-align:left;display:flex;align-items:center;gap:6px}
+.inc-filter:hover{background:#f9fafb;color:var(--ink)}
+.inc-filter.active{background:#f0fdf4;color:var(--green);font-weight:600}
+.inc-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* ── Main ── */
+.main{padding:24px;display:flex;flex-direction:column;gap:20px}
+
+/* ── Stats bar ── */
+.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.stat-num{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.03em;line-height:1}
+.stat-label{font-size:11.5px;color:var(--ink3);margin-top:4px}
+.stat-delta{font-size:11px;margin-top:3px}
+.delta-up{color:var(--green)}
+
+/* ── Toolbar ── */
+.toolbar{display:flex;align-items:center;gap:10px}
+.search-box{flex:1;max-width:340px;position:relative}
+.search-box input{width:100%;padding:8px 10px 8px 34px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;color:var(--ink);background:#fff;outline:none}
+.search-box input:focus{border-color:var(--teal)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:14px}
+.sort-select{padding:7px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink2);cursor:pointer;outline:none}
+.spacer{flex:1}
+.bulk-actions{display:flex;gap:8px;align-items:center}
+.selected-count{font-size:13px;color:var(--ink3)}
+.action-btn-sm{padding:6px 12px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:#fff;font-family:inherit;color:var(--ink2)}
+.action-btn-sm:hover{border-color:var(--teal);color:var(--teal)}
+.action-btn-send{border-color:var(--green);color:var(--green)}
+.action-btn-send:hover{background:#f0fdf4}
+
+/* ── Table ── */
+.table-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:#f9fafb;border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;font-size:11.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+thead th:first-child{padding-left:16px}
+tbody td{padding:12px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13px;color:var(--ink2)}
+tbody td:first-child{padding-left:16px}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafafa}
+tbody tr.selected{background:#eff6ff}
+.cb{width:15px;height:15px;cursor:pointer;accent-color:var(--blue)}
+
+/* ── Cell components ── */
+.biz-name{font-weight:600;color:var(--ink);font-size:13.5px;margin-bottom:3px}
+.incident-badge{display:inline-flex;align-items:center;gap:4px;background:#f3f4f6;border-radius:6px;padding:2px 8px;font-size:11.5px;color:var(--ink2);font-weight:500}
+.location-text{font-size:13px;color:var(--ink2);font-weight:500}
+.location-sub{font-size:11.5px;color:var(--ink3);margin-top:2px}
+.article-link{color:var(--blue);text-decoration:none;font-size:12.5px;display:block;line-height:1.45}
+.article-link:hover{text-decoration:underline}
+.article-meta{font-size:11px;color:var(--ink3);margin-top:3px}
+.email-found{color:var(--green);font-size:12.5px;font-weight:500}
+.email-none{color:var(--ink3);font-size:12px}
+.status-badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.s-pending{background:#fef3c7;color:#92400e}
+.s-sent{background:#d1fae5;color:#065f46}
+.s-replied{background:#dbeafe;color:#1e40af}
+.s-skipped{background:#f3f4f6;color:#6b7280}
+.s-bounced{background:#fee2e2;color:#991b1b}
+.row-actions{display:flex;gap:5px;flex-wrap:wrap}
+.ra{padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:11.5px;font-family:inherit;color:var(--ink2);white-space:nowrap}
+.ra:hover{border-color:var(--teal);color:var(--teal)}
+.ra-send{border-color:#d1fae5;color:var(--green)}
+.ra-send:hover{background:#f0fdf4}
+.ra-skip{border-color:#fee2e2;color:var(--red)}
+.ra-skip:hover{background:#fef2f2}
+
+/* ── Empty/loading states ── */
+.empty-state{padding:64px;text-align:center}
+.empty-state h3{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.empty-state p{color:var(--ink3);font-size:14px;margin-bottom:20px;line-height:1.6}
+.start-monitor-btn{background:var(--navy);color:#fff;padding:11px 24px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit}
+.start-monitor-btn:hover{background:#243050}
+.loading-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:48px;color:var(--ink3)}
+.spinner{width:20px;height:20px;border:2.5px solid var(--line);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Modal ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:620px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-header{padding:18px 20px 14px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.modal-title{font-size:16px;font-weight:700;color:var(--navy);line-height:1.35}
+.modal-subtitle{font-size:12.5px;color:var(--ink3);margin-top:3px}
+.modal-close{background:none;border:none;cursor:pointer;padding:4px;color:var(--ink3);font-size:18px;line-height:1;flex-shrink:0}
+.modal-body{padding:18px 20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
+.email-field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);display:block;margin-bottom:5px}
+.subject-preview{font-size:14px;font-weight:600;color:var(--ink);padding:9px 12px;background:#f9fafb;border-radius:8px;border:1px solid var(--line)}
+.body-preview{white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--ink2);padding:12px 14px;background:#f9fafb;border-radius:8px;border:1px solid var(--line);max-height:280px;overflow-y:auto;font-family:inherit}
+.to-field{display:flex;gap:8px;align-items:center}
+.to-field input{flex:1;padding:8px 11px;border:1.5px solid var(--line);border-radius:7px;font-size:13px;font-family:inherit;outline:none}
+.to-field input:focus{border-color:var(--teal)}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
+.btn-cancel{padding:8px 16px;border-radius:8px;border:1.5px solid var(--line);background:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink2)}
+.btn-send{padding:8px 20px;border-radius:8px;border:none;background:var(--green);color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-send:hover{background:#15803d}
+.btn-send:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── Monitor progress ── */
+.progress-bar{height:3px;background:#e5e7eb;border-radius:2px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .4s;width:0%}
+.monitor-log{background:#1e293b;color:#94a3b8;border-radius:8px;padding:14px;font-size:12px;font-family:'Courier New',monospace;line-height:1.6;max-height:160px;overflow-y:auto;margin-top:12px}
+.log-success{color:#4ade80}
+.log-info{color:#60a5fa}
+.log-warn{color:#fbbf24}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .stats-bar{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 </head>
 <body>
+
+<!-- Nav -->
 <nav class="nav">
-  <a class="nav-logo" href="../app.html">🛡 Shielded · Leads</a>
-  <div class="nav-actions">
-    <span id="lead-count" style="color:rgba(255,255,255,.6);font-size:13px"></span>
-    <button class="btn btn-outline" onclick="runMonitor()">▶ Run Monitor Now</button>
-    <a href="../app.html" class="btn btn-primary">App →</a>
+  <div class="nav-left">
+    <a class="logo" href="../app.html">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5.5V11C4 15.5 7.5 19.7 12 21C16.5 19.7 20 15.5 20 11V5.5L12 2Z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#7ecdc8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Shielded
+    </a>
+    <span class="nav-badge">Leads Monitor</span>
+    <div class="monitor-status">
+      <span class="dot dot-idle" id="status-dot"></span>
+      <span id="status-text">Idle — click Start to scan news</span>
+    </div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn nav-btn-outline" onclick="location.href='../app.html'">App</button>
+    <button class="nav-btn nav-btn-start" id="start-btn" onclick="startMonitor()">▶ Start Monitor</button>
   </div>
 </nav>
 
-<div class="wrap">
-  <div class="stats" id="stats">
-    <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total Leads</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-pending">—</div><div class="stat-label">Pending</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-sent">—</div><div class="stat-label">Sent</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-replied">—</div><div class="stat-label">Replied</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-today">—</div><div class="stat-label">Found Today</div></div>
-  </div>
+<!-- Layout -->
+<div class="layout">
 
-  <div class="filters">
-    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
-    <button class="filter-btn" onclick="setFilter('pending', this)">Pending</button>
-    <button class="filter-btn" onclick="setFilter('sent', this)">Sent</button>
-    <button class="filter-btn" onclick="setFilter('replied', this)">Replied</button>
-    <button class="filter-btn" onclick="setFilter('skipped', this)">Skipped</button>
-    <input class="search" id="search" type="text" placeholder="Search business, city, incident..." oninput="renderTable()">
-  </div>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Status</div>
+    <button class="filter-item active" onclick="setStatus('all',this)">
+      All Leads <span class="count" id="cnt-all">0</span>
+    </button>
+    <button class="filter-item" onclick="setStatus('pending',this)">
+      Pending <span class="count" id="cnt-pending">0</span>
+    </button>
+    <button class="filter-item" onclick="setStatus('sent',this)">
+      Sent <span class="count" id="cnt-sent">0</span>
+    </button>
+    <button class="filter-item" onclick="setStatus('replied',this)">
+      Replied <span class="count" id="cnt-replied">0</span>
+    </button>
+    <button class="filter-item" onclick="setStatus('skipped',this)">
+      Skipped <span class="count" id="cnt-skipped">0</span>
+    </button>
 
-  <div id="table-container">
-    <div class="loading">Loading leads...</div>
-  </div>
+    <div class="sidebar-title">Incident Type</div>
+    <div class="incident-list" id="incident-filters"></div>
+
+    <div class="sidebar-title" style="margin-top:auto;padding-top:16px">Last run</div>
+    <div style="font-size:12px;color:var(--ink3);padding:0 8px" id="last-run">Never</div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-num" id="s-total">0</div>
+        <div class="stat-label">Total Leads</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-pending">0</div>
+        <div class="stat-label">Pending Outreach</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-sent">0</div>
+        <div class="stat-label">Emails Sent</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-replied">0</div>
+        <div class="stat-label">Replied</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-today">0</div>
+        <div class="stat-label">Found Today</div>
+      </div>
+    </div>
+
+    <!-- Monitor progress (hidden when idle) -->
+    <div id="monitor-panel" style="display:none;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:14px;font-weight:600;color:var(--navy)">🔍 Scanning news…</div>
+        <div style="font-size:12.5px;color:var(--ink3)" id="scan-progress">0 / 20 queries</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+      <div class="monitor-log" id="monitor-log">Starting news scan…</div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search" placeholder="Search business, city, incident…" oninput="renderTable()">
+      </div>
+      <select class="sort-select" id="sort-by" onchange="renderTable()">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="business">Business name</option>
+        <option value="state">State A–Z</option>
+      </select>
+      <div class="spacer"></div>
+      <div class="bulk-actions" id="bulk-bar" style="display:none">
+        <span class="selected-count" id="sel-count"></span>
+        <button class="action-btn-sm action-btn-send" onclick="bulkSend()">Send Selected</button>
+        <button class="action-btn-sm" onclick="bulkSkip()">Skip Selected</button>
+        <button class="action-btn-sm" onclick="clearSelection()">Clear</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div id="table-area">
+      <div class="table-wrap">
+        <div class="loading-bar"><div class="spinner"></div> Loading leads…</div>
+      </div>
+    </div>
+
+  </main>
 </div>
 
-<!-- Email preview modal -->
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h3 id="modal-title">Email Preview</h3>
-    <div><strong style="font-size:12px;color:var(--ink3)">SUBJECT</strong><div id="modal-subject" style="margin:4px 0 12px;font-weight:600"></div></div>
-    <div><strong style="font-size:12px;color:var(--ink3)">BODY</strong></div>
-    <div class="email-preview" id="modal-body"></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" style="color:var(--ink2);border-color:var(--line)" onclick="closeModal()">Close</button>
-      <button class="btn btn-green" id="modal-send-btn">Send Email</button>
+<!-- Email Modal -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-biz">Preview Outreach Email</div>
+        <div class="modal-subtitle" id="modal-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="email-field">
+        <label>To</label>
+        <div class="to-field">
+          <input type="email" id="modal-to" placeholder="business@email.com">
+        </div>
+      </div>
+      <div class="email-field">
+        <label>Subject</label>
+        <div class="subject-preview" id="modal-subject"></div>
+      </div>
+      <div class="email-field">
+        <label>Body</label>
+        <div class="body-preview" id="modal-body-text"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-send" id="modal-send" onclick="sendFromModal()">Send Email →</button>
     </div>
   </div>
 </div>
 
 <script>
 const cfg = window.SHIELDED_CONFIG || {};
-let sb = null;
-let allLeads = [];
-let currentFilter = 'all';
-let currentLeadId = null;
+let sb = null, allLeads = [], selectedIds = new Set();
+let currentStatus = 'all', currentIncident = '', currentLeadId = null;
 
+// Init Supabase
 if (cfg.SUPABASE_URL && !cfg.SUPABASE_URL.includes('YOUR_PROJECT')) {
   sb = supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
   loadLeads();
 } else {
-  document.getElementById('table-container').innerHTML = '<div class="empty"><h3>Supabase not configured</h3><p>Add your keys to js/config.js</p></div>';
+  showEmpty('Configure Supabase in js/config.js first');
 }
 
+// ── Load leads ───────────────────────────────────────────────────────────────
 async function loadLeads() {
   if (!sb) return;
-  const { data, error } = await sb.from('business_leads').select('*').order('created_at', { ascending: false }).limit(500);
-  if (error) { console.error(error); return; }
+  const { data, error } = await sb.from('business_leads')
+    .select('*').order('created_at', { ascending: false }).limit(1000);
+  if (error) { showEmpty('Error loading leads: ' + error.message); return; }
   allLeads = data || [];
   updateStats();
+  buildIncidentFilters();
   renderTable();
 }
 
 function updateStats() {
   const today = new Date().toISOString().split('T')[0];
-  document.getElementById('stat-total').textContent = allLeads.length;
-  document.getElementById('stat-pending').textContent = allLeads.filter(l => l.outreach_status === 'pending').length;
-  document.getElementById('stat-sent').textContent = allLeads.filter(l => l.outreach_status === 'sent').length;
-  document.getElementById('stat-replied').textContent = allLeads.filter(l => l.outreach_status === 'replied').length;
-  document.getElementById('stat-today').textContent = allLeads.filter(l => l.article_date === today || l.created_at?.startsWith(today)).length;
-  document.getElementById('lead-count').textContent = `${allLeads.length} leads`;
+  const counts = { all: allLeads.length, pending: 0, sent: 0, replied: 0, skipped: 0 };
+  allLeads.forEach(l => { if (counts[l.outreach_status] !== undefined) counts[l.outreach_status]++; });
+
+  document.getElementById('s-total').textContent  = counts.all;
+  document.getElementById('s-pending').textContent = counts.pending;
+  document.getElementById('s-sent').textContent    = counts.sent;
+  document.getElementById('s-replied').textContent = counts.replied;
+  document.getElementById('s-today').textContent   = allLeads.filter(l => l.created_at?.startsWith(today)).length;
+
+  Object.keys(counts).forEach(k => {
+    const el = document.getElementById('cnt-' + k);
+    if (el) el.textContent = counts[k];
+  });
 }
 
-function setFilter(f, btn) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderTable();
+function buildIncidentFilters() {
+  const typeCounts = {};
+  allLeads.forEach(l => { if (l.incident_type) typeCounts[l.incident_type] = (typeCounts[l.incident_type]||0)+1; });
+  const sorted = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]);
+  const container = document.getElementById('incident-filters');
+  container.innerHTML = `
+    <button class="inc-filter ${!currentIncident?'active':''}" onclick="setIncident('',this)">
+      <span class="inc-dot"></span>All types
+    </button>` +
+    sorted.map(([type, count]) => `
+    <button class="inc-filter ${currentIncident===type?'active':''}" onclick="setIncident('${type.replace(/'/g,"\\'")}',this)">
+      <span class="inc-dot"></span>${type} <span style="margin-left:auto;font-size:11px;opacity:.6">${count}</span>
+    </button>`).join('');
+
+  const lastRun = allLeads[0]?.created_at;
+  if (lastRun) {
+    document.getElementById('last-run').textContent = new Date(lastRun).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  }
 }
 
+// ── Render table ─────────────────────────────────────────────────────────────
 function renderTable() {
   const search = document.getElementById('search').value.toLowerCase();
+  const sortBy = document.getElementById('sort-by').value;
+
   let leads = allLeads.filter(l => {
-    if (currentFilter !== 'all' && l.outreach_status !== currentFilter) return false;
+    if (currentStatus !== 'all' && l.outreach_status !== currentStatus) return false;
+    if (currentIncident && l.incident_type !== currentIncident) return false;
     if (search) {
-      const hay = `${l.business_name} ${l.city} ${l.state} ${l.incident_type} ${l.article_title}`.toLowerCase();
+      const hay = [l.business_name, l.city, l.state, l.incident_type, l.article_title].join(' ').toLowerCase();
       if (!hay.includes(search)) return false;
     }
     return true;
   });
 
+  leads.sort((a, b) => {
+    if (sortBy === 'oldest')   return new Date(a.created_at) - new Date(b.created_at);
+    if (sortBy === 'business') return (a.business_name||'zzz').localeCompare(b.business_name||'zzz');
+    if (sortBy === 'state')    return (a.state||'').localeCompare(b.state||'');
+    return new Date(b.created_at) - new Date(a.created_at); // newest
+  });
+
   if (!leads.length) {
-    document.getElementById('table-container').innerHTML = `<div class="empty"><h3>No leads found</h3><p>Run the monitor or adjust filters</p></div>`;
+    const msg = allLeads.length === 0
+      ? `<div class="empty-state">
+          <h3>No leads yet</h3>
+          <p>Click <strong>Start Monitor</strong> to scan today's news for businesses<br>affected by fires, floods, theft, vandalism, and more.</p>
+          <button class="start-monitor-btn" onclick="startMonitor()">▶ Start Monitor Now</button>
+        </div>`
+      : `<div class="empty-state"><h3>No leads match this filter</h3><p>Try a different filter or search term.</p></div>`;
+    document.getElementById('table-area').innerHTML = `<div class="table-wrap">${msg}</div>`;
     return;
   }
 
-  const rows = leads.map(l => `
-    <tr>
+  const rows = leads.map(l => {
+    const checked = selectedIds.has(l.id) ? 'checked' : '';
+    const dateStr = l.article_date || l.created_at?.split('T')[0] || '';
+    return `<tr class="${selectedIds.has(l.id)?'selected':''}" id="row-${l.id}">
+      <td><input type="checkbox" class="cb" ${checked} onchange="toggleSelect('${l.id}',this)"></td>
       <td>
-        ${l.business_name ? `<strong>${l.business_name}</strong><br>` : ''}
-        <span class="incident-tag">${l.incident_type || '—'}</span>
+        ${l.business_name ? `<div class="biz-name">${l.business_name}</div>` : '<div class="biz-name" style="color:var(--ink3);font-weight:400">Unknown Business</div>'}
+        <span class="incident-badge">🔥 ${l.incident_type||'—'}</span>
       </td>
-      <td>${l.city || '—'}, ${l.state || ''}</td>
       <td>
-        <a href="${l.article_url}" target="_blank" title="${l.article_title}" style="font-size:12px">${(l.article_title || '').substring(0, 60)}${l.article_title?.length > 60 ? '…' : ''}</a>
-        <div style="font-size:11px;color:var(--ink3);margin-top:2px">${l.article_date || ''} · ${l.source || ''}</div>
+        <div class="location-text">${l.city||'—'}, ${l.state||''}</div>
+        ${l.state_slug ? `<a class="location-sub" href="https://attorneyaitools.org/claims/${l.state_slug}/${l.city_slug||''}/${l.incident_slug||''}/" target="_blank" style="color:var(--teal);text-decoration:none;font-size:11px">View claims page ↗</a>` : ''}
       </td>
-      <td>${l.contact_email ? `<a href="mailto:${l.contact_email}">${l.contact_email}</a>` : '<span style="color:var(--ink3)">Not found</span>'}</td>
-      <td><span class="badge badge-${l.outreach_status}">${l.outreach_status}</span></td>
       <td>
-        <div class="action-btns">
-          <button class="action-btn" onclick="previewEmail('${l.id}')">Preview</button>
-          ${l.contact_email ? `<button class="action-btn send" onclick="sendOne('${l.id}')">Send</button>` : ''}
-          <button class="action-btn skip" onclick="skipLead('${l.id}')">Skip</button>
-          <a class="action-btn" href="https://attorneyaitools.org/claims/${l.state_slug}/${l.city_slug}/${l.incident_slug}/" target="_blank">Page</a>
+        <a class="article-link" href="${l.article_url||'#'}" target="_blank">${(l.article_title||'').substring(0,72)}${(l.article_title||'').length>72?'…':''}</a>
+        <div class="article-meta">${dateStr} · ${l.source||''}</div>
+      </td>
+      <td>
+        ${l.contact_email
+          ? `<div class="email-found">✓ ${l.contact_email}</div>`
+          : `<div class="email-none">Not found</div>`}
+      </td>
+      <td><span class="status-badge s-${l.outreach_status}">${l.outreach_status}</span></td>
+      <td>
+        <div class="row-actions">
+          <button class="ra" onclick="openModal('${l.id}')">Preview</button>
+          ${l.contact_email ? `<button class="ra ra-send" onclick="quickSend('${l.id}')">Send</button>` : ''}
+          ${l.outreach_status === 'pending' ? `<button class="ra ra-skip" onclick="skipLead('${l.id}')">Skip</button>` : ''}
         </div>
       </td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
 
-  document.getElementById('table-container').innerHTML = `
-    <table>
-      <thead><tr>
-        <th>Business / Incident</th>
-        <th>Location</th>
-        <th>Article</th>
-        <th>Contact Email</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  `;
+  document.getElementById('table-area').innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th style="width:36px"><input type="checkbox" class="cb" onchange="selectAll(this)"></th>
+          <th>Business / Incident</th>
+          <th>Location</th>
+          <th>Article</th>
+          <th>Contact Email</th>
+          <th>Status</th>
+          <th style="width:130px">Actions</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
 }
 
-function previewEmail(id) {
+// ── Filters ──────────────────────────────────────────────────────────────────
+function setStatus(s, btn) {
+  currentStatus = s;
+  document.querySelectorAll('.filter-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+function setIncident(type, btn) {
+  currentIncident = type;
+  document.querySelectorAll('.inc-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+// ── Selection ────────────────────────────────────────────────────────────────
+function toggleSelect(id, cb) {
+  if (cb.checked) selectedIds.add(id); else selectedIds.delete(id);
+  updateBulkBar();
+  const row = document.getElementById('row-' + id);
+  if (row) row.classList.toggle('selected', cb.checked);
+}
+function selectAll(cb) {
+  document.querySelectorAll('tbody .cb').forEach(c => {
+    c.checked = cb.checked;
+    const id = c.closest('tr')?.id?.replace('row-','');
+    if (id) { if (cb.checked) selectedIds.add(id); else selectedIds.delete(id); }
+    c.closest('tr')?.classList.toggle('selected', cb.checked);
+  });
+  updateBulkBar();
+}
+function clearSelection() {
+  selectedIds.clear();
+  document.querySelectorAll('.cb').forEach(c => c.checked = false);
+  document.querySelectorAll('tr.selected').forEach(r => r.classList.remove('selected'));
+  updateBulkBar();
+}
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  if (selectedIds.size > 0) {
+    bar.style.display = 'flex';
+    document.getElementById('sel-count').textContent = `${selectedIds.size} selected`;
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+// ── Modal ────────────────────────────────────────────────────────────────────
+function openModal(id) {
   const lead = allLeads.find(l => l.id === id);
   if (!lead) return;
   currentLeadId = id;
-  document.getElementById('modal-title').textContent = `Outreach: ${lead.business_name || 'Unknown Business'}`;
-  document.getElementById('modal-subject').textContent = lead.outreach_email_subject;
-  document.getElementById('modal-body').textContent = lead.outreach_email_body;
-  document.getElementById('modal-send-btn').onclick = () => sendOne(id);
-  document.getElementById('modal-send-btn').disabled = !lead.contact_email;
-  document.getElementById('modal-send-btn').title = lead.contact_email ? `Send to ${lead.contact_email}` : 'No email found';
+  document.getElementById('modal-biz').textContent  = lead.business_name || 'Unknown Business';
+  document.getElementById('modal-meta').textContent = `${lead.incident_type} · ${lead.city}, ${lead.state}`;
+  document.getElementById('modal-to').value          = lead.contact_email || '';
+  document.getElementById('modal-subject').textContent = lead.outreach_email_subject || '';
+  document.getElementById('modal-body-text').textContent = lead.outreach_email_body || '';
+  document.getElementById('modal-send').disabled     = false;
   document.getElementById('modal').classList.add('open');
 }
+function closeModal() { document.getElementById('modal').classList.remove('open'); currentLeadId = null; }
+document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
+async function sendFromModal() {
+  const email = document.getElementById('modal-to').value.trim();
+  if (!email) { alert('Enter an email address first'); return; }
+  const lead = allLeads.find(l => l.id === currentLeadId);
+  if (!lead) return;
+
+  // Update contact email if user typed one
+  if (email !== lead.contact_email) {
+    await sb.from('business_leads').update({ contact_email: email }).eq('id', currentLeadId);
+    lead.contact_email = email;
+  }
+  await doSend(currentLeadId, email);
+  closeModal();
 }
 
-async function sendOne(id) {
-  if (!confirm('Send this outreach email?')) return;
-  const res = await fetch(`${cfg.SUPABASE_URL}/functions/v1/send-outreach`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.SUPABASE_ANON_KEY}` },
-    body: JSON.stringify({ lead_id: id, auto_send: true })
-  });
-  const data = await res.json();
-  if (data.emails_sent > 0) { alert('✅ Email sent!'); closeModal(); loadLeads(); }
-  else alert('❌ Error: ' + (data.error || JSON.stringify(data)));
+async function quickSend(id) {
+  const lead = allLeads.find(l => l.id === id);
+  if (!lead?.contact_email) { openModal(id); return; }
+  if (!confirm(`Send outreach to ${lead.contact_email}?`)) return;
+  await doSend(id, lead.contact_email);
+}
+
+async function doSend(id, email) {
+  const lead = allLeads.find(l => l.id === id);
+  if (!lead || !sb) return;
+
+  try {
+    // Send via Supabase send-outreach function
+    const res = await fetch(`${cfg.SUPABASE_URL}/functions/v1/send-outreach`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.SUPABASE_ANON_KEY}` },
+      body: JSON.stringify({ lead_id: id, auto_send: true })
+    });
+    const data = await res.json();
+    if (data.emails_sent > 0 || data.error === undefined) {
+      await sb.from('business_leads').update({ outreach_status: 'sent', contact_email: email, sent_at: new Date().toISOString() }).eq('id', id);
+      lead.outreach_status = 'sent'; lead.contact_email = email;
+      showToast('✅ Email sent to ' + email);
+    } else {
+      throw new Error(data.error || JSON.stringify(data));
+    }
+  } catch(e) { alert('Error sending: ' + e.message); }
+  renderTable(); updateStats();
 }
 
 async function skipLead(id) {
   if (!sb) return;
   await sb.from('business_leads').update({ outreach_status: 'skipped' }).eq('id', id);
-  allLeads = allLeads.map(l => l.id === id ? { ...l, outreach_status: 'skipped' } : l);
-  renderTable(); updateStats();
+  allLeads = allLeads.map(l => l.id === id ? {...l, outreach_status:'skipped'} : l);
+  renderTable(); updateStats(); buildIncidentFilters();
 }
 
-async function runMonitor() {
-  if (!cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes('YOUR')) { alert('Configure Supabase in js/config.js first'); return; }
-  const btn = document.querySelector('.btn-outline');
-  btn.textContent = '⏳ Running...'; btn.disabled = true;
+async function bulkSend() {
+  if (selectedIds.size === 0) return;
+  const withEmail = [...selectedIds].filter(id => allLeads.find(l => l.id === id)?.contact_email);
+  if (!withEmail.length) { alert('None of the selected leads have contact emails.'); return; }
+  if (!confirm(`Send to ${withEmail.length} leads with email addresses?`)) return;
+  for (const id of withEmail) {
+    const lead = allLeads.find(l => l.id === id);
+    if (lead?.contact_email) await doSend(id, lead.contact_email);
+  }
+  clearSelection();
+}
+
+async function bulkSkip() {
+  if (selectedIds.size === 0) return;
+  if (!confirm(`Skip ${selectedIds.size} selected leads?`)) return;
+  const ids = [...selectedIds];
+  await sb.from('business_leads').update({ outreach_status: 'skipped' }).in('id', ids);
+  allLeads = allLeads.map(l => ids.includes(l.id) ? {...l, outreach_status:'skipped'} : l);
+  clearSelection(); renderTable(); updateStats(); buildIncidentFilters();
+}
+
+// ── Monitor ──────────────────────────────────────────────────────────────────
+function addLog(msg, type = '') {
+  const log = document.getElementById('monitor-log');
+  const cls = type === 'success' ? 'log-success' : type === 'warn' ? 'log-warn' : type === 'info' ? 'log-info' : '';
+  log.innerHTML += `<div class="${cls}">${msg}</div>`;
+  log.scrollTop = log.scrollHeight;
+}
+
+async function startMonitor() {
+  if (!cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes('YOUR_PROJECT')) {
+    alert('Configure Supabase in js/config.js first'); return;
+  }
+
+  const btn = document.getElementById('start-btn');
+  const dot = document.getElementById('status-dot');
+  const statusText = document.getElementById('status-text');
+  const panel = document.getElementById('monitor-panel');
+  const logEl = document.getElementById('monitor-log');
+
+  btn.disabled = true; btn.textContent = '⏳ Scanning…';
+  dot.className = 'dot dot-running';
+  statusText.textContent = 'Scanning news…';
+  panel.style.display = 'block';
+  logEl.innerHTML = '';
+
+  addLog('Starting news monitor…', 'info');
+  addLog('Using SerpAPI — scanning Google News for business incidents', 'info');
+
+  // Animate progress
+  let progress = 0;
+  const progInterval = setInterval(() => {
+    progress = Math.min(progress + 2, 95);
+    document.getElementById('prog-fill').style.width = progress + '%';
+    document.getElementById('scan-progress').textContent = Math.floor(progress / 5) + ' / 20 queries';
+  }, 600);
+
   try {
     const res = await fetch(`${cfg.SUPABASE_URL}/functions/v1/news-monitor`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.SUPABASE_ANON_KEY}` },
       body: '{}'
     });
+
+    clearInterval(progInterval);
+    document.getElementById('prog-fill').style.width = '100%';
+    document.getElementById('scan-progress').textContent = '20 / 20 queries';
+
     const data = await res.json();
-    alert(`✅ Monitor complete!\n\nProcessed: ${data.processed} articles\nNew leads: ${data.leads_created}`);
-    loadLeads();
-  } catch(e) { alert('Error: ' + e.message); }
-  btn.textContent = '▶ Run Monitor Now'; btn.disabled = false;
+
+    if (data.error) throw new Error(data.error);
+
+    addLog(`✓ Scanned ${data.queries || 20} search queries`, 'success');
+    addLog(`✓ Reviewed ${data.articles || 0} articles`, 'info');
+    addLog(`✓ Found ${data.leads_created || 0} new leads`, 'success');
+    if (data.skipped_duplicate > 0) addLog(`ℹ Skipped ${data.skipped_duplicate} duplicates`, 'warn');
+
+    showToast(`✅ Monitor complete — ${data.leads_created || 0} new leads found`);
+    statusText.textContent = `Last run: just now — ${data.leads_created || 0} leads found`;
+
+    await loadLeads();
+  } catch (e) {
+    clearInterval(progInterval);
+    addLog('✗ Error: ' + e.message, 'warn');
+    showToast('❌ Monitor error: ' + e.message);
+    statusText.textContent = 'Error — check console';
+  }
+
+  btn.disabled = false; btn.textContent = '▶ Start Monitor';
+  dot.className = 'dot dot-idle';
 }
 
-// Close modal on outside click
-document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+// ── Toast ────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:opacity .3s';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3500);
+}
 
-// Auto-refresh every 30s
-setInterval(loadLeads, 30000);
+function showEmpty(msg) {
+  document.getElementById('table-area').innerHTML = `<div class="table-wrap"><div class="empty-state"><h3>${msg}</h3></div></div>`;
+}
 </script>
 </body>
 </html>
