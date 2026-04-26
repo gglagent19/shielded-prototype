@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Shielded — Insurance Claims Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+  html, body, #root { height: 100%; margin: 0; }
+  body { background: #ebe6dd; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx?v=5"></script>
+<script type="text/babel" src="Icons.jsx?v=5"></script>
+<script type="text/babel" src="Logo.jsx?v=5"></script>
+<script type="text/babel" src="DemoData.jsx?v=5"></script>
+<script type="text/babel" src="AppShell.jsx?v=5"></script>
+<script type="text/babel" src="AIAssistant.jsx?v=5"></script>
+<script type="text/babel" src="Dashboard.jsx?v=5"></script>
+<script type="text/babel" src="PolicyUpload.jsx?v=5"></script>
+<script type="text/babel" src="PolicyAnalysis.jsx?v=5"></script>
+<script type="text/babel" src="ClaimFlow.jsx?v=5"></script>
+<script type="text/babel" src="Benchmark.jsx?v=5"></script>
+<script type="text/babel" src="Negotiate.jsx?v=5"></script>
+<script type="text/babel" src="Timeline.jsx?v=5"></script>
+<script type="text/babel" src="Documents.jsx?v=5"></script>
+<script type="text/babel" src="ClaimsList.jsx?v=5"></script>
+<script type="text/babel" src="PoliciesList.jsx?v=5"></script>
+<script type="text/babel" src="Settings.jsx?v=5"></script>
+<script type="text/babel" src="Auth.jsx?v=6"></script>
+<script type="text/babel" src="Onboarding.jsx?v=7"></script>
+<script type="text/babel" src="ClaimReport.jsx?v=7"></script>
+<script type="text/babel" src="NotificationCenter.jsx?v=8"></script>
+<script type="text/babel" src="PublicStatus.jsx?v=8"></script>
+<script type="text/babel" src="DocumentViewer.jsx?v=9"></script>
+<script type="text/babel" src="PolicyRenewal.jsx?v=9"></script>
+<script type="text/babel" src="Search.jsx?v=10"></script>
+<script type="text/babel" src="Correspondence.jsx?v=10"></script>
+<script type="text/babel" src="EmailTemplates.jsx?v=11"></script>
+<script type="text/babel" src="PolicyComparison.jsx?v=11"></script>
+<script type="text/babel" src="Upgrade.jsx?v=12"></script>
+<script type="text/babel" src="ClaimStories.jsx?v=12"></script>
+<script type="text/babel" src="ErrorPages.jsx?v=12"></script>
+<script type="text/babel" src="Analytics.jsx?v=13"></script>
+<script type="text/babel" src="BrokerLanding.jsx?v=13"></script>
+<script type="text/babel" src="BrokerDashboard.jsx?v=6"></script>
+<script type="text/babel" src="Mobile.jsx?v=11"></script>
+<script type="text/babel" src="Landing.jsx?v=5"></script>
+
+<script type="text/babel" data-presets="react">
+// ─── Tweaks: theme, accent, AI tone, density ──────────────────────
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "light",
+  "density": "compact",
+  "primaryHue": 264,
+  "dashboardHero": "B"
+}/*EDITMODE-END*/;
+
+function applyTweaks(t) {
+  const root = document.documentElement;
+  root.setAttribute('data-theme', t.theme);
+  // Recompute navy from hue (lightness + chroma fixed to stay on-brand)
+  const h = t.primaryHue;
+  root.style.setProperty('--navy', `oklch(0.32 0.10 ${h})`);
+  root.style.setProperty('--navy-2', `oklch(0.38 0.11 ${h})`);
+  root.style.setProperty('--navy-soft', `oklch(0.48 0.08 ${h})`);
+  if (t.density === 'compact') {
+    root.style.setProperty('--r-lg', '8px');
+    root.style.setProperty('--r-xl', '12px');
+    document.body.style.fontSize = '13px';
+  } else {
+    root.style.setProperty('--r-lg', '12px');
+    root.style.setProperty('--r-xl', '16px');
+    document.body.style.fontSize = '14px';
+  }
+}
+
+// ─── AppFrame: chrome used by all app screens ─────────────────────
+function AppFrame({ active, title, subtitle, crumbs, children, right, showAI = true, compactSidebar = false }) {
+  const [aiOpen, setAiOpen] = React.useState(true);
+  return (
+    <div className="shielded-root" style={{
+      display: 'flex', height: '100%', background: 'var(--bg)',
+    }}>
+      <Sidebar active={active} compact={compactSidebar} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        <TopBar title={title} subtitle={subtitle} crumbs={crumbs} right={right}/>
+        {children}
+      </div>
+      {showAI && aiOpen && <AIAssistant onClose={() => setAiOpen(false)}/>}
+    </div>
+  );
+}
+
+// ─── Tweaks Panel (floating) ──────────────────────────────────────
+function TweaksPanel({ tweaks, set }) {
+  return (
+    <div style={{
+      position: 'fixed', bottom: 20, right: 20, zIndex: 500,
+      width: 280, background: 'var(--bg-card)', border: '1px solid var(--line-2)',
+      borderRadius: 12, padding: 16, boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
+      fontFamily: 'var(--f-sans)', color: 'var(--ink)', fontSize: 13,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div className="serif" style={{ fontSize: 17 }}>Tweaks</div>
+        <div className="eyebrow">Shielded</div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div>
+          <div className="eyebrow" style={{ marginBottom: 6 }}>Theme</div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {['light', 'dark'].map(t => (
+              <button key={t} onClick={() => set({ theme: t })} className="btn btn-ghost btn-sm"
+                style={{ flex: 1, justifyContent: 'center',
+                  borderColor: tweaks.theme === t ? 'var(--navy)' : 'var(--line)',
+                  background: tweaks.theme === t ? '#eef2fb' : 'transparent',
+                  color: tweaks.theme === t ? 'var(--navy)' : 'var(--ink-2)' }}>
+                {t === 'light' ? <Icons.Sun size={12}/> : <Icons.Moon size={12}/>} {t}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="eyebrow" style={{ marginBottom: 6 }}>Density</div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {['balanced', 'compact'].map(t => (
+              <button key={t} onClick={() => set({ density: t })} className="btn btn-ghost btn-sm"
+                style={{ flex: 1, justifyContent: 'center',
+                  borderColor: tweaks.density === t ? 'var(--navy)' : 'var(--line)',
+                  background: tweaks.density === t ? '#eef2fb' : 'transparent' }}>
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="eyebrow" style={{ marginBottom: 6, display: 'flex', justifyContent: 'space-between' }}>
+            <span>Primary hue</span><span className="mono" style={{ fontSize: 10 }}>{tweaks.primaryHue}°</span>
+          </div>
+          <input type="range" min="180" max="340" step="1" value={tweaks.primaryHue}
+            onChange={e => set({ primaryHue: +e.target.value })}
+            style={{ width: '100%', padding: 0, border: 'none',
+              background: 'linear-gradient(90deg, oklch(0.5 0.12 180), oklch(0.5 0.12 220), oklch(0.5 0.12 260), oklch(0.5 0.12 300), oklch(0.5 0.12 340))',
+              height: 6, borderRadius: 99, appearance: 'none', outline: 'none' }}/>
+        </div>
+
+        <div>
+          <div className="eyebrow" style={{ marginBottom: 6 }}>Dashboard hero</div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {['A', 'B'].map(t => (
+              <button key={t} onClick={() => set({ dashboardHero: t })} className="btn btn-ghost btn-sm"
+                style={{ flex: 1, justifyContent: 'center',
+                  borderColor: tweaks.dashboardHero === t ? 'var(--navy)' : 'var(--line)',
+                  background: tweaks.dashboardHero === t ? '#eef2fb' : 'transparent' }}>
+                {t === 'A' ? 'Chart + number' : 'Editorial'}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Artboard wrapper that isolates layout ────────────────────────
+function AppArtboard({ children, w = 1280, h = 820 }) {
+  return (
+    <div className="shielded-root" style={{ width: w, height: h, overflow: 'hidden', borderRadius: 8, background: 'var(--bg)' }}>
+      {children}
+    </div>
+  );
+}
+
+// ─── Root ─────────────────────────────────────────────────────────
+function App() {
+  const [tweaks, setTweaks] = React.useState(TWEAK_DEFAULTS);
+  const [editMode, setEditMode] = React.useState(false);
+  const [showTweaks, setShowTweaks] = React.useState(false);
+
+  React.useEffect(() => { applyTweaks(tweaks); }, [tweaks]);
+
+  // Keyboard shortcuts: T = Tweaks panel, D = dark/light toggle
+  React.useEffect(() => {
+    const onKey = (e) => {
+      if (e.target.matches('input,textarea,[contenteditable]')) return;
+      if (e.key === 't' || e.key === 'T') setShowTweaks(s => !s);
+      if (e.key === 'd' || e.key === 'D') {
+        const next = tweaks.theme === 'dark' ? 'light' : 'dark';
+        setTweaks(t => ({ ...t, theme: next }));
+        applyTweaks({ ...tweaks, theme: next });
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [tweaks]);
+
+  // Edit-mode bridge
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setEditMode(true);
+      if (e.data?.type === '__deactivate_edit_mode') setEditMode(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const updateTweaks = (patch) => {
+    const next = { ...tweaks, ...patch };
+    setTweaks(next);
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: patch }, '*');
+  };
+
+  return (
+    <>
+      <DesignCanvas>
+        <DCSection id="marketing" title="Marketing & social proof" subtitle="Claim stories, upgrade page, and error states">
+          <DCArtboard id="claim-stories" label="Claim stories · social proof" width={1280} height={1100}>
+            <div className="shielded-root" style={{ width: 1280, height: 1100, overflow: 'hidden' }}>
+              <ClaimStories />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="upgrade-page" label="Upgrade · Basic → Premium" width={1280} height={900}>
+            <AppArtboard w={1280} h={900}>
+              <AppFrame active="settings" title="Upgrade to Premium"
+                crumbs={['Settings', 'Upgrade']} showAI={false}>
+                <UpgradePage />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="paywall" label="Paywall · Premium feature gate" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="benchmark" title="Benchmark this offer"
+                crumbs={['Claims', 'CLM-2041', 'Benchmark']} showAI={false}>
+                <PaywallModal />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="not-found" label="404 · Page not found" width={1280} height={720}>
+            <AppArtboard w={1280} h={720}>
+              <NotFound />
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="app-error" label="Error state · Something went wrong" width={1280} height={720}>
+            <AppArtboard w={1280} h={720}>
+              <AppError />
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="offline" label="Offline state" width={1280} height={720}>
+            <AppArtboard w={1280} h={720}>
+              <OfflineState />
+            </AppArtboard>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="product" title="Shielded · Product" subtitle="Insurance claims platform for small businesses — editorial trust aesthetic, navy + teal, Instrument Serif / Inter / JetBrains Mono">
+          <DCArtboard id="landing" label="Landing page" width={1280} height={1800}>
+            <div className="shielded-root" style={{ width: 1280, height: 1800, overflow: 'hidden' }}>
+              <Landing />
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="app" title="Dashboard & core loop" subtitle="Sidebar + AI assistant docked right; top nav per screen">
+          <DCArtboard id="empty-dash" label="Empty state · new user" width={1440} height={900}>
+            <AppArtboard w={1440} h={900}>
+              <AppFrame active="dashboard" title="Overview" subtitle="Welcome"
+                crumbs={['Home']} showAI={false}>
+                <DashboardEmpty />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="analytics" label="Analytics & insights" width={1440} height={960}>
+            <AppArtboard w={1440} h={960}>
+              <AppFrame active="dashboard" title="Analytics" subtitle="All claims · Lumen & Loaf"
+                crumbs={['Analytics']} showAI={false}>
+                <Analytics />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="notifications" label="Notification center" width={1440} height={900}>
+            <AppArtboard w={1440} h={900}>
+              <NotificationCenter />
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="policies-list" label="Policies list" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="policy" title="Policies" subtitle="2 active"
+                crumbs={['Policies']} showAI={false}>
+                <PoliciesList />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="dash" label="Dashboard (active claim hero)" width={1440} height={900}>
+            <AppArtboard w={1440} h={900}>
+              <AppFrame active="dashboard" title="Overview" subtitle="Lumen & Loaf · Commercial Property"
+                crumbs={['Home', 'Overview']}
+                right={<button className="btn btn-ghost btn-sm"><Icons.Search size={13}/> Search</button>}>
+                <Dashboard variant={tweaks.dashboardHero} />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="upload" label="Policy upload" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="policy" title="Add a policy"
+                crumbs={['Policies', 'New']} showAI={false}>
+                <PolicyUpload />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="compare" label="Policy comparison · side-by-side" width={1280} height={900}>
+            <AppArtboard w={1280} h={900}>
+              <AppFrame active="policy" title="Compare policies" subtitle="GreatWest vs Meridian"
+                crumbs={['Policies', 'Compare']} showAI={false}>
+                <PolicyComparison />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="renewal" label="Policy renewal planning" width={1280} height={900}>
+            <AppArtboard w={1280} h={900}>
+              <AppFrame active="policy" title="Policy renewal" subtitle="296 days out"
+                crumbs={['Policies', 'CPP-48291-B', 'Renewal']} showAI={false}>
+                <PolicyRenewal />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="analysis" label="Policy analysis" width={1280} height={900}>
+            <AppArtboard w={1280} h={900}>
+              <AppFrame active="policy" title="Commercial Property" subtitle="Analyzed 12 min ago"
+                crumbs={['Policies', 'GreatWest — CPP-48291-B']} showAI={false}>
+                <PolicyAnalysis />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="doc-viewer" label="Document viewer · AI annotations" width={1440} height={900}>
+            <AppArtboard w={1440} h={900}>
+              <AppFrame active="documents" title="Adjuster's estimate — GreatWest.pdf"
+                crumbs={['Documents', 'Adjuster\'s estimate']} showAI={false}>
+                <DocumentViewer />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="documents" label="Document vault" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="documents" title="Documents" subtitle={`${12} files`}
+                crumbs={['Documents']} showAI={false}>
+                <Documents />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="claim" title="Claim flow" subtitle="From report → documentation → benchmark → negotiation">
+          <DCArtboard id="search" label="Global search" width={1280} height={820}>
+            <AppArtboard>
+              <GlobalSearch />
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="claims-list" label="Claims list" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="claims" title="Claims" subtitle="1 active · 2 settled"
+                crumbs={['Claims']} showAI={false}>
+                <ClaimsList />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="claim-start" label="New claim · Step 1 — policy select" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="claims" title="New claim" crumbs={['Claims', 'New']} showAI={false}>
+                <ClaimStart />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="claim-create" label="New claim · Step 2 — details" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="claims" title="New claim" crumbs={['Claims', 'New']} showAI={false}>
+                <ClaimCreate />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="claim-report-step" label="New claim · Step 3 — first report" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="claims" title="Send notice of loss" crumbs={['Claims', 'New', 'First report']} showAI={false}>
+                <ClaimFirstReport />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="claim-filed" label="New claim · Step 4 — filed" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="claims" title="Claim filed" crumbs={['Claims', 'CLM-2041']} showAI={false}>
+                <ClaimFile />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="correspondence" label="Adjuster correspondence" width={1440} height={900}>
+            <AppArtboard w={1440} h={900}>
+              <Correspondence />
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="claim-docs" label="Documentation workflow" width={1440} height={900}>
+            <AppArtboard w={1440} h={900}>
+              <AppFrame active="claims" title="Fire & smoke damage" subtitle="Day 43 · Negotiating"
+                crumbs={['Claims', 'CLM-2041', 'Documentation']}>
+                <ClaimDocs />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="benchmark" label="Settlement benchmarking" width={1440} height={900}>
+            <AppArtboard w={1440} h={900}>
+              <AppFrame active="benchmark" title="Benchmark this offer" subtitle="vs 7 NC comps"
+                crumbs={['Claims', 'CLM-2041', 'Benchmark']}>
+                <Benchmark />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="negotiate" label="Negotiation generator" width={1440} height={1000}>
+            <AppArtboard w={1440} h={1000}>
+              <AppFrame active="negotiate" title="Draft the rebuttal" subtitle="Anchored in your policy"
+                crumbs={['Claims', 'CLM-2041', 'Negotiate']} showAI={false}>
+                <Negotiate />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="settled" label="Claim settled · victory" width={1280} height={820}>
+            <AppArtboard>
+              <AppFrame active="claims" title="CLM-2041 · Settled"
+                crumbs={['Claims', 'CLM-2041']} showAI={false}>
+                <ClaimSettled />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+          <DCArtboard id="timeline" label="Deadline timeline" width={1280} height={900}>
+            <AppArtboard w={1280} h={900}>
+              <AppFrame active="deadlines" title="Timeline" subtitle="CLM-2041 · Day 43"
+                crumbs={['Claims', 'CLM-2041', 'Timeline']} showAI={false}>
+                <Timeline />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+
+        </DCSection>
+
+        <DCSection id="app2" title="Account & settings" subtitle="Profile, billing, notifications, integrations">
+          <DCArtboard id="settings" label="Settings" width={1280} height={900}>
+            <AppArtboard w={1280} h={900}>
+              <AppFrame active="settings" title="Settings"
+                crumbs={['Settings']} showAI={false}>
+                <Settings />
+              </AppFrame>
+            </AppArtboard>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="mobile" title="Mobile companion" subtitle="Dashboard + in-field claim documentation">
+          <DCArtboard id="m-dash" label="Mobile · Dashboard" width={356} height={736}>
+            <div style={{ padding: 8, background: '#0e1218', borderRadius: 44, width: 356, height: 736, boxShadow: 'inset 0 0 0 2px #2a2f38', position: 'relative' }}>
+              <div style={{ width: '100%', height: '100%', borderRadius: 36, overflow: 'hidden', background: 'var(--bg)', position: 'relative' }} className="shielded-root">
+                <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 100, height: 28, background: '#0e1218', borderRadius: 99, zIndex: 5 }}/>
+                <MobileDashboard />
+              </div>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="m-docs" label="Mobile · Claim docs" width={356} height={736}>
+            <div style={{ padding: 8, background: '#0e1218', borderRadius: 44, width: 356, height: 736, boxShadow: 'inset 0 0 0 2px #2a2f38', position: 'relative' }}>
+              <div style={{ width: '100%', height: '100%', borderRadius: 36, overflow: 'hidden', background: 'var(--bg)', position: 'relative' }} className="shielded-root">
+                <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 100, height: 28, background: '#0e1218', borderRadius: 99, zIndex: 5 }}/>
+                <MobileClaimDocs />
+              </div>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="m-policies" label="Mobile · Policies" width={356} height={736}>
+            <div style={{ padding: 8, background: '#0e1218', borderRadius: 44, width: 356, height: 736, boxShadow: 'inset 0 0 0 2px #2a2f38', position: 'relative' }}>
+              <div style={{ width: '100%', height: '100%', borderRadius: 36, overflow: 'hidden', background: 'var(--bg)', position: 'relative' }} className="shielded-root">
+                <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 100, height: 28, background: '#0e1218', borderRadius: 99, zIndex: 5 }}/>
+                <MobilePolicies />
+              </div>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="m-timeline" label="Mobile · Deadlines" width={356} height={736}>
+            <div style={{ padding: 8, background: '#0e1218', borderRadius: 44, width: 356, height: 736, boxShadow: 'inset 0 0 0 2px #2a2f38', position: 'relative' }}>
+              <div style={{ width: '100%', height: '100%', borderRadius: 36, overflow: 'hidden', background: 'var(--bg)', position: 'relative' }} className="shielded-root">
+                <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 100, height: 28, background: '#0e1218', borderRadius: 99, zIndex: 5 }}/>
+                <MobileTimeline />
+              </div>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="m-negotiate" label="Mobile · Negotiate" width={356} height={736}>
+            <div style={{ padding: 8, background: '#0e1218', borderRadius: 44, width: 356, height: 736, boxShadow: 'inset 0 0 0 2px #2a2f38', position: 'relative' }}>
+              <div style={{ width: '100%', height: '100%', borderRadius: 36, overflow: 'hidden', background: 'var(--bg)', position: 'relative' }} className="shielded-root">
+                <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 100, height: 28, background: '#0e1218', borderRadius: 99, zIndex: 5 }}/>
+                <MobileNegotiate />
+              </div>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="m-search" label="Mobile · Search" width={356} height={736}>
+            <div style={{ padding: 8, background: '#0e1218', borderRadius: 44, width: 356, height: 736, boxShadow: 'inset 0 0 0 2px #2a2f38', position: 'relative' }}>
+              <div style={{ width: '100%', height: '100%', borderRadius: 36, overflow: 'hidden', background: 'var(--bg)', position: 'relative' }} className="shielded-root">
+                <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 100, height: 28, background: '#0e1218', borderRadius: 99, zIndex: 5 }}/>
+                <MobileSearch />
+              </div>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="m-ai" label="Mobile · Ask AI" width={356} height={736}>
+            <div style={{ padding: 8, background: '#0e1218', borderRadius: 44, width: 356, height: 736, boxShadow: 'inset 0 0 0 2px #2a2f38', position: 'relative' }}>
+              <div style={{ width: '100%', height: '100%', borderRadius: 36, overflow: 'hidden', background: 'var(--bg)', position: 'relative' }} className="shielded-root">
+                <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 100, height: 28, background: '#0e1218', borderRadius: 99, zIndex: 5 }}/>
+                <MobileAIChat />
+              </div>
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="auth" title="Auth & onboarding" subtitle="Sign in, sign up, password recovery, and first-run setup">
+          <DCArtboard id="signin" label="Sign in" width={1280} height={760}>
+            <div className="shielded-root" style={{ width: 1280, height: 760, overflow: 'hidden' }}>
+              <SignIn />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="signup" label="Sign up" width={1280} height={820}>
+            <div className="shielded-root" style={{ width: 1280, height: 820, overflow: 'hidden' }}>
+              <SignUp />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="forgot-pw" label="Forgot password" width={1280} height={760}>
+            <div className="shielded-root" style={{ width: 1280, height: 760, overflow: 'hidden' }}>
+              <ForgotPassword />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="onboard-1" label="Onboarding · Upload policy" width={1280} height={820}>
+            <div className="shielded-root" style={{ width: 1280, height: 820, overflow: 'hidden' }}>
+              <OnboardingUpload />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="onboard-2" label="Onboarding · Review coverage" width={1280} height={820}>
+            <div className="shielded-root" style={{ width: 1280, height: 820, overflow: 'hidden' }}>
+              <OnboardingReview />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="onboard-3" label="Onboarding · You're protected" width={1280} height={820}>
+            <div className="shielded-root" style={{ width: 1280, height: 820, overflow: 'hidden' }}>
+              <OnboardingDone />
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="email" title="Email & notifications" subtitle="Transactional emails — deadline alerts, offer received, weekly digest">
+          <DCArtboard id="email-deadline" label="Email · Deadline alert" width={680} height={860}>
+            <div className="shielded-root" style={{ width: 680, height: 860, overflow: 'hidden', borderRadius: 8 }}>
+              <EmailDeadlineAlert />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="email-offer" label="Email · Settlement offer received" width={680} height={900}>
+            <div className="shielded-root" style={{ width: 680, height: 900, overflow: 'hidden', borderRadius: 8 }}>
+              <EmailSettlementOffer />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="email-digest" label="Email · Weekly digest" width={680} height={960}>
+            <div className="shielded-root" style={{ width: 680, height: 960, overflow: 'hidden', borderRadius: 8 }}>
+              <EmailWeeklyDigest />
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="reports" title="Reports & shared views" subtitle="Adjuster-ready claim summaries and public status pages">
+          <DCArtboard id="claim-report" label="Claim settlement report" width={1280} height={1100}>
+            <div className="shielded-root" style={{ width: 1280, height: 1100, overflow: 'hidden' }}>
+              <ClaimReport />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="public-status" label="Public claim status page" width={1280} height={980}>
+            <div className="shielded-root" style={{ width: 1280, height: 980, overflow: 'hidden' }}>
+              <PublicStatus />
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="broker" title="Broker view" subtitle="Enterprise multi-client dashboard and broker marketing landing page">
+          <DCArtboard id="broker-landing" label="Broker · Marketing landing page" width={1280} height={1100}>
+            <div className="shielded-root" style={{ width: 1280, height: 1100, overflow: 'hidden' }}>
+              <BrokerLanding />
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="broker-dash" label="Broker · Client portfolio" width={1440} height={900}>
+            <div className="shielded-root" style={{ width: 1440, height: 900, overflow: 'hidden' }}>
+              <BrokerDashboard />
+            </div>
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      {(editMode || showTweaks) && <TweaksPanel tweaks={tweaks} set={(p) => { updateTweaks(p); }}/>}
+      {!showTweaks && !editMode && (
+        <div title="Tweaks panel (T)" onClick={() => setShowTweaks(true)} style={{
+          position: 'fixed', bottom: 20, right: 20, zIndex: 400,
+          width: 36, height: 36, borderRadius: 99,
+          background: 'var(--navy)', color: '#fff',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+          fontFamily: 'var(--f-mono)', fontSize: 13, fontWeight: 600,
+          transition: 'transform .1s', userSelect: 'none',
+        }}
+        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+        onMouseLeave={e => e.currentTarget.style.transform = ''}
+        >T</div>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

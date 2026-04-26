@@ -1198,8 +1198,8 @@ function intersectionPage(incident, state, city) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>${CSS}</style>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E3B3VNZZGK"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-E3B3VNZZGK');</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PCBWWF3T8X"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-PCBWWF3T8X');</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"${incident.name} Insurance Claim in ${city.n}, ${state.abbr}","description":"${desc}","url":"https://attorneyaitools.org/claims/${state.slug}/${city.s}/${incident.slug}/"}</script>
 </head><body>
 <nav class="nav"><div class="wrap ni">
@@ -1330,8 +1330,8 @@ function cityIncidentHub(city, state) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>${CSS}</style>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E3B3VNZZGK"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-E3B3VNZZGK');</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PCBWWF3T8X"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-PCBWWF3T8X');</script>
 </head><body>
 <nav class="nav"><div class="wrap ni">
 <a class="nl" href="../../index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5.5V11C4 15.5 7.5 19.7 12 21C16.5 19.7 20 15.5 20 11V5.5L12 2Z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#7ecdc8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Shielded</a>
