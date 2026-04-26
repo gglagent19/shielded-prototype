@@ -485,15 +485,97 @@ const STATE_MAP = {
   'al':'alabama','ak':'alaska','az':'arizona','ar':'arkansas','ca':'california','co':'colorado','ct':'connecticut','de':'delaware','fl':'florida','ga':'georgia','hi':'hawaii','id':'idaho','il':'illinois','in':'indiana','ia':'iowa','ks':'kansas','ky':'kentucky','la':'louisiana','me':'maine','md':'maryland','ma':'massachusetts','mi':'michigan','mn':'minnesota','ms':'mississippi','mo':'missouri','mt':'montana','ne':'nebraska','nv':'nevada','nh':'new-hampshire','nj':'new-jersey','nm':'new-mexico','ny':'new-york','nc':'north-carolina','nd':'north-dakota','oh':'ohio','ok':'oklahoma','or':'oregon','pa':'pennsylvania','ri':'rhode-island','sc':'south-carolina','sd':'south-dakota','tn':'tennessee','tx':'texas','ut':'utah','vt':'vermont','va':'virginia','wa':'washington','wv':'west-virginia','wi':'wisconsin','wy':'wyoming'
 };
 
+// City → [state name, state slug] lookup for direct city detection
+const CITY_MAP = {
+  'New York City':'new-york','New York':'new-york','Brooklyn':'new-york','Queens':'new-york','Bronx':'new-york','Manhattan':'new-york',
+  'Los Angeles':'california','LA':'california','San Francisco':'california','San Diego':'california','Sacramento':'california','Oakland':'california','Fresno':'california','San Jose':'california','Long Beach':'california','Bakersfield':'california','Anaheim':'california','Riverside':'california','Stockton':'california',
+  'Chicago':'illinois','Aurora':'illinois','Rockford':'illinois','Naperville':'illinois','Joliet':'illinois',
+  'Houston':'texas','Dallas':'texas','San Antonio':'texas','Austin':'texas','Fort Worth':'texas','El Paso':'texas','Arlington':'texas','Corpus Christi':'texas','Plano':'texas','Lubbock':'texas','Laredo':'texas','Irving':'texas','Garland':'texas','Amarillo':'texas','Frisco':'texas','McKinney':'texas','Killeen':'texas',
+  'Phoenix':'arizona','Tucson':'arizona','Mesa':'arizona','Chandler':'arizona','Scottsdale':'arizona','Glendale':'arizona','Gilbert':'arizona','Tempe':'arizona','Peoria':'arizona',
+  'Philadelphia':'pennsylvania','Pittsburgh':'pennsylvania','Allentown':'pennsylvania','Erie':'pennsylvania',
+  'San Antonio':'texas',
+  'Jacksonville':'florida','Miami':'florida','Tampa':'florida','Orlando':'florida','St. Petersburg':'florida','Hialeah':'florida','Port St. Lucie':'florida','Cape Coral':'florida','Tallahassee':'florida','Fort Lauderdale':'florida','Pembroke Pines':'florida','Hollywood':'florida','Gainesville':'florida','Clearwater':'florida','Palm Bay':'florida','Pompano Beach':'florida','West Palm Beach':'florida','Lakeland':'florida','Coral Springs':'florida','Sarasota':'florida','Fort Myers':'florida','Daytona Beach':'florida','Pensacola':'florida','Naples':'florida','Bonita Springs':'florida',
+  'Indianapolis':'indiana','Fort Wayne':'indiana','Evansville':'indiana','South Bend':'indiana','Carmel':'indiana','Bloomington':'indiana',
+  'Columbus':'ohio','Cleveland':'ohio','Cincinnati':'ohio','Toledo':'ohio','Akron':'ohio','Dayton':'ohio',
+  'Charlotte':'north-carolina','Raleigh':'north-carolina','Greensboro':'north-carolina','Durham':'north-carolina','Winston-Salem':'north-carolina','Fayetteville':'north-carolina','Cary':'north-carolina','Wilmington':'north-carolina','Asheville':'north-carolina',
+  'Seattle':'washington','Spokane':'washington','Tacoma':'washington','Vancouver':'washington','Bellevue':'washington','Everett':'washington','Kent':'washington',
+  'Denver':'colorado','Colorado Springs':'colorado','Aurora':'colorado','Fort Collins':'colorado','Lakewood':'colorado','Thornton':'colorado','Boulder':'colorado',
+  'Nashville':'tennessee','Memphis':'tennessee','Knoxville':'tennessee','Chattanooga':'tennessee','Clarksville':'tennessee','Murfreesboro':'tennessee',
+  'Baltimore':'maryland','Frederick':'maryland','Rockville':'maryland','Annapolis':'maryland',
+  'Boston':'massachusetts','Worcester':'massachusetts','Springfield':'massachusetts','Cambridge':'massachusetts','Lowell':'massachusetts','Brockton':'massachusetts',
+  'Louisville':'kentucky','Lexington':'kentucky','Bowling Green':'kentucky','Owensboro':'kentucky',
+  'Portland':'oregon','Eugene':'oregon','Salem':'oregon','Gresham':'oregon','Bend':'oregon','Hillsboro':'oregon','Beaverton':'oregon',
+  'Las Vegas':'nevada','Henderson':'nevada','Reno':'nevada','North Las Vegas':'nevada','Sparks':'nevada',
+  'Milwaukee':'wisconsin','Madison':'wisconsin','Green Bay':'wisconsin','Kenosha':'wisconsin',
+  'Albuquerque':'new-mexico','Las Cruces':'new-mexico','Rio Rancho':'new-mexico','Santa Fe':'new-mexico',
+  'Tucson':'arizona','Mesa':'arizona',
+  'Atlanta':'georgia','Columbus':'georgia','Augusta':'georgia','Macon':'georgia','Savannah':'georgia','Athens':'georgia','Sandy Springs':'georgia','Roswell':'georgia','Marietta':'georgia','Alpharetta':'georgia',
+  'Minneapolis':'minnesota','St. Paul':'minnesota','Rochester':'minnesota','Duluth':'minnesota','Bloomington':'minnesota',
+  'New Orleans':'louisiana','Baton Rouge':'louisiana','Shreveport':'louisiana','Lafayette':'louisiana',
+  'Virginia Beach':'virginia','Norfolk':'virginia','Chesapeake':'virginia','Richmond':'virginia','Newport News':'virginia','Alexandria':'virginia','Hampton':'virginia','Roanoke':'virginia',
+  'Detroit':'michigan','Grand Rapids':'michigan','Warren':'michigan','Sterling Heights':'michigan','Ann Arbor':'michigan','Lansing':'michigan','Flint':'michigan','Dearborn':'michigan','Livonia':'michigan','Kalamazoo':'michigan',
+  'Kansas City':'missouri','St. Louis':'missouri','Springfield':'missouri','Columbia':'missouri','Independence':'missouri',
+  'Omaha':'nebraska','Lincoln':'nebraska',
+  'Oklahoma City':'oklahoma','Tulsa':'oklahoma','Norman':'oklahoma','Broken Arrow':'oklahoma',
+  'Tucson':'arizona','Salt Lake City':'utah','West Valley City':'utah','Provo':'utah','West Jordan':'utah','Orem':'utah','Sandy':'utah','Ogden':'utah',
+  'Birmingham':'alabama','Montgomery':'alabama','Huntsville':'alabama','Mobile':'alabama','Tuscaloosa':'alabama',
+  'Little Rock':'arkansas','Fort Smith':'arkansas','Fayetteville':'arkansas','Springdale':'arkansas',
+  'Anchorage':'alaska',
+  'Honolulu':'hawaii',
+  'Boise':'idaho','Nampa':'idaho','Meridian':'idaho','Idaho Falls':'idaho',
+  'Des Moines':'iowa','Cedar Rapids':'iowa','Davenport':'iowa','Sioux City':'iowa',
+  'Wichita':'kansas','Overland Park':'kansas','Kansas City':'kansas','Topeka':'kansas',
+  'Newark':'new-jersey','Jersey City':'new-jersey','Paterson':'new-jersey','Elizabeth':'new-jersey','Edison':'new-jersey','Trenton':'new-jersey',
+  'Buffalo':'new-york','Rochester':'new-york','Yonkers':'new-york','Syracuse':'new-york','Albany':'new-york',
+  'Providence':'rhode-island','Cranston':'rhode-island','Warwick':'rhode-island',
+  'Charleston':'south-carolina','Columbia':'south-carolina','North Charleston':'south-carolina','Mount Pleasant':'south-carolina','Greenville':'south-carolina',
+  'Sioux Falls':'south-dakota','Rapid City':'south-dakota',
+  'El Paso':'texas','Fargo':'north-dakota','Bismarck':'north-dakota',
+  'Cheyenne':'wyoming','Casper':'wyoming',
+  'Billings':'montana','Missoula':'montana','Great Falls':'montana',
+  'Burlington':'vermont','Montpelier':'vermont',
+  'Dover':'delaware','Wilmington':'delaware','Newark':'delaware',
+  'Hartford':'connecticut','Bridgeport':'connecticut','New Haven':'connecticut','Stamford':'connecticut',
+  'Manchester':'new-hampshire','Nashua':'new-hampshire','Concord':'new-hampshire',
+  'Fairfax':'virginia','Fairfax County':'virginia','Loudoun County':'virginia','Prince William':'virginia',
+  'Long Island':'new-york','Staten Island':'new-york',
+  'Bronx County':'new-york','King County':'washington','Cook County':'illinois','Harris County':'texas','Maricopa County':'arizona','Los Angeles County':'california','Orange County':'california','San Diego County':'california','Riverside County':'california','Sacramento County':'california',
+};
+
+const STATE_NAME_MAP = {'alabama':'Alabama','alaska':'Alaska','arizona':'Arizona','arkansas':'Arkansas','california':'California','colorado':'Colorado','connecticut':'Connecticut','delaware':'Delaware','florida':'Florida','georgia':'Georgia','hawaii':'Hawaii','idaho':'Idaho','illinois':'Illinois','indiana':'Indiana','iowa':'Iowa','kansas':'Kansas','kentucky':'Kentucky','louisiana':'Louisiana','maine':'Maine','maryland':'Maryland','massachusetts':'Massachusetts','michigan':'Michigan','minnesota':'Minnesota','mississippi':'Mississippi','missouri':'Missouri','montana':'Montana','nebraska':'Nebraska','nevada':'Nevada','new-hampshire':'New Hampshire','new-jersey':'New Jersey','new-mexico':'New Mexico','new-york':'New York','north-carolina':'North Carolina','north-dakota':'North Dakota','ohio':'Ohio','oklahoma':'Oklahoma','oregon':'Oregon','pennsylvania':'Pennsylvania','rhode-island':'Rhode Island','south-carolina':'South Carolina','south-dakota':'South Dakota','tennessee':'Tennessee','texas':'Texas','utah':'Utah','vermont':'Vermont','virginia':'Virginia','washington':'Washington','west-virginia':'West Virginia','wisconsin':'Wisconsin','wyoming':'Wyoming'};
+
 function parseLocation(text) {
-  const states = 'Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming';
-  const m = text.match(new RegExp(`([A-Z][a-zA-Z\\s]{2,25}),\\s*(${states})`,'i')) ||
-            text.match(/([A-Z][a-zA-Z\s]{2,20}),\s+([A-Z]{2})\b/);
-  if (!m) return null;
-  const city = m[1].trim().replace(/^(in|at|near)\s+/i,'');
-  const slug = STATE_MAP[m[2].trim().toLowerCase()];
-  if (!slug || city.length < 3 || city.length > 40) return null;
-  return { city, state: m[2].trim(), stateSlug: slug };
+  const clean = text.replace(/\n/g,' ');
+
+  // 1. Try "City, State" pattern first
+  const stateNames = 'Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming';
+  const m = clean.match(new RegExp('([A-Z][a-zA-Z\\s]{2,25}),\\s*(' + stateNames + ')','i')) ||
+            clean.match(/([A-Z][a-zA-Z\s]{2,20}),\s+([A-Z]{2})\b/);
+  if (m) {
+    const city = m[1].trim().replace(/^(in|at|near)\s+/i,'');
+    const slug = STATE_MAP[m[2].trim().toLowerCase()];
+    if (slug && city.length >= 3 && city.length <= 40) {
+      return { city, state: STATE_NAME_MAP[slug] || m[2].trim(), stateSlug: slug };
+    }
+  }
+
+  // 2. Look for known city names directly in text
+  for (const [cityName, stateSlug] of Object.entries(CITY_MAP)) {
+    if (clean.match(new RegExp('\\b' + cityName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b','i'))) {
+      return { city: cityName, state: STATE_NAME_MAP[stateSlug] || stateSlug, stateSlug };
+    }
+  }
+
+  // 3. Fallback: detect state name alone and use state capital as city
+  const STATE_CAPITALS = {'Alabama':'Montgomery','Alaska':'Anchorage','Arizona':'Phoenix','Arkansas':'Little Rock','California':'Sacramento','Colorado':'Denver','Connecticut':'Hartford','Delaware':'Dover','Florida':'Tallahassee','Georgia':'Atlanta','Hawaii':'Honolulu','Idaho':'Boise','Illinois':'Springfield','Indiana':'Indianapolis','Iowa':'Des Moines','Kansas':'Topeka','Kentucky':'Frankfort','Louisiana':'Baton Rouge','Maine':'Augusta','Maryland':'Annapolis','Massachusetts':'Boston','Michigan':'Lansing','Minnesota':'Saint Paul','Mississippi':'Jackson','Missouri':'Jefferson City','Montana':'Helena','Nebraska':'Lincoln','Nevada':'Carson City','New Hampshire':'Concord','New Jersey':'Trenton','New Mexico':'Santa Fe','New York':'Albany','North Carolina':'Raleigh','North Dakota':'Bismarck','Ohio':'Columbus','Oklahoma':'Oklahoma City','Oregon':'Salem','Pennsylvania':'Harrisburg','Rhode Island':'Providence','South Carolina':'Columbia','South Dakota':'Pierre','Tennessee':'Nashville','Texas':'Austin','Utah':'Salt Lake City','Vermont':'Montpelier','Virginia':'Richmond','Washington':'Olympia','West Virginia':'Charleston','Wisconsin':'Madison','Wyoming':'Cheyenne'};
+  for (const [stateName, capital] of Object.entries(STATE_CAPITALS)) {
+    if (clean.match(new RegExp('\\b' + stateName + '\\b','i'))) {
+      const slug = STATE_MAP[stateName.toLowerCase()];
+      if (slug) return { city: capital, state: stateName, stateSlug: slug };
+    }
+  }
+
+  return null;
 }
 
 function parseBizName(title, snippet) {
@@ -589,9 +671,9 @@ async function fetchNews(query) {
 
   // Try 3 different CORS proxies in order — first one that works wins
   const attempts = [
-    // 1. rss2json.com — parses RSS to clean JSON, CORS-friendly
+    // 1. rss2json.com — parses RSS to clean JSON, CORS-friendly (no count param on free tier)
     async () => {
-      const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}&count=8`, { signal: AbortSignal.timeout(10000) });
+      const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}`, { signal: AbortSignal.timeout(10000) });
       const d = await r.json();
       if (d.status !== 'ok' || !d.items?.length) throw new Error('no items');
       return d.items.map(i => ({ title: i.title, url: i.link || i.guid, description: (i.description||'').replace(/<[^>]+>/g,''), source: i.author || 'Google News', publishedAt: i.pubDate }));
